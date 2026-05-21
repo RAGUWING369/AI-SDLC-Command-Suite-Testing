@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-014 — Seller Order Management · ShopNest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; max-width: 1440px; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-danger { background: transparent; color: #DC2626; border: 2px solid #DC2626; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    .form-field.error { border: 2px solid #DC2626; background: #FEF2F2; }
+    .field-error { color: #DC2626; font-size: 12px; margin-top: 4px; }
+    .seller-layout { display: flex; min-height: calc(100vh - 56px); }
+    .seller-sidebar { width: 240px; flex-shrink: 0; background: white; border-right: 1px solid #E5E7EB; padding: 16px; }
+    .seller-main { flex: 1; padding: 32px 40px; background: #F9FAFB; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #6B7280; cursor: pointer; margin-bottom: 2px; }
+    .nav-item.active { background: #EFF6FF; color: #1D4ED8; font-weight: 600; }
+    .seller-header { background: white; border-bottom: 1px solid #E5E7EB; height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px; font-weight: 600; color: #111827; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .data-table th { background: #F9FAFB; color: #6B7280; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid #F3F4F6; color: #111827; }
+    .data-table tr:hover td { background: #F9FAFB; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-amber { background: #FEF9C3; color: #92400E; }
+    .badge-blue { background: #DBEAFE; color: #1E40AF; }
+    .badge-red { background: #FEE2E2; color: #991B1B; }
+    .badge-gray { background: #F3F4F6; color: #6B7280; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div style="background:#1E293B;padding:16px 40px;">
+  <span style="color:#94A3B8;font-size:12px;font-weight:700;letter-spacing:0.08em;">SHOPNEST · WIREFRAME</span>
+  <span style="color:#F97316;font-size:12px;font-weight:700;margin-left:12px;">SCR-014 — Seller Order Management</span>
+  <span style="color:#64748B;font-size:12px;margin-left:12px;">Route: /seller/orders · CSR</span>
+</div>
+
+<div class="toc">
+  <p style="font-size:12px;font-weight:700;color:#1E40AF;margin:0 0 8px 0;">TABLE OF CONTENTS — 7 States</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+    <a href="#s1" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S1 · Order List Default</a>
+    <a href="#s2" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S2 · Loading Skeleton</a>
+    <a href="#s3" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S3 · Empty State</a>
+    <a href="#s4" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S4 · API Error</a>
+    <a href="#s5" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S5 · Expanded — Awaiting Confirmation</a>
+    <a href="#s6" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S6 · Expanded — Awaiting Shipment</a>
+    <a href="#s7" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S7 · Expanded — Shipped</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 · Order List Default -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s1">
+  <div class="state-banner">STATE 1 · Order List Default &nbsp;|&nbsp; Trigger: Seller navigates to /seller/orders, orders exist &nbsp;|&nbsp; API: GET /api/v1/seller/orders/ → 200 OK</div>
+
+  <!-- Header -->
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <!-- Sidebar -->
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item active">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Orders</h1>
+
+      <!-- Filter Row -->
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center;">
+        <select class="form-field" style="width:180px;" aria-label="Filter by status">
+          <option>All Statuses ▼</option>
+          <option>Payment Confirmed</option>
+          <option>Processing</option>
+          <option>Shipped</option>
+          <option>Delivered</option>
+          <option>Cancelled</option>
+        </select>
+        <input type="text" class="form-field" style="width:280px;" placeholder="Search orders..." aria-label="Search orders" />
+        <span class="ann">2</span>
+      </div>
+      <div class="ann-block" style="margin-bottom:16px;">
+        <span class="ann">2</span> Status filter matches order lifecycle: Payment Confirmed → Processing → Shipped → Delivered / Cancelled
+      </div>
+
+      <!-- Orders Table -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Order <span class="ann">3</span></th>
+              <th scope="col">Buyer <span class="ann">1</span></th>
+              <th scope="col">Items</th>
+              <th scope="col">Total</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001234</td>
+              <td>Anjali S.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹999</td>
+              <td><span class="badge badge-amber">⏳ Payment Confirmed</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001210</td>
+              <td>Rahul K.</td>
+              <td>2 items</td>
+              <td style="font-weight:600;">₹1,198</td>
+              <td><span class="badge badge-blue">🔄 Processing</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001199</td>
+              <td>Meena R.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹2,499</td>
+              <td><span class="badge badge-blue">📦 Shipped</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001180</td>
+              <td>Suresh P.</td>
+              <td>3 items</td>
+              <td style="font-weight:600;">₹4,200</td>
+              <td><span class="badge badge-green">✅ Delivered</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
+        <span style="font-size:13px;color:#6B7280;">Showing 4 of 4 orders</span>
+        <div style="display:flex;gap:4px;">
+          <button style="padding:6px 12px;border:1px solid #E5E7EB;border-radius:6px;background:white;font-size:13px;color:#6B7280;">← Prev</button>
+          <button style="padding:6px 12px;border:1px solid #1D4ED8;border-radius:6px;background:#EFF6FF;font-size:13px;color:#1D4ED8;font-weight:600;">1</button>
+          <button style="padding:6px 12px;border:1px solid #E5E7EB;border-radius:6px;background:white;font-size:13px;color:#6B7280;">Next →</button>
+        </div>
+      </div>
+
+      <!-- Annotation Blocks -->
+      <div style="margin-top:24px;">
+        <div class="ann-block">
+          <span class="ann">1</span> Buyer privacy: shown as "First name + Last initial" only (Anjali S., Rahul K.) — full address only in expanded order view
+        </div>
+        <div class="ann-block" style="margin-top:8px;">
+          <span class="ann">3</span> Newest orders first (created_at DESC); critical for seller — most urgent actions at top
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 · Loading Skeleton -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s2">
+  <div class="state-banner">STATE 2 · Loading Skeleton &nbsp;|&nbsp; Trigger: Page mount — API request in-flight &nbsp;|&nbsp; Duration: until GET /api/v1/seller/orders/ resolves</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item active">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <div class="skeleton" style="height:32px;width:120px;margin-bottom:24px;"></div>
+
+      <!-- Filter row skeleton -->
+      <div style="display:flex;gap:12px;margin-bottom:20px;">
+        <div class="skeleton" style="height:38px;width:180px;"></div>
+        <div class="skeleton" style="height:38px;width:280px;"></div>
+      </div>
+
+      <!-- Table skeleton -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <div style="background:#F9FAFB;padding:12px 16px;border-bottom:1px solid #E5E7EB;">
+          <div style="display:flex;gap:16px;">
+            <div class="skeleton" style="height:14px;width:80px;"></div>
+            <div class="skeleton" style="height:14px;width:80px;"></div>
+            <div class="skeleton" style="height:14px;width:60px;"></div>
+            <div class="skeleton" style="height:14px;width:60px;"></div>
+            <div class="skeleton" style="height:14px;width:80px;"></div>
+            <div class="skeleton" style="height:14px;width:60px;"></div>
+          </div>
+        </div>
+        <!-- 4 skeleton rows -->
+        <div style="padding:14px 16px;border-bottom:1px solid #F3F4F6;display:flex;gap:32px;align-items:center;">
+          <div class="skeleton" style="height:16px;width:100px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:16px;width:50px;"></div>
+          <div class="skeleton" style="height:16px;width:60px;"></div>
+          <div class="skeleton" style="height:22px;width:140px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:32px;width:60px;border-radius:8px;"></div>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid #F3F4F6;display:flex;gap:32px;align-items:center;">
+          <div class="skeleton" style="height:16px;width:100px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:16px;width:50px;"></div>
+          <div class="skeleton" style="height:16px;width:60px;"></div>
+          <div class="skeleton" style="height:22px;width:120px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:32px;width:60px;border-radius:8px;"></div>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid #F3F4F6;display:flex;gap:32px;align-items:center;">
+          <div class="skeleton" style="height:16px;width:100px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:16px;width:50px;"></div>
+          <div class="skeleton" style="height:16px;width:60px;"></div>
+          <div class="skeleton" style="height:22px;width:100px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:32px;width:60px;border-radius:8px;"></div>
+        </div>
+        <div style="padding:14px 16px;display:flex;gap:32px;align-items:center;">
+          <div class="skeleton" style="height:16px;width:100px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:16px;width:50px;"></div>
+          <div class="skeleton" style="height:16px;width:60px;"></div>
+          <div class="skeleton" style="height:22px;width:90px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:32px;width:60px;border-radius:8px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 · Empty (No Orders) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s3">
+  <div class="state-banner">STATE 3 · Empty — No Orders &nbsp;|&nbsp; Trigger: GET /api/v1/seller/orders/ → 200 OK, results: [] &nbsp;|&nbsp; First-time seller or no orders placed yet</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item active">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Orders</h1>
+
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;">
+        <div style="font-size:56px;margin-bottom:16px;">📋</div>
+        <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">No orders yet</h2>
+        <p style="font-size:14px;color:#6B7280;max-width:360px;margin:0;">Orders will appear here when buyers purchase your products.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 · API Error -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s4">
+  <div class="state-banner">STATE 4 · API Error &nbsp;|&nbsp; Trigger: GET /api/v1/seller/orders/ → 500 / network timeout &nbsp;|&nbsp; User should retry</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item active">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Orders</h1>
+
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;" role="alert">
+        <div style="font-size:56px;margin-bottom:16px;">❌</div>
+        <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">Unable to load orders</h2>
+        <p style="font-size:14px;color:#6B7280;max-width:360px;margin:0 0 24px 0;">There was a problem connecting to the server. Please check your connection and try again.</p>
+        <button class="btn-primary">Retry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 5 · Order Expanded — Awaiting Confirmation -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s5">
+  <div class="state-banner">STATE 5 · Order Expanded — Awaiting Confirmation &nbsp;|&nbsp; Trigger: Seller clicks "View" on #SN-001234 (Payment Confirmed status) &nbsp;|&nbsp; Confirm closes buyer cancel window (BR-002)</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item active">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Orders</h1>
+
+      <!-- Filter Row -->
+      <div style="display:flex;gap:12px;margin-bottom:20px;">
+        <select class="form-field" style="width:180px;"><option>All Statuses ▼</option></select>
+        <input type="text" class="form-field" style="width:280px;" placeholder="Search orders..." />
+      </div>
+
+      <!-- Orders Table with Expanded Row -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Buyer</th>
+              <th scope="col">Items</th>
+              <th scope="col">Total</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Expanded Row -->
+            <tr style="background:#EFF6FF;">
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001234</td>
+              <td>Anjali S.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹999</td>
+              <td><span class="badge badge-amber">⏳ Payment Confirmed</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View ▲</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Expanded Panel -->
+        <div style="background:#F9FAFB;padding:24px;border-top:2px solid #BFDBFE;" aria-live="polite">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <!-- Order Details -->
+            <div>
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0 0 12px 0;">Order Details</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:16px;">
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Status</span>
+                  <div style="margin-top:2px;"><span class="badge badge-amber">⏳ Payment Confirmed</span></div>
+                </div>
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Placed</span>
+                  <div style="font-size:14px;font-weight:500;color:#111827;margin-top:2px;">14 May 2026 at 3:42 PM</div>
+                </div>
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Order ID</span>
+                  <div style="font-size:14px;font-weight:500;color:#111827;margin-top:2px;">#SN-001234</div>
+                </div>
+              </div>
+
+              <!-- Items -->
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:16px 0 8px 0;">Items</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;background:#F3F4F6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👗</div>
+                  <div>
+                    <div style="font-size:14px;font-weight:500;color:#111827;">Blue Cotton Kurti × 1</div>
+                    <div style="font-size:13px;color:#6B7280;margin-top:2px;">₹999.00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Delivery + Action -->
+            <div>
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0 0 12px 0;">Delivery Address</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:16px;">
+                <div style="font-size:14px;font-weight:600;color:#111827;">Anjali Sharma</div>
+                <div style="font-size:13px;color:#6B7280;margin-top:4px;line-height:1.6;">
+                  Flat 302, Sunflower Apartments<br/>
+                  Koramangala, Bangalore — 560034<br/>
+                  Karnataka, India<br/>
+                  📞 +91 98765 43210
+                </div>
+              </div>
+
+              <!-- Action -->
+              <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:16px;margin-top:16px;">
+                <h3 style="font-size:14px;font-weight:700;color:#92400E;margin:0 0 8px 0;">Action Required</h3>
+                <button class="btn-primary" style="width:100%;margin-bottom:10px;" aria-label="Confirm order SN-001234">Confirm Order</button>
+                <p style="font-size:12px;color:#6B7280;margin:0;">
+                  Confirming locks the order — buyer can no longer cancel <span class="ann">4</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Annotation Blocks -->
+          <div style="margin-top:16px;">
+            <div class="ann-block">
+              <span class="ann">4</span> "Confirm Order" = POST /api/v1/seller/orders/{id}/confirm/ → status changes to PROCESSING; buyer's cancel window closes immediately (BR-002)
+            </div>
+            <div class="ann-block" style="margin-top:8px;">
+              <span class="ann">5</span> AWB + courier are required fields on "Mark as Shipped" — inline error if blank; buyer receives email with AWB via AWS SES
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining Rows -->
+        <table class="data-table" role="table" style="border-top:1px solid #E5E7EB;">
+          <tbody>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001210</td>
+              <td>Rahul K.</td>
+              <td>2 items</td>
+              <td style="font-weight:600;">₹1,198</td>
+              <td><span class="badge badge-blue">🔄 Processing</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001199</td>
+              <td>Meena R.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹2,499</td>
+              <td><span class="badge badge-blue">📦 Shipped</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001180</td>
+              <td>Suresh P.</td>
+              <td>3 items</td>
+              <td style="font-weight:600;">₹4,200</td>
+              <td><span class="badge badge-green">✅ Delivered</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 6 · Order Expanded — Awaiting Shipment -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s6">
+  <div class="state-banner">STATE 6 · Order Expanded — Awaiting Shipment &nbsp;|&nbsp; Trigger: Order #SN-001210 expanded (status: Processing) &nbsp;|&nbsp; Seller must enter courier + AWB to ship</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item active">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Orders</h1>
+
+      <div style="display:flex;gap:12px;margin-bottom:20px;">
+        <select class="form-field" style="width:180px;"><option>All Statuses ▼</option></select>
+        <input type="text" class="form-field" style="width:280px;" placeholder="Search orders..." />
+      </div>
+
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Buyer</th>
+              <th scope="col">Items</th>
+              <th scope="col">Total</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001234</td>
+              <td>Anjali S.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹999</td>
+              <td><span class="badge badge-amber">⏳ Payment Confirmed</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <!-- Expanded Row -->
+            <tr style="background:#EFF6FF;">
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001210</td>
+              <td>Rahul K.</td>
+              <td>2 items</td>
+              <td style="font-weight:600;">₹1,198</td>
+              <td><span class="badge badge-blue">🔄 Processing</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View ▲</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Expanded Panel — Awaiting Shipment -->
+        <div style="background:#F9FAFB;padding:24px;border-top:2px solid #BFDBFE;" aria-live="polite">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <div>
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0 0 12px 0;">Order Details</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:16px;">
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Status</span>
+                  <div style="margin-top:2px;"><span class="badge badge-blue">🔄 Processing</span></div>
+                </div>
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Confirmed</span>
+                  <div style="font-size:14px;font-weight:500;color:#111827;margin-top:2px;">13 May 2026 at 11:15 AM</div>
+                </div>
+              </div>
+
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:16px 0 8px 0;">Items</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:12px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                  <div style="width:48px;height:48px;background:#F3F4F6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👕</div>
+                  <div>
+                    <div style="font-size:14px;font-weight:500;color:#111827;">White Linen Shirt × 1</div>
+                    <div style="font-size:13px;color:#6B7280;margin-top:2px;">₹799.00</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;background:#F3F4F6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👔</div>
+                  <div>
+                    <div style="font-size:14px;font-weight:500;color:#111827;">Navy Blazer × 1</div>
+                    <div style="font-size:13px;color:#6B7280;margin-top:2px;">₹399.00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0 0 12px 0;">Delivery Address</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:16px;">
+                <div style="font-size:14px;font-weight:600;color:#111827;">Rahul Kumar</div>
+                <div style="font-size:13px;color:#6B7280;margin-top:4px;line-height:1.6;">
+                  House 17, Sector 45<br/>
+                  Gurgaon — 122003<br/>
+                  Haryana, India<br/>
+                  📞 +91 91234 56789
+                </div>
+              </div>
+
+              <!-- Ship Form -->
+              <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:16px;margin-top:16px;">
+                <h3 style="font-size:14px;font-weight:700;color:#1E40AF;margin:0 0 12px 0;">Mark as Shipped <span class="ann">5</span></h3>
+                <div style="margin-bottom:12px;">
+                  <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Courier Name *</label>
+                  <input type="text" class="form-field" placeholder="e.g. Delhivery, Blue Dart, DTDC" />
+                </div>
+                <div style="margin-bottom:12px;">
+                  <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">AWB Number *</label>
+                  <input type="text" class="form-field" placeholder="Enter tracking number" />
+                </div>
+                <button class="btn-primary" style="width:100%;margin-bottom:8px;" aria-label="Mark order SN-001210 as shipped">Mark as Shipped</button>
+                <p style="font-size:11px;color:#6B7280;margin:0;">Buyer will receive a shipping email with AWB once marked shipped</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining Rows -->
+        <table class="data-table" role="table" style="border-top:1px solid #E5E7EB;">
+          <tbody>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001199</td>
+              <td>Meena R.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹2,499</td>
+              <td><span class="badge badge-blue">📦 Shipped</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001180</td>
+              <td>Suresh P.</td>
+              <td>3 items</td>
+              <td style="font-weight:600;">₹4,200</td>
+              <td><span class="badge badge-green">✅ Delivered</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 7 · Order Expanded — Shipped -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s7">
+  <div class="state-banner">STATE 7 · Order Expanded — Shipped &nbsp;|&nbsp; Trigger: Order #SN-001199 expanded (status: Shipped) &nbsp;|&nbsp; Optional manual delivery confirmation</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item active">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Orders</h1>
+
+      <div style="display:flex;gap:12px;margin-bottom:20px;">
+        <select class="form-field" style="width:180px;"><option>All Statuses ▼</option></select>
+        <input type="text" class="form-field" style="width:280px;" placeholder="Search orders..." />
+      </div>
+
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Buyer</th>
+              <th scope="col">Items</th>
+              <th scope="col">Total</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001234</td>
+              <td>Anjali S.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹999</td>
+              <td><span class="badge badge-amber">⏳ Payment Confirmed</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001210</td>
+              <td>Rahul K.</td>
+              <td>2 items</td>
+              <td style="font-weight:600;">₹1,198</td>
+              <td><span class="badge badge-blue">🔄 Processing</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+            <!-- Expanded Row -->
+            <tr style="background:#EFF6FF;">
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001199</td>
+              <td>Meena R.</td>
+              <td>1 item</td>
+              <td style="font-weight:600;">₹2,499</td>
+              <td><span class="badge badge-blue">📦 Shipped</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View ▲</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Expanded Panel — Shipped -->
+        <div style="background:#F9FAFB;padding:24px;border-top:2px solid #BFDBFE;" aria-live="polite">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <div>
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0 0 12px 0;">Order Details</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:16px;">
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Status</span>
+                  <div style="margin-top:2px;"><span class="badge badge-blue">📦 Shipped</span></div>
+                </div>
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Shipped On</span>
+                  <div style="font-size:14px;font-weight:500;color:#111827;margin-top:2px;">12 May 2026 at 9:00 AM</div>
+                </div>
+                <div style="margin-bottom:8px;">
+                  <span style="font-size:12px;color:#6B7280;">Courier</span>
+                  <div style="font-size:14px;font-weight:500;color:#111827;margin-top:2px;">Delhivery</div>
+                </div>
+                <div>
+                  <span style="font-size:12px;color:#6B7280;">AWB Number</span>
+                  <div style="font-size:14px;font-weight:500;color:#111827;font-family:monospace;margin-top:2px;">1234567890</div>
+                </div>
+              </div>
+
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:16px 0 8px 0;">Items</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;background:#F3F4F6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👘</div>
+                  <div>
+                    <div style="font-size:14px;font-weight:500;color:#111827;">Silk Saree — Emerald Green × 1</div>
+                    <div style="font-size:13px;color:#6B7280;margin-top:2px;">₹2,499.00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0 0 12px 0;">Delivery Address</h3>
+              <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:16px;">
+                <div style="font-size:14px;font-weight:600;color:#111827;">Meena Rao</div>
+                <div style="font-size:13px;color:#6B7280;margin-top:4px;line-height:1.6;">
+                  45 MG Road, Indiranagar<br/>
+                  Bangalore — 560038<br/>
+                  Karnataka, India<br/>
+                  📞 +91 87654 32109
+                </div>
+              </div>
+
+              <!-- Optional Delivery Mark -->
+              <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:16px;margin-top:16px;">
+                <h3 style="font-size:14px;font-weight:700;color:#15803D;margin:0 0 8px 0;">Delivery Confirmation</h3>
+                <p style="font-size:13px;color:#6B7280;margin:0 0 12px 0;">If you've confirmed delivery with the buyer, you can mark this order as delivered manually.</p>
+                <button class="btn-secondary" style="width:100%;" aria-label="Mark order SN-001199 as delivered">Mark as Delivered</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining Row -->
+        <table class="data-table" role="table" style="border-top:1px solid #E5E7EB;">
+          <tbody>
+            <tr>
+              <td style="font-weight:600;color:#1D4ED8;">#SN-001180</td>
+              <td>Suresh P.</td>
+              <td>3 items</td>
+              <td style="font-weight:600;">₹4,200</td>
+              <td><span class="badge badge-green">✅ Delivered</span></td>
+              <td><button class="btn-primary" style="padding:6px 16px;font-size:13px;border-radius:8px;">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-size:13px;font-weight:700;color:#F97316;margin-bottom:16px;">SCR-014 — SELLER ORDER MANAGEMENT · SPECIFICATION</div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">STATES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">USER STORIES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">API ENDPOINTS</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">WCAG</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="vertical-align:top;">
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          S1 · Order List Default<br/>
+          S2 · Loading Skeleton<br/>
+          S3 · Empty (No Orders)<br/>
+          S4 · API Error<br/>
+          S5 · Expanded — Awaiting Confirm<br/>
+          S6 · Expanded — Awaiting Shipment<br/>
+          S7 · Expanded — Shipped
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          US-007 · View order list<br/>
+          US-008 · Confirm order<br/>
+          US-009 · Ship order with AWB<br/>
+          US-034 · Mark as delivered
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          GET /api/v1/seller/orders/<br/>
+          POST /api/v1/seller/orders/{id}/confirm/<br/>
+          POST /api/v1/seller/orders/{id}/ship/<br/>
+          POST /api/v1/seller/orders/{id}/deliver/
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          Table role="table" + thead scope="col" (1.3.1)<br/>
+          Expanded panel aria-live="polite" (4.1.3)<br/>
+          Action buttons aria-label descriptive (2.4.6)<br/>
+          Error state role="alert" (4.1.3)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid #334155;font-size:11px;color:#64748B;">
+    ShopNest · Phase 5 UX Design · Generated 2026-05-15 · Screen SCR-014 · Route /seller/orders · CSR · Seller Sidebar Shell
+  </div>
+</div>
+
+</body>
+</html>

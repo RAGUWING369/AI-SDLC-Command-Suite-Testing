@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-013 — Seller Dashboard · ShopNest UX Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    /* Seller sidebar layout */
+    .seller-layout { display: flex; min-height: calc(100vh - 56px); }
+    .seller-sidebar { width: 240px; flex-shrink: 0; background: white; border-right: 1px solid #E5E7EB; padding: 16px; }
+    .seller-main { flex: 1; padding: 32px 40px; background: #F9FAFB; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #6B7280; cursor: pointer; margin-bottom: 2px; text-decoration: none; }
+    .nav-item.active { background: #EFF6FF; color: #1D4ED8; font-weight: 600; }
+    .nav-item:hover { background: #F9FAFB; color: #111827; }
+    .seller-header { background: white; border-bottom: 1px solid #E5E7EB; height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px; }
+    .kpi-card { background: white; border: 1px solid #E5E7EB; border-radius: 12px; padding: 20px; }
+    .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-yellow { background: #FEF9C3; color: #A16207; }
+    .badge-blue { background: #DBEAFE; color: #1D4ED8; }
+    .badge-red { background: #FEE2E2; color: #B91C1C; }
+    .order-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #F3F4F6; font-size: 14px; gap: 16px; }
+    .order-row:last-child { border-bottom: none; }
+    .quick-action { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .quick-action:hover { background: #EFF6FF; border-color: #BFDBFE; }
+  </style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div style="background:#1A56DB; padding:12px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div style="color:white; font-weight:800; font-size:18px; letter-spacing:-0.5px;">ShopNest <span style="font-weight:400; font-size:13px; opacity:0.75;">· UX Wireframe</span></div>
+  <div style="color:#BFDBFE; font-size:12px;">SCR-013 — Seller Dashboard · /seller/dashboard · CSR · Full Sidebar Shell · Auth-gated</div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div style="font-weight:700; font-size:13px; color:#1E40AF; margin-bottom:8px;">SCR-013 States — Quick Navigation</div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:13px;">
+    <a href="#state-1" style="color:#1A56DB;">1 · Dashboard Default (Active seller with data)</a> ·
+    <a href="#state-2" style="color:#1A56DB;">2 · Loading Skeleton</a> ·
+    <a href="#state-3" style="color:#1A56DB;">3 · Empty Dashboard (New seller)</a> ·
+    <a href="#state-4" style="color:#1A56DB;">4 · Subscription Inactive</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 — Dashboard Default (Active seller with data) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-1" class="state-section">
+  <div class="state-banner">STATE 1 · Dashboard Default · Trigger: Active seller logs in — subscription ACTIVE, products listed, orders exist</div>
+
+  <!-- Top header bar -->
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px; margin-right:8px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#374151; font-weight:600;">Seller Central</div>
+    <div style="flex:1;"></div>
+    <!-- Search -->
+    <div style="display:flex; align-items:center; background:#F3F4F6; border-radius:8px; padding:6px 12px; gap:8px; width:220px;">
+      <span style="color:#9CA3AF; font-size:14px;">🔍</span>
+      <input style="background:transparent; border:none; outline:none; font-size:13px; color:#374151; width:100%;" placeholder="Search orders, products..." type="search" />
+    </div>
+    <!-- Notifications -->
+    <div style="position:relative; cursor:pointer;">
+      <div style="width:36px; height:36px; background:#F3F4F6; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px;">🔔</div>
+      <div style="position:absolute; top:-4px; right:-4px; width:16px; height:16px; background:#DC2626; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; color:white; font-weight:700;">3</div>
+    </div>
+    <!-- Avatar -->
+    <div style="width:36px; height:36px; background:#EFF6FF; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#1D4ED8; cursor:pointer;">P</div>
+  </div>
+
+  <!-- Main layout: sidebar + content -->
+  <div class="seller-layout" style="min-height:700px;">
+
+    <!-- Sidebar -->
+    <nav role="navigation" aria-label="Seller navigation" class="seller-sidebar">
+      <!-- Store branding -->
+      <div style="display:flex; align-items:center; gap:10px; padding:12px; margin-bottom:16px; background:#F9FAFB; border-radius:10px;">
+        <div style="width:36px; height:36px; background:#DBEAFE; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px;">🛍️</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:#111827;">Priya's Boutique</div>
+          <div style="font-size:11px; color:#16A34A; font-weight:600;">● Active</div>
+        </div>
+      </div>
+
+      <!-- Nav items -->
+      <a href="#" class="nav-item active">
+        <span>📊</span> Dashboard
+      </a>
+      <a href="#" class="nav-item">
+        <span>📦</span> Products
+        <span style="margin-left:auto; background:#1D4ED8; color:white; border-radius:10px; padding:1px 7px; font-size:11px; font-weight:700;">8</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span>🛒</span> Orders
+        <span style="margin-left:auto; background:#F97316; color:white; border-radius:10px; padding:1px 7px; font-size:11px; font-weight:700;">3</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span>💰</span> Payouts
+      </a>
+
+      <!-- Divider -->
+      <div style="height:1px; background:#F3F4F6; margin:12px 0;"></div>
+
+      <a href="#" class="nav-item">
+        <span>⚙️</span> Settings
+      </a>
+      <a href="#" class="nav-item">
+        <span>💳</span> Subscription
+        <span style="margin-left:auto; background:#DCFCE7; color:#16A34A; border-radius:10px; padding:1px 8px; font-size:10px; font-weight:700;">✓ ACTIVE</span>
+      </a>
+
+      <!-- Divider -->
+      <div style="height:1px; background:#F3F4F6; margin:12px 0;"></div>
+
+      <a href="#" class="nav-item" style="color:#DC2626;">
+        <span>🚪</span> Sign Out
+      </a>
+    </nav>
+
+    <!-- Main content -->
+    <div class="seller-main">
+      <!-- Page title row -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
+        <div>
+          <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 2px 0; letter-spacing:-0.5px;">Dashboard</h1>
+          <div style="font-size:13px; color:#6B7280;">Welcome back, Priya! Here's what's happening.</div>
+        </div>
+        <div style="font-size:12px; color:#9CA3AF;">Last updated: 2 mins ago · May 2026</div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px;">
+
+        <div class="kpi-card">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <div style="font-size:13px; font-weight:600; color:#6B7280;">Orders This Month</div>
+            <div style="font-size:20px;">🛒</div>
+          </div>
+          <div aria-label="Orders this month: 12" style="font-size:36px; font-weight:800; color:#111827; letter-spacing:-1px; line-height:1;">12</div>
+          <div style="font-size:12px; color:#16A34A; font-weight:600; margin-top:6px;">↑ +4 from last month</div>
+        </div>
+
+        <div class="kpi-card">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <div style="font-size:13px; font-weight:600; color:#6B7280;">Revenue This Month <span class="ann">2</span></div>
+            <div style="font-size:20px;">💰</div>
+          </div>
+          <div aria-label="Revenue this month: 24500 rupees" style="font-size:36px; font-weight:800; color:#111827; letter-spacing:-1px; line-height:1;">₹24,500</div>
+          <div style="font-size:12px; color:#16A34A; font-weight:600; margin-top:6px;">↑ +₹6,200 from last month</div>
+        </div>
+
+        <div class="kpi-card">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <div style="font-size:13px; font-weight:600; color:#6B7280;">Active Products</div>
+            <div style="font-size:20px;">📦</div>
+          </div>
+          <div aria-label="Active products: 8" style="font-size:36px; font-weight:800; color:#111827; letter-spacing:-1px; line-height:1;">8</div>
+          <div style="font-size:12px; color:#D97706; font-weight:600; margin-top:6px;">2 pending admin review</div>
+        </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; padding:20px; margin-bottom:24px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+          <h2 style="font-size:16px; font-weight:700; color:#111827; margin:0;">Recent Orders</h2>
+          <a href="#" style="font-size:13px; color:#1A56DB; font-weight:600; text-decoration:none;">View All →</a>
+        </div>
+
+        <!-- Table header -->
+        <div style="display:flex; gap:16px; padding:0 0 10px 0; border-bottom:1px solid #F3F4F6; font-size:11px; font-weight:700; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px;">
+          <div style="width:120px;">Order ID</div>
+          <div style="width:120px;">Buyer</div>
+          <div style="width:80px;">Items</div>
+          <div style="width:100px;">Total</div>
+          <div style="flex:1;">Status</div>
+          <div style="width:100px; text-align:right;">Date</div>
+        </div>
+
+        <!-- Order rows — buyer shown as first name + last initial (privacy) -->
+        <div class="order-row">
+          <div style="width:120px; font-family:monospace; font-size:12px; color:#374151;">#ORD-20260515-001</div>
+          <div style="width:120px; color:#111827; font-weight:600;">Rahul K.</div>
+          <div style="width:80px; color:#6B7280;">2 items</div>
+          <div style="width:100px; font-weight:700; color:#111827;">₹3,499</div>
+          <div style="flex:1;"><span class="badge badge-yellow">Pending</span></div>
+          <div style="width:100px; text-align:right; font-size:12px; color:#9CA3AF;">15 May 2026</div>
+        </div>
+
+        <div class="order-row">
+          <div style="width:120px; font-family:monospace; font-size:12px; color:#374151;">#ORD-20260514-008</div>
+          <div style="width:120px; color:#111827; font-weight:600;">Anjali M.</div>
+          <div style="width:80px; color:#6B7280;">1 item</div>
+          <div style="width:100px; font-weight:700; color:#111827;">₹1,299</div>
+          <div style="flex:1;"><span class="badge badge-blue">Confirmed</span></div>
+          <div style="width:100px; text-align:right; font-size:12px; color:#9CA3AF;">14 May 2026</div>
+        </div>
+
+        <div class="order-row">
+          <div style="width:120px; font-family:monospace; font-size:12px; color:#374151;">#ORD-20260513-004</div>
+          <div style="width:120px; color:#111827; font-weight:600;">Vikram S.</div>
+          <div style="width:80px; color:#6B7280;">3 items</div>
+          <div style="width:100px; font-weight:700; color:#111827;">₹5,750</div>
+          <div style="flex:1;"><span class="badge badge-green">Shipped</span></div>
+          <div style="width:100px; text-align:right; font-size:12px; color:#9CA3AF;">13 May 2026</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div>
+        <h2 style="font-size:16px; font-weight:700; color:#111827; margin:0 0 12px 0;">Quick Actions</h2>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+          <div class="quick-action" onclick="window.location='/seller/products/new'">
+            <div style="font-size:28px; margin-bottom:8px;">➕</div>
+            <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:4px;">Add Product</div>
+            <div style="font-size:12px; color:#6B7280;">List a new item for sale</div>
+          </div>
+          <div class="quick-action" onclick="window.location='/seller/orders'">
+            <div style="font-size:28px; margin-bottom:8px;">📋</div>
+            <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:4px;">View Orders</div>
+            <div style="font-size:12px; color:#6B7280;">Manage and fulfil orders</div>
+          </div>
+          <div class="quick-action" onclick="window.location='/seller/payouts'">
+            <div style="font-size:28px; margin-bottom:8px;">💸</div>
+            <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:4px;">View Payouts</div>
+            <div style="font-size:12px; color:#6B7280;">Check weekly settlement</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotation block -->
+      <div class="ann-block" style="margin-top:24px;">
+        <strong><span class="ann">1</span></strong> KPI values from GET /api/v1/seller/dashboard/ — aggregated query, Redis-cached (TTL 1h) to avoid repeated heavy DB queries<br/>
+        <strong><span class="ann">2</span></strong> Revenue = sum of gross_amount_paise for sub-orders in current calendar month ÷ 100 (integer paise → ₹ display)<br/>
+        <strong><span class="ann">3</span></strong> "Recent Orders" shows latest 3; buyer displayed as "First name + Last initial" (privacy — never show full name/email)<br/>
+        <strong><span class="ann">4</span></strong> Dashboard is landing page after seller login; Quick Actions reduce clicks to primary workflows (US-007)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 — Loading Skeleton -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-2" class="state-section">
+  <div class="state-banner">STATE 2 · Loading Skeleton · Trigger: Page mount — awaiting GET /api/v1/seller/dashboard/ response</div>
+
+  <!-- Top header bar -->
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px; margin-right:8px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#374151; font-weight:600;">Seller Central</div>
+    <div style="flex:1;"></div>
+    <div class="skeleton" style="width:220px; height:32px;"></div>
+    <div class="skeleton" style="width:36px; height:36px; border-radius:8px;"></div>
+    <div class="skeleton" style="width:36px; height:36px; border-radius:50%;"></div>
+  </div>
+
+  <div class="seller-layout" style="min-height:700px;">
+
+    <!-- Sidebar skeleton -->
+    <nav class="seller-sidebar">
+      <div class="skeleton" style="width:100%; height:60px; margin-bottom:16px; border-radius:10px;"></div>
+      <div class="skeleton" style="width:100%; height:36px; margin-bottom:4px; border-radius:8px;"></div>
+      <div class="skeleton" style="width:100%; height:36px; margin-bottom:4px; border-radius:8px;"></div>
+      <div class="skeleton" style="width:100%; height:36px; margin-bottom:4px; border-radius:8px;"></div>
+      <div class="skeleton" style="width:100%; height:36px; margin-bottom:4px; border-radius:8px;"></div>
+      <div style="height:1px; background:#F3F4F6; margin:16px 0;"></div>
+      <div class="skeleton" style="width:80%; height:36px; margin-bottom:4px; border-radius:8px;"></div>
+      <div class="skeleton" style="width:90%; height:36px; border-radius:8px;"></div>
+    </nav>
+
+    <!-- Main content skeleton -->
+    <div class="seller-main">
+      <!-- Title skeleton -->
+      <div style="margin-bottom:28px;">
+        <div class="skeleton" style="width:200px; height:32px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:300px; height:16px;"></div>
+      </div>
+
+      <!-- KPI card skeletons -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px;">
+        <div class="kpi-card">
+          <div class="skeleton" style="width:120px; height:16px; margin-bottom:12px;"></div>
+          <div class="skeleton" style="width:80px; height:40px; margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:100px; height:14px;"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="skeleton" style="width:150px; height:16px; margin-bottom:12px;"></div>
+          <div class="skeleton" style="width:120px; height:40px; margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:110px; height:14px;"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="skeleton" style="width:130px; height:16px; margin-bottom:12px;"></div>
+          <div class="skeleton" style="width:60px; height:40px; margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:140px; height:14px;"></div>
+        </div>
+      </div>
+
+      <!-- Recent orders skeleton -->
+      <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; padding:20px; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+          <div class="skeleton" style="width:140px; height:22px;"></div>
+          <div class="skeleton" style="width:80px; height:18px;"></div>
+        </div>
+        <div style="border-bottom:1px solid #F3F4F6; margin-bottom:12px; padding-bottom:10px;">
+          <div class="skeleton" style="width:100%; height:14px;"></div>
+        </div>
+        <div class="order-row" style="border:none; padding:12px 0;">
+          <div class="skeleton" style="width:100%; height:20px;"></div>
+        </div>
+        <div class="order-row" style="border:none; padding:12px 0;">
+          <div class="skeleton" style="width:90%; height:20px;"></div>
+        </div>
+        <div class="order-row" style="border:none; padding:12px 0;">
+          <div class="skeleton" style="width:95%; height:20px;"></div>
+        </div>
+      </div>
+
+      <!-- Quick actions skeleton -->
+      <div>
+        <div class="skeleton" style="width:140px; height:22px; margin-bottom:12px;"></div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+          <div class="skeleton" style="height:100px; border-radius:12px;"></div>
+          <div class="skeleton" style="height:100px; border-radius:12px;"></div>
+          <div class="skeleton" style="height:100px; border-radius:12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 — Empty Dashboard (New Seller) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-3" class="state-section">
+  <div class="state-banner">STATE 3 · Empty Dashboard — New Seller · Trigger: Active subscription, 0 orders, 0 products listed yet</div>
+
+  <!-- Top header bar -->
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px; margin-right:8px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#374151; font-weight:600;">Seller Central</div>
+    <div style="flex:1;"></div>
+    <div style="width:36px; height:36px; background:#EFF6FF; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#1D4ED8;">P</div>
+  </div>
+
+  <div class="seller-layout" style="min-height:700px;">
+
+    <!-- Sidebar -->
+    <nav role="navigation" aria-label="Seller navigation" class="seller-sidebar">
+      <div style="display:flex; align-items:center; gap:10px; padding:12px; margin-bottom:16px; background:#F9FAFB; border-radius:10px;">
+        <div style="width:36px; height:36px; background:#DBEAFE; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px;">🛍️</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:#111827;">Priya's Boutique</div>
+          <div style="font-size:11px; color:#16A34A; font-weight:600;">● Active</div>
+        </div>
+      </div>
+      <a href="#" class="nav-item active"><span>📊</span> Dashboard</a>
+      <a href="#" class="nav-item"><span>📦</span> Products</a>
+      <a href="#" class="nav-item"><span>🛒</span> Orders</a>
+      <a href="#" class="nav-item"><span>💰</span> Payouts</a>
+      <div style="height:1px; background:#F3F4F6; margin:12px 0;"></div>
+      <a href="#" class="nav-item"><span>⚙️</span> Settings</a>
+      <a href="#" class="nav-item"><span>💳</span> Subscription <span style="margin-left:auto; background:#DCFCE7; color:#16A34A; border-radius:10px; padding:1px 8px; font-size:10px; font-weight:700;">✓</span></a>
+    </nav>
+
+    <!-- Main: empty state -->
+    <div class="seller-main" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:60px 40px;">
+      <div style="font-size:72px; margin-bottom:20px;">🏪</div>
+      <h2 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 12px 0;">Welcome to ShopNest, Priya!</h2>
+      <p style="font-size:16px; color:#6B7280; max-width:400px; margin:0 0 8px 0;">Your store is active. Add your first product to start selling.</p>
+      <p style="font-size:13px; color:#9CA3AF; margin:0 0 32px 0;">Products go live after admin review (usually within 1–2 business days).</p>
+
+      <button class="btn-primary" style="padding:14px 32px; font-size:15px;" onclick="window.location='/seller/products/new'">
+        + Add Your First Product
+      </button>
+
+      <!-- Quick help links -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:40px; width:100%; max-width:600px;">
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:8px;">📸</div>
+          <div style="font-size:13px; font-weight:600; color:#111827; margin-bottom:4px;">Add Great Photos</div>
+          <div style="font-size:12px; color:#6B7280;">Products with 3+ images sell 40% more</div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:8px;">💬</div>
+          <div style="font-size:13px; font-weight:600; color:#111827; margin-bottom:4px;">Write Clear Descriptions</div>
+          <div style="font-size:12px; color:#6B7280;">Include size, material, and colour info</div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:8px;">💰</div>
+          <div style="font-size:13px; font-weight:600; color:#111827; margin-bottom:4px;">Set Competitive Prices</div>
+          <div style="font-size:12px; color:#6B7280;">Check similar products on ShopNest</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 — Subscription Inactive -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-4" class="state-section">
+  <div class="state-banner">STATE 4 · Subscription Inactive · Trigger: Seller's subscription has expired or payment failed — store hidden from buyers</div>
+
+  <!-- Top header bar -->
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px; margin-right:8px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#374151; font-weight:600;">Seller Central</div>
+    <div style="flex:1;"></div>
+    <div style="width:36px; height:36px; background:#EFF6FF; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#1D4ED8;">P</div>
+  </div>
+
+  <div class="seller-layout" style="min-height:700px;">
+
+    <!-- Sidebar with red subscription badge -->
+    <nav role="navigation" aria-label="Seller navigation" class="seller-sidebar">
+      <div style="display:flex; align-items:center; gap:10px; padding:12px; margin-bottom:16px; background:#FEF2F2; border-radius:10px; border:1px solid #FECACA;">
+        <div style="width:36px; height:36px; background:#FEE2E2; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px;">🛍️</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:#111827;">Priya's Boutique</div>
+          <div style="font-size:11px; color:#DC2626; font-weight:600;">● Inactive</div>
+        </div>
+      </div>
+      <a href="#" class="nav-item active"><span>📊</span> Dashboard</a>
+      <a href="#" class="nav-item"><span>📦</span> Products</a>
+      <a href="#" class="nav-item"><span>🛒</span> Orders</a>
+      <a href="#" class="nav-item"><span>💰</span> Payouts</a>
+      <div style="height:1px; background:#F3F4F6; margin:12px 0;"></div>
+      <a href="#" class="nav-item"><span>⚙️</span> Settings</a>
+      <!-- Red badge on Subscription -->
+      <a href="#" class="nav-item" style="background:#FEF2F2; color:#B91C1C;">
+        <span>💳</span> Subscription
+        <span style="margin-left:auto; background:#DC2626; color:white; border-radius:10px; padding:1px 8px; font-size:10px; font-weight:700;">⚠ EXPIRED</span>
+      </a>
+    </nav>
+
+    <!-- Main content -->
+    <div class="seller-main">
+
+      <!-- Alert banner -->
+      <div role="alert" aria-live="assertive" style="background:#FEF2F2; border:1px solid #FECACA; border-radius:12px; padding:16px 20px; margin-bottom:28px; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+        <div style="display:flex; align-items:flex-start; gap:12px;">
+          <div style="font-size:20px; flex-shrink:0;">⚠️</div>
+          <div>
+            <div style="font-size:14px; font-weight:700; color:#B91C1C; margin-bottom:4px;">Your subscription has expired</div>
+            <div style="font-size:13px; color:#7F1D1D;">Your products are currently hidden from buyers. Renew your subscription to reactivate your store.</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="background:#DC2626; white-space:nowrap; flex-shrink:0;" onclick="window.location='/seller/subscribe'">
+          Renew Subscription →
+        </button>
+      </div>
+
+      <!-- Page title -->
+      <div style="margin-bottom:28px;">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 2px 0; letter-spacing:-0.5px;">Dashboard</h1>
+        <div style="font-size:13px; color:#9CA3AF;">Showing historical data — store currently inactive</div>
+      </div>
+
+      <!-- KPI Cards greyed out -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; opacity:0.5;">
+        <div class="kpi-card">
+          <div style="font-size:13px; font-weight:600; color:#6B7280; margin-bottom:12px;">Orders This Month</div>
+          <div style="font-size:36px; font-weight:800; color:#111827; letter-spacing:-1px;">12</div>
+          <div style="font-size:12px; color:#9CA3AF; margin-top:6px;">Store inactive — no new orders</div>
+        </div>
+        <div class="kpi-card">
+          <div style="font-size:13px; font-weight:600; color:#6B7280; margin-bottom:12px;">Revenue This Month</div>
+          <div style="font-size:36px; font-weight:800; color:#111827; letter-spacing:-1px;">₹24,500</div>
+          <div style="font-size:12px; color:#9CA3AF; margin-top:6px;">Payouts paused during inactive period</div>
+        </div>
+        <div class="kpi-card">
+          <div style="font-size:13px; font-weight:600; color:#6B7280; margin-bottom:12px;">Active Products</div>
+          <div style="font-size:36px; font-weight:800; color:#111827; letter-spacing:-1px;">0</div>
+          <div style="font-size:12px; color:#9CA3AF; margin-top:6px;">8 products hidden — reactivate to restore</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions disabled -->
+      <div>
+        <h2 style="font-size:16px; font-weight:700; color:#111827; margin:0 0 12px 0;">Quick Actions</h2>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; opacity:0.4; pointer-events:none;">
+          <div class="quick-action">
+            <div style="font-size:28px; margin-bottom:8px;">➕</div>
+            <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:4px;">Add Product</div>
+            <div style="font-size:12px; color:#6B7280;">Unavailable while inactive</div>
+          </div>
+          <div class="quick-action">
+            <div style="font-size:28px; margin-bottom:8px;">📋</div>
+            <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:4px;">View Orders</div>
+            <div style="font-size:12px; color:#6B7280;">Historical orders only</div>
+          </div>
+          <div class="quick-action">
+            <div style="font-size:28px; margin-bottom:8px;">💸</div>
+            <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:4px;">View Payouts</div>
+            <div style="font-size:12px; color:#6B7280;">Payouts paused</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-weight:700; font-size:16px; margin-bottom:20px; color:white;">SCR-013 — Seller Dashboard · Specification</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Screen ID</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">SCR-013</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">States</td>
+        <td style="padding:8px 0; color:#F1F5F9;">4</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Route</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">/seller/dashboard</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">User Stories</td>
+        <td style="padding:8px 0; color:#F1F5F9;">US-007, US-028</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Rendering</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">CSR · Full Seller Sidebar Shell · Auth-gated</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">API Endpoint</td>
+        <td style="padding:8px 0; color:#F1F5F9;">GET /api/v1/seller/dashboard/</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1; vertical-align:top;">WCAG</td>
+        <td style="padding:8px 0; color:#F1F5F9;" colspan="3">KPI values: aria-label="Orders this month: 12" (1.3.1) · Sidebar: role="navigation" aria-label="Seller navigation" (2.4.1) · Subscription expired alert: role="alert" aria-live="assertive" (4.1.3) · Skeleton loading: no focusable elements while loading (2.1.1) · Quick Actions: keyboard focusable buttons (2.1.1)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:24px; font-size:11px; color:#64748B;">Generated: 2026-05-15 · ShopNest Phase 5 UX Design · SCR-013</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-019 — Admin Seller Approval Queue · ShopNest UX Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 0; max-width: 100%; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-approve { background: #16A34A; color: white; border: none; border-radius: 12px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-reject { background: transparent; color: #DC2626; border: 2px solid #DC2626; border-radius: 12px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    .admin-layout { display: flex; min-height: calc(100vh - 56px); }
+    .admin-sidebar { width: 240px; flex-shrink: 0; background: #1E293B; padding: 16px; }
+    .admin-main { flex: 1; padding: 32px 40px; background: #F9FAFB; }
+    .admin-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #94A3B8; cursor: pointer; margin-bottom: 2px; }
+    .admin-nav-item.active { background: #334155; color: white; font-weight: 600; }
+    .admin-nav-item:hover { background: #334155; color: #E2E8F0; }
+    .admin-header { background: #1E293B; height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .data-table th { background: #F9FAFB; color: #6B7280; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid #F3F4F6; color: #111827; vertical-align: top; }
+    .data-table tr.expanded-row td { background: #EFF6FF; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-amber { background: #FEF9C3; color: #92400E; }
+    .badge-red { background: #FEE2E2; color: #991B1B; }
+    .tab-bar { display: flex; border-bottom: 2px solid #E5E7EB; margin-bottom: 20px; }
+    .tab { padding: 10px 20px; font-size: 14px; font-weight: 500; color: #6B7280; border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; }
+    .tab.active { color: #1A56DB; border-bottom-color: #1A56DB; font-weight: 600; }
+    .modal-overlay { background: rgba(0,0,0,0.5); position: relative; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .modal-card { background: white; border-radius: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); padding: 32px; max-width: 460px; width: 100%; }
+    .ann-section { padding: 16px 40px 24px 40px; background: #FFFBEB; border-top: 1px solid #FDE68A; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN HEADER
+════════════════════════════════════════════════════════════════ -->
+<div style="background:#1E3A5F; color:white; padding:16px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div>
+    <div style="font-size:11px; font-weight:600; color:#93C5FD; text-transform:uppercase; letter-spacing:0.08em;">ShopNest UX Wireframe · Phase 5</div>
+    <div style="font-size:20px; font-weight:800; margin-top:2px;">SCR-019 — Admin Seller Approval Queue</div>
+    <div style="font-size:12px; color:#CBD5E1; margin-top:2px;">Route: /admin/sellers · CSR · Admin Sidebar Shell · 7 States</div>
+  </div>
+  <div style="font-size:12px; color:#94A3B8; text-align:right;">
+    <div>Phase 5 — UX Design</div>
+    <div style="margin-top:2px;">2026-05-15</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div style="font-size:12px; font-weight:700; color:#1E40AF; margin-bottom:8px;">TABLE OF CONTENTS</div>
+  <div style="display:flex; gap:24px; flex-wrap:wrap;">
+    <a href="#s1" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 1 — Queue Default (Pending Tab)</a>
+    <a href="#s2" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 2 — Loading Skeleton</a>
+    <a href="#s3" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 3 — Empty Queue</a>
+    <a href="#s4" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 4 — Seller Row Expanded</a>
+    <a href="#s5" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 5 — Approve Confirm</a>
+    <a href="#s6" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 6 — Reject Modal</a>
+    <a href="#s7" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 7 — API Error on Action</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ADMIN HEADER COMPONENT (reused across states)
+════════════════════════════════════════════════════════════════ -->
+<!-- Defined inline per state for clarity -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 1 — Queue Default (Pending Tab)
+════════════════════════════════════════════════════════════════ -->
+<div id="s1">
+  <div class="state-banner">STATE 1 · Queue Default (Pending Tab) · Trigger: Admin navigates to /admin/sellers — GET /api/v1/admin/sellers/?status=PENDING_REVIEW returns 3 results</div>
+  <div class="state-section">
+
+    <!-- Admin Header -->
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+      <div style="flex:1;"></div>
+      <div style="width:32px; height:32px; border-radius:50%; background:#334155; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white;">A</div>
+    </div>
+
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding: 0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+          <span style="margin-left:auto; background:#F59E0B; color:#1F2937; font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px;">3</span>
+          <span class="ann" style="margin-left:2px;">1</span>
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="admin-main">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+          <div>
+            <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0;">Seller Applications</h1>
+            <div style="font-size:13px; color:#6B7280; margin-top:4px;">Review and approve seller registrations</div>
+          </div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar" role="tablist">
+          <div class="tab active" role="tab" aria-selected="true">Pending <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">3</span></div>
+          <div class="tab" role="tab" aria-selected="false">Approved</div>
+          <div class="tab" role="tab" aria-selected="false">Rejected</div>
+        </div>
+
+        <!-- Data Table -->
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Business Name</th>
+                <th>City</th>
+                <th>Registered <span class="ann">2</span></th>
+                <th style="text-align:right;">Actions <span class="ann">3</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div style="font-weight:600; color:#111827;">Priya Sharma</div><div style="font-size:12px; color:#6B7280;">priya@example.com</div></td>
+                <td>Priya's Boutique</td>
+                <td>Bangalore</td>
+                <td>14 May 2026</td>
+                <td style="text-align:right;">
+                  <button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                    View <span style="font-size:10px;">▼</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:600; color:#111827;">Vikram Nair</div><div style="font-size:12px; color:#6B7280;">vikram@example.com</div></td>
+                <td>Vikram Handicrafts</td>
+                <td>Chennai</td>
+                <td>13 May 2026</td>
+                <td style="text-align:right;">
+                  <button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                    View <span style="font-size:10px;">▼</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:600; color:#111827;">Sunita Devi</div><div style="font-size:12px; color:#6B7280;">sunita@example.com</div></td>
+                <td>Sunita Sarees</td>
+                <td>Delhi</td>
+                <td>12 May 2026</td>
+                <td style="text-align:right;">
+                  <button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                    View <span style="font-size:10px;">▼</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="ann-section">
+      <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:8px;">STATE 1 ANNOTATIONS</div>
+      <div class="ann-block"><span class="ann">1</span> Pending count badge in sidebar nav — auto-updates on page load; admin sees real-time queue depth without navigating to the page.</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">2</span> Table sorted newest-first (registered DESC) — most recent applications receive fastest review attention.</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">3</span> "View ▼" expands the row in-place (no page navigation) — reduces clicks for the admin review workflow.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 2 — Loading Skeleton
+════════════════════════════════════════════════════════════════ -->
+<div id="s2">
+  <div class="state-banner">STATE 2 · Loading Skeleton · Trigger: Page load in-flight — GET /api/v1/admin/sellers/?status=PENDING_REVIEW pending response</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="margin-bottom:8px;"><div class="skeleton" style="height:14px; width:80px; margin:0 12px;"></div></div>
+        <div style="padding:10px 12px;"><div class="skeleton" style="height:16px; width:120px;"></div></div>
+        <div style="padding:10px 12px;"><div class="skeleton" style="height:16px; width:140px;"></div></div>
+        <div style="padding:10px 12px;"><div class="skeleton" style="height:16px; width:130px;"></div></div>
+      </div>
+      <div class="admin-main">
+        <div class="skeleton" style="height:28px; width:220px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:14px; width:300px; margin-bottom:24px;"></div>
+        <div style="display:flex; gap:16px; margin-bottom:20px;">
+          <div class="skeleton" style="height:36px; width:120px;"></div>
+          <div class="skeleton" style="height:36px; width:100px;"></div>
+          <div class="skeleton" style="height:36px; width:100px;"></div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th><th>Business Name</th><th>City</th><th>Registered</th><th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* 3 skeleton rows */}
+              <tr><td><div class="skeleton" style="height:16px; width:120px; margin-bottom:6px;"></div><div class="skeleton" style="height:12px; width:160px;"></div></td><td><div class="skeleton" style="height:16px; width:130px;"></div></td><td><div class="skeleton" style="height:16px; width:80px;"></div></td><td><div class="skeleton" style="height:16px; width:90px;"></div></td><td style="text-align:right;"><div class="skeleton" style="height:32px; width:72px; margin-left:auto;"></div></td></tr>
+              <tr><td><div class="skeleton" style="height:16px; width:110px; margin-bottom:6px;"></div><div class="skeleton" style="height:12px; width:150px;"></div></td><td><div class="skeleton" style="height:16px; width:120px;"></div></td><td><div class="skeleton" style="height:16px; width:70px;"></div></td><td><div class="skeleton" style="height:16px; width:90px;"></div></td><td style="text-align:right;"><div class="skeleton" style="height:32px; width:72px; margin-left:auto;"></div></td></tr>
+              <tr><td><div class="skeleton" style="height:16px; width:100px; margin-bottom:6px;"></div><div class="skeleton" style="height:12px; width:140px;"></div></td><td><div class="skeleton" style="height:16px; width:110px;"></div></td><td><div class="skeleton" style="height:16px; width:60px;"></div></td><td><div class="skeleton" style="height:16px; width:90px;"></div></td><td style="text-align:right;"><div class="skeleton" style="height:32px; width:72px; margin-left:auto;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 3 — Empty Queue
+════════════════════════════════════════════════════════════════ -->
+<div id="s3">
+  <div class="state-banner">STATE 3 · Empty Queue · Trigger: GET /api/v1/admin/sellers/?status=PENDING_REVIEW returns empty list — all applications reviewed</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+        </div>
+      </div>
+      <div class="admin-main">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 24px 0;">Seller Applications</h1>
+        <div class="tab-bar" role="tablist">
+          <div class="tab active" role="tab" aria-selected="true">Pending <span style="background:#F3F4F6; color:#6B7280; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">0</span></div>
+          <div class="tab" role="tab" aria-selected="false">Approved</div>
+          <div class="tab" role="tab" aria-selected="false">Rejected</div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; padding:64px 40px; text-align:center;">
+          <div style="font-size:48px; margin-bottom:16px;">👥</div>
+          <h2 style="font-size:20px; font-weight:700; color:#374151; margin:0 0 8px 0;">No pending seller applications.</h2>
+          <div style="font-size:14px; color:#6B7280;">All applications have been reviewed. Check the Approved or Rejected tabs for history.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 4 — Seller Row Expanded
+════════════════════════════════════════════════════════════════ -->
+<div id="s4">
+  <div class="state-banner">STATE 4 · Seller Row Expanded · Trigger: Admin clicks "View ▼" on Priya Sharma's row — expanded detail panel shown below row</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+          <span style="margin-left:auto; background:#F59E0B; color:#1F2937; font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px;">3</span>
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+        </div>
+      </div>
+      <div class="admin-main">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 24px 0;">Seller Applications</h1>
+        <div class="tab-bar" role="tablist">
+          <div class="tab active" role="tab" aria-selected="true">Pending <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">3</span></div>
+          <div class="tab" role="tab" aria-selected="false">Approved</div>
+          <div class="tab" role="tab" aria-selected="false">Rejected</div>
+        </div>
+
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th><th>Business Name</th><th>City</th><th>Registered</th><th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Expanded row -->
+              <tr class="expanded-row" aria-expanded="true">
+                <td><div style="font-weight:600; color:#1D4ED8;">Priya Sharma</div><div style="font-size:12px; color:#6B7280;">priya@example.com</div></td>
+                <td>Priya's Boutique</td>
+                <td>Bangalore</td>
+                <td>14 May 2026</td>
+                <td style="text-align:right;">
+                  <button style="background:#DBEAFE; color:#1D4ED8; border:1px solid #93C5FD; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                    View <span style="font-size:10px;">▲</span>
+                  </button>
+                </td>
+              </tr>
+              <!-- Expanded detail panel -->
+              <tr>
+                <td colspan="5" style="background:#EFF6FF; padding:0;">
+                  <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; margin:12px 16px; padding:24px;">
+                    <h3 style="font-size:16px; font-weight:700; color:#1E40AF; margin:0 0 20px 0;">Priya Sharma — Application Details</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Email</div>
+                        <div style="font-size:14px; color:#111827;">priya@example.com</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Phone</div>
+                        <div style="font-size:14px; color:#111827;">+91 98765 43210</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">GSTIN <span class="ann">4</span></div>
+                        <div style="font-size:14px; color:#111827; font-family:monospace;">29ABCDE1234F1Z5</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Business Name</div>
+                        <div style="font-size:14px; color:#111827;">Priya's Boutique</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">City</div>
+                        <div style="font-size:14px; color:#111827;">Bangalore, Karnataka</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Registered</div>
+                        <div style="font-size:14px; color:#111827;">14 May 2026, 10:32 AM IST</div>
+                      </div>
+                    </div>
+                    <!-- Action buttons -->
+                    <div style="display:flex; gap:12px; justify-content:flex-end;">
+                      <button class="btn-reject" aria-label="Reject Priya Sharma seller application">Reject</button>
+                      <button class="btn-approve" aria-label="Approve Priya Sharma seller application">
+                        <span class="ann" style="margin-right:4px;">5</span> Approve
+                      </button>
+                    </div>
+                    <div style="margin-top:4px; text-align:right; font-size:11px; color:#6B7280;"><span class="ann" style="margin-right:4px;">6</span> Reject opens confirmation modal</div>
+                  </div>
+                </td>
+              </tr>
+              <!-- Other rows collapsed -->
+              <tr>
+                <td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:12px; color:#6B7280;">vikram@example.com</div></td>
+                <td>Vikram Handicrafts</td><td>Chennai</td><td>13 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:600;">Sunita Devi</div><div style="font-size:12px; color:#6B7280;">sunita@example.com</div></td>
+                <td>Sunita Sarees</td><td>Delhi</td><td>12 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="ann-section">
+      <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:8px;">STATE 4 ANNOTATIONS</div>
+      <div class="ann-block"><span class="ann">4</span> GSTIN shown if provided at registration (optional field per REQUIREMENTS.md — self-declaration for MVP; GSTIN captured but not validated). Blank if seller did not provide.</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">5</span> "Approve" = POST /api/v1/admin/sellers/{id}/approve/ → seller.status → ACTIVE; AWS SES email dispatched with approval message and login link.</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">6</span> "Reject" opens the modal (State 6) — rejection reason required before confirming. Prevents accidental blank rejections. Consistent with BR-008 (seller rejection policy).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 5 — Approve Confirm
+════════════════════════════════════════════════════════════════ -->
+<div id="s5">
+  <div class="state-banner">STATE 5 · Approve Confirm · Trigger: Admin clicks "Approve" for Priya Sharma — POST /api/v1/admin/sellers/{id}/approve/ returns 200; success shown inline</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+          <span style="margin-left:auto; background:#F59E0B; color:#1F2937; font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px;">2</span>
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+        </div>
+      </div>
+      <div class="admin-main">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 24px 0;">Seller Applications</h1>
+        <div class="tab-bar">
+          <div class="tab active">Pending <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">2</span></div>
+          <div class="tab">Approved</div>
+          <div class="tab">Rejected</div>
+        </div>
+        <!-- Top page-level success toast -->
+        <div style="background:#F0FDF4; border:1px solid #86EFAC; border-radius:10px; padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; gap:10px;" role="status">
+          <span style="font-size:18px;">✅</span>
+          <span style="font-size:14px; font-weight:600; color:#15803D;">Priya Sharma approved. Seller activation email sent via AWS SES.</span>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr><th>Name</th><th>Business Name</th><th>City</th><th>Registered</th><th style="text-align:right;">Status</th></tr>
+            </thead>
+            <tbody>
+              <tr style="opacity:0.5;">
+                <td><div style="font-weight:600;">Priya Sharma</div><div style="font-size:12px; color:#6B7280;">priya@example.com</div></td>
+                <td>Priya's Boutique</td><td>Bangalore</td><td>14 May 2026</td>
+                <td style="text-align:right;"><span class="badge badge-green">✓ Approved</span></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:12px; color:#6B7280;">vikram@example.com</div></td>
+                <td>Vikram Handicrafts</td><td>Chennai</td><td>13 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:600;">Sunita Devi</div><div style="font-size:12px; color:#6B7280;">sunita@example.com</div></td>
+                <td>Sunita Sarees</td><td>Delhi</td><td>12 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 6 — Reject Modal
+════════════════════════════════════════════════════════════════ -->
+<div id="s6">
+  <div class="state-banner">STATE 6 · Reject Modal · Trigger: Admin clicks "Reject" on Priya Sharma's expanded row — modal overlay shown; confirmation required before API call</div>
+  <div class="state-section" style="position:relative;">
+
+    <!-- Blurred background (State 4 context) -->
+    <div style="filter:blur(2px); pointer-events:none;">
+      <div class="admin-header">
+        <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span></div>
+      </div>
+      <div class="admin-layout" style="min-height:300px;">
+        <div class="admin-sidebar"></div>
+        <div class="admin-main">
+          <h1 style="font-size:24px; font-weight:800; color:#111827;">Seller Applications</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal overlay -->
+    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:50;">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h2 id="modal-title" style="font-size:20px; font-weight:800; color:#111827; margin:0 0 6px 0;">Reject Seller Application</h2>
+        <div style="font-size:14px; color:#6B7280; margin-bottom:20px;">Seller: <strong>Priya Sharma</strong> — Priya's Boutique</div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+            Rejection Reason <span style="color:#EF4444;">*</span>
+            <span class="ann">7</span>
+          </label>
+          <textarea class="form-field" rows="4" placeholder="Please explain why this application is rejected..." style="resize:vertical;" required aria-required="true">Unable to verify business legitimacy — no valid business address provided. Please reapply with complete business registration details.</textarea>
+          <div style="font-size:11px; color:#6B7280; margin-top:4px;">
+            <span class="ann">8</span> This reason will be emailed to the seller via AWS SES AND shown in their seller dashboard.
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button style="background:white; color:#374151; border:1px solid #D1D5DB; border-radius:12px; padding:8px 18px; font-size:14px; font-weight:600; cursor:pointer;">Cancel</button>
+          <button class="btn-reject" style="background:#DC2626; color:white; border:none;" aria-label="Confirm rejection of Priya Sharma">Confirm Reject</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="ann-section" style="position:relative; z-index:0;">
+      <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:8px;">STATE 6 ANNOTATIONS</div>
+      <div class="ann-block"><span class="ann">7</span> Rejection reason is required (cannot submit blank) — prevents accidental meaningless rejections. Minimum 20 characters enforced client-side with a character counter.</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">8</span> Reason stored in seller profile AND emailed via AWS SES (OQ-001 resolution 2026-05-14). Rejected seller email address is blocked from re-registration via <code>registration_blocked</code> flag (CLAUDE.md arch decision 2026-05-05).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 7 — API Error on Action
+════════════════════════════════════════════════════════════════ -->
+<div id="s7">
+  <div class="state-banner">STATE 7 · API Error on Action · Trigger: POST /api/v1/admin/sellers/{id}/approve/ or /reject/ returns 500 / network timeout</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+          <span style="margin-left:auto; background:#F59E0B; color:#1F2937; font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px;">3</span>
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+        </div>
+      </div>
+      <div class="admin-main">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 24px 0;">Seller Applications</h1>
+        <div class="tab-bar">
+          <div class="tab active">Pending <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">3</span></div>
+          <div class="tab">Approved</div>
+          <div class="tab">Rejected</div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr><th>Name</th><th>Business Name</th><th>City</th><th>Registered</th><th style="text-align:right;">Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr class="expanded-row">
+                <td><div style="font-weight:600; color:#1D4ED8;">Priya Sharma</div><div style="font-size:12px; color:#6B7280;">priya@example.com</div></td>
+                <td>Priya's Boutique</td><td>Bangalore</td><td>14 May 2026</td>
+                <td style="text-align:right;"><button style="background:#DBEAFE; color:#1D4ED8; border:1px solid #93C5FD; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▲</button></td>
+              </tr>
+              <tr>
+                <td colspan="5" style="background:#EFF6FF; padding:0;">
+                  <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; margin:12px 16px; padding:24px;">
+                    <!-- Error banner inside expanded panel -->
+                    <div role="alert" style="background:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:12px 14px; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                      <span style="font-size:16px;">❌</span>
+                      <span style="font-size:13px; font-weight:600; color:#DC2626;">Action failed. Please try again.</span>
+                      <button style="margin-left:auto; background:none; border:1px solid #DC2626; border-radius:6px; padding:4px 10px; font-size:12px; font-weight:600; color:#DC2626; cursor:pointer;">Retry</button>
+                    </div>
+                    <h3 style="font-size:16px; font-weight:700; color:#1E40AF; margin:0 0 16px 0;">Priya Sharma — Application Details</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+                      <div><div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; margin-bottom:4px;">Email</div><div style="font-size:14px;">priya@example.com</div></div>
+                      <div><div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; margin-bottom:4px;">Phone</div><div style="font-size:14px;">+91 98765 43210</div></div>
+                      <div><div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; margin-bottom:4px;">GSTIN</div><div style="font-size:14px; font-family:monospace;">29ABCDE1234F1Z5</div></div>
+                      <div><div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; margin-bottom:4px;">Business Name</div><div style="font-size:14px;">Priya's Boutique</div></div>
+                    </div>
+                    <div style="display:flex; gap:12px; justify-content:flex-end;">
+                      <button class="btn-reject">Reject</button>
+                      <button class="btn-approve">Approve</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:12px; color:#6B7280;">vikram@example.com</div></td>
+                <td>Vikram Handicrafts</td><td>Chennai</td><td>13 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:600;">Sunita Devi</div><div style="font-size:12px; color:#6B7280;">sunita@example.com</div></td>
+                <td>Sunita Sarees</td><td>Delhi</td><td>12 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SPEC FOOTER
+════════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-size:14px; font-weight:700; color:#F1F5F9; margin-bottom:16px;">SCR-019 — Admin Seller Approval Queue · Specification</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">States</strong><br/>7 (Default, Loading, Empty, Expanded, Approve, Reject Modal, API Error)</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">User Stories</strong><br/>US-021, US-023, US-029</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">API Endpoints</strong><br/>GET /api/v1/admin/sellers/?status=PENDING_REVIEW<br/>POST /api/v1/admin/sellers/{id}/approve/<br/>POST /api/v1/admin/sellers/{id}/reject/</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">WCAG</strong><br/>Tab bar role="tablist" (4.1.2); expanded row aria-expanded="true" (4.1.2); modal focus trap (2.1.2); reject reason required field (3.3.2); error role="alert" (4.1.3)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px; font-size:11px; color:#475569;">ShopNest · Phase 5 UX Design · Generated 2026-05-15 · Admin Seller Queue</div>
+</div>
+
+</body>
+</html>

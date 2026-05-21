@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-003 — Seller Product Management · ShopNest Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ── Viewport lock: desktop 1440px reference frame ── */
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+    /* ── Annotation styles ── */
+    .ann {
+      display: inline-block;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      color: #92400e;
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-top: 2px;
+      line-height: 1.6;
+    }
+    .ann-block {
+      display: block;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      color: #92400e;
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    /* ── State section dividers ── */
+    .state-banner {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 10px 40px;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-top: 3px solid #3b82f6;
+    }
+    .state-tag {
+      background: #3b82f6;
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+    .state-desc { color: #94a3b8; font-size: 12px; }
+    .state-section { padding: 40px; background: #f1f5f9; border-bottom: 2px solid #e2e8f0; }
+
+    /* ── Skeleton pulse ── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .animate-pulse { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+
+    /* ── Seller sidebar nav ── */
+    .seller-sidebar { width: 240px; flex-shrink: 0; }
+    .seller-main { flex: 1; min-width: 0; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; font-size: 14px; color: #64748b; cursor: pointer; transition: background 0.15s; }
+    .nav-item:hover { background: #f1f5f9; color: #1e293b; }
+    .nav-item.active { background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+  </style>
+</head>
+<body class="bg-slate-100">
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SCREEN IDENTITY HEADER
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="bg-blue-900 text-white px-10 py-5">
+    <div class="max-w-screen-xl mx-auto flex items-start justify-between">
+      <div>
+        <div class="text-xs text-blue-300 font-mono mb-1">SHOPNEST · PHASE 5 UX DESIGN (TESTING) · WIREFRAME SPECIFICATION</div>
+        <h1 class="text-2xl font-bold">SCR-003 — Seller Product Management</h1>
+        <p class="text-blue-200 text-sm mt-1">Route: /seller/products · Persona: Priya (seller) · User Stories: US-004, US-005, US-006, US-007 · Subscription gate enforced</p>
+      </div>
+      <div class="text-right text-xs text-blue-300 font-mono">
+        <div>Viewport: 1440px desktop reference</div>
+        <div>States: 8 total (scroll to view all)</div>
+        <div>Generated: 2026-05-14</div>
+      </div>
+    </div>
+    <!-- Table of contents -->
+    <div class="max-w-screen-xl mx-auto mt-4 flex flex-wrap gap-2">
+      <a href="#state-1" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 1 · Product List</a>
+      <a href="#state-2" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 2 · Loading</a>
+      <a href="#state-3" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 3 · No Products</a>
+      <a href="#state-4" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 4 · API Error</a>
+      <a href="#state-5" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 5 · Subscription Gate</a>
+      <a href="#state-6" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 6 · Add Product</a>
+      <a href="#state-7" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 7 · Form Errors</a>
+      <a href="#state-8" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 8 · Edit Product</a>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 1 — PRODUCT LIST DEFAULT
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-1" class="state-banner">
+    <span class="state-tag">STATE 1</span>
+    <span class="font-semibold">Product List — Default (Active Seller, Active Subscription)</span>
+    <span class="state-desc">Route: /seller/products · GET /api/v1/seller/products · Triple-Gate: Seller.ACTIVE + Subscription.ACTIVE + products shown · US-004, US-005</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <!-- @component: SellerTopBar · seller dashboard header -->
+      <header class="bg-white border border-gray-200 rounded-xl mb-6 px-6 py-3 flex items-center justify-between" role="banner">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-bold text-blue-700">🛒 ShopNest</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-sm text-gray-600 font-medium">Seller Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">● Subscription Active</span>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+            <span>Priya's Boutique</span>
+          </div>
+          <button class="text-sm text-gray-500 hover:text-gray-700">Sign Out</button>
+        </div>
+      </header>
+      <span class="ann-block">@component: SellerTopBar · subscription status badge from GET /api/v1/seller/me · green=ACTIVE, red=EXPIRED/SUSPENDED · Priya persona (Seller) · role="banner"</span>
+
+      <!-- Sidebar + Main layout -->
+      <div class="flex gap-6 items-start">
+
+        <!-- LEFT: Sidebar Navigation -->
+        <!-- @component: SellerSidebar · left nav · 240px fixed width on desktop · A-05-009 -->
+        <aside class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4" role="navigation" aria-label="Seller dashboard navigation">
+          <div class="space-y-1">
+            <div class="nav-item" tabindex="0" role="link" aria-label="Dashboard">
+              <span aria-hidden="true">📊</span> Dashboard
+            </div>
+            <div class="nav-item active" tabindex="0" role="link" aria-label="Products — current page" aria-current="page">
+              <span aria-hidden="true">📦</span> Products
+            </div>
+            <div class="nav-item" tabindex="0" role="link" aria-label="Orders">
+              <span aria-hidden="true">🛍</span> Orders
+            </div>
+            <div class="nav-item" tabindex="0" role="link" aria-label="Payouts">
+              <span aria-hidden="true">💰</span> Payouts
+            </div>
+            <div class="border-t border-gray-100 my-2"></div>
+            <div class="nav-item" tabindex="0" role="link" aria-label="Store Settings">
+              <span aria-hidden="true">⚙️</span> Settings
+            </div>
+            <div class="nav-item" tabindex="0" role="link" aria-label="Subscription & Billing">
+              <span aria-hidden="true">💳</span> Subscription
+            </div>
+          </div>
+          <span class="ann-block">@component: SellerSidebar · 4 primary tabs (Dashboard, Products, Orders, Payouts) + Settings + Subscription · A-05-009 · keyboard: Tab/Enter to navigate · active item: aria-current="page" · route: /seller/products active</span>
+        </aside>
+
+        <!-- RIGHT: Main content -->
+        <main class="seller-main" role="main">
+
+          <!-- Page header row -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">My Products</h1>
+              <p class="text-sm text-gray-500 mt-1">Manage your product listings · 4 products</p>
+            </div>
+            <!-- @component: AddProductCTA · navigates to /seller/products/add · US-004 -->
+            <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2" aria-label="Add new product">
+              + Add New Product
+            </button>
+          </div>
+          <span class="ann-block">@component: AddProductCTA · disabled when Subscription.status ≠ ACTIVE · navigates to State 6 form · US-004</span>
+
+          <!-- Filter/search bar -->
+          <div class="flex items-center gap-3 mb-5">
+            <div class="flex-1 flex items-center bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <span class="px-3 text-gray-400" aria-hidden="true">🔍</span>
+              <input type="text" placeholder="Search your products..." class="flex-1 py-2.5 px-2 text-sm focus:outline-none" aria-label="Search products" />
+            </div>
+            <select class="bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Filter by status">
+              <option>All Status</option>
+              <option>Active</option>
+              <option>Pending Review</option>
+              <option>Rejected</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+
+          <!-- Product list table -->
+          <!-- @component: ProductListTable · GET /api/v1/seller/products · paginated · US-005 status display -->
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <table class="w-full" role="table" aria-label="Product list">
+              <thead>
+                <tr class="border-b border-gray-100 bg-gray-50">
+                  <th scope="col" class="text-left py-3 px-5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Product</th>
+                  <th scope="col" class="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Price</th>
+                  <th scope="col" class="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Stock</th>
+                  <th scope="col" class="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                  <th scope="col" class="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Updated</th>
+                  <th scope="col" class="text-right py-3 px-5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+
+                <!-- Row 1: Active product -->
+                <tr class="hover:bg-gray-50">
+                  <td class="py-4 px-5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">👗</div>
+                      <div>
+                        <div class="font-medium text-gray-900 text-sm line-clamp-1">Women's Floral Kurti - Summer Collection</div>
+                        <div class="text-xs text-gray-500 mt-0.5">SKU: PRY-KRT-001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4 text-sm font-semibold text-gray-800">₹799</td>
+                  <td class="py-4 px-4 text-sm text-gray-600">42 units</td>
+                  <td class="py-4 px-4">
+                    <!-- @component: StatusBadge ACTIVE -->
+                    <span class="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-semibold">
+                      ● Active
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-xs text-gray-500">14 May 2026</td>
+                  <td class="py-4 px-5 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="text-xs text-blue-600 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-1" aria-label="Edit Women's Floral Kurti">Edit</button>
+                      <button class="text-xs text-red-500 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1 rounded px-1" aria-label="Deactivate Women's Floral Kurti">Deactivate</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 2: Pending Review product -->
+                <tr class="hover:bg-gray-50 bg-amber-50">
+                  <td class="py-4 px-5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">👜</div>
+                      <div>
+                        <div class="font-medium text-gray-900 text-sm line-clamp-1">Handcrafted Leather Bag - Boho Style</div>
+                        <div class="text-xs text-gray-500 mt-0.5">SKU: PRY-BAG-007</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4 text-sm font-semibold text-gray-800">₹2,199</td>
+                  <td class="py-4 px-4 text-sm text-gray-600">15 units</td>
+                  <td class="py-4 px-4">
+                    <!-- @component: StatusBadge PENDING_REVIEW · A-05-011 canonical term -->
+                    <span class="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-semibold">
+                      ⏳ Pending Review
+                    </span>
+                    <span class="ann">StatusBadge · "Pending Review" canonical term (CLAUDE.md) · A-05-011</span>
+                  </td>
+                  <td class="py-4 px-4 text-xs text-gray-500">13 May 2026</td>
+                  <td class="py-4 px-5 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="text-xs text-blue-600 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-1" aria-label="Edit Handcrafted Leather Bag">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 3: Rejected product — expandable rejection reason -->
+                <tr class="hover:bg-gray-50 bg-red-50">
+                  <td class="py-4 px-5" colspan="6">
+                    <div class="flex items-center gap-3 mb-3">
+                      <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🧴</div>
+                      <div class="flex-1">
+                        <div class="font-medium text-gray-900 text-sm">Ayurvedic Face Cream - 50ml</div>
+                        <div class="text-xs text-gray-500 mt-0.5">SKU: PRY-SKN-003</div>
+                      </div>
+                      <div class="text-sm font-semibold text-gray-800 px-4">₹349</div>
+                      <div class="text-sm text-gray-600 px-4">8 units</div>
+                      <div class="px-4">
+                        <!-- @component: StatusBadge REJECTED -->
+                        <span class="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 px-2.5 py-1 rounded-full font-semibold">
+                          ✕ Rejected
+                        </span>
+                      </div>
+                      <div class="text-xs text-gray-500 px-4">10 May 2026</div>
+                      <div class="flex items-center gap-2">
+                        <button class="text-xs text-blue-600 hover:underline font-medium px-1">Edit &amp; Resubmit</button>
+                      </div>
+                    </div>
+                    <!-- Inline rejection reason — expanded · A-05-012 -->
+                    <div class="ml-15 pl-3 border-l-4 border-red-300 bg-red-50 rounded-r-lg py-2 px-3">
+                      <p class="text-xs text-red-700 font-semibold mb-0.5">Rejection Reason from Admin:</p>
+                      <p class="text-sm text-red-800">Product images are low quality and do not clearly show the product. Please upload high-resolution images (min. 800×800px) showing the product from multiple angles. FSSAI/Ayush license number must also be included in the description.</p>
+                      <span class="ann-block">@component: RejectionReasonInline · A-05-012 · inline expanded on Rejected rows (no nav required) · OQ-001 resolution — shown in dashboard AND emailed · text from GET /api/v1/seller/products/{id} rejection_reason field</span>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 4: Active product -->
+                <tr class="hover:bg-gray-50">
+                  <td class="py-4 px-5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🧵</div>
+                      <div>
+                        <div class="font-medium text-gray-900 text-sm line-clamp-1">Embroidered Dupatta Set — 3pcs</div>
+                        <div class="text-xs text-gray-500 mt-0.5">SKU: PRY-DUP-012</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4 text-sm font-semibold text-gray-800">₹1,299</td>
+                  <td class="py-4 px-4 text-sm text-gray-600">0 units</td>
+                  <td class="py-4 px-4">
+                    <span class="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-semibold">
+                      ○ Inactive
+                    </span>
+                    <div class="text-xs text-red-500 mt-0.5">Out of stock</div>
+                  </td>
+                  <td class="py-4 px-4 text-xs text-gray-500">08 May 2026</td>
+                  <td class="py-4 px-5 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="text-xs text-blue-600 hover:underline font-medium px-1" aria-label="Edit Embroidered Dupatta Set">Edit</button>
+                      <button class="text-xs text-green-600 hover:underline font-medium px-1" aria-label="Reactivate Embroidered Dupatta Set">Reactivate</button>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="border-t border-gray-100 px-5 py-3 flex items-center justify-between text-xs text-gray-500">
+              <span>Showing 1–4 of 4 products</span>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-400 cursor-not-allowed" disabled aria-label="Previous page" aria-disabled="true">← Prev</button>
+                <span class="px-3 py-1.5 bg-blue-600 text-white rounded-lg font-semibold">1</span>
+                <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-400 cursor-not-allowed" disabled aria-label="Next page" aria-disabled="true">Next →</button>
+              </div>
+            </div>
+          </div>
+          <span class="ann-block">@component: ProductListTable · GET /api/v1/seller/products?page=1&status=all · rows: product thumb (112×112 CloudFront) + name (max 1 line) + SKU + price (paise÷100) + stock + StatusBadge + edit/deactivate actions · status filter select · US-005</span>
+
+        </main>
+      </div><!-- end sidebar+main -->
+    </div><!-- max-w -->
+  </div><!-- state-section -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 2 — LOADING (Skeleton — mirrors State 1 DOM exactly)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-2" class="state-banner">
+    <span class="state-tag">STATE 2</span>
+    <span class="font-semibold">Loading — Skeleton Screen</span>
+    <span class="state-desc">GET /api/v1/seller/products · isLoading=true · mirrors State 1 DOM structure exactly</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <!-- TopBar skeleton -->
+      <div class="bg-gray-200 animate-pulse rounded-xl mb-6 h-14"></div>
+
+      <div class="flex gap-6 items-start">
+        <!-- Sidebar skeleton -->
+        <div class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4 space-y-2">
+          <div class="h-9 bg-gray-200 animate-pulse rounded-lg"></div>
+          <div class="h-9 bg-gray-200 animate-pulse rounded-lg"></div>
+          <div class="h-9 bg-gray-200 animate-pulse rounded-lg"></div>
+          <div class="h-9 bg-gray-200 animate-pulse rounded-lg"></div>
+          <div class="h-px bg-gray-200 my-2"></div>
+          <div class="h-9 bg-gray-200 animate-pulse rounded-lg"></div>
+          <div class="h-9 bg-gray-200 animate-pulse rounded-lg"></div>
+        </div>
+
+        <!-- Main skeleton -->
+        <div class="seller-main">
+          <!-- Page header skeleton -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <div class="h-7 bg-gray-200 animate-pulse rounded w-40 mb-2"></div>
+              <div class="h-4 bg-gray-200 animate-pulse rounded w-52"></div>
+            </div>
+            <div class="h-11 bg-gray-200 animate-pulse rounded-xl w-40"></div>
+          </div>
+
+          <!-- Table skeleton -->
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div class="h-10 bg-gray-100 animate-pulse border-b border-gray-100"></div>
+            <div class="divide-y divide-gray-100">
+              <div class="flex items-center gap-4 px-5 py-4">
+                <div class="w-12 h-12 bg-gray-200 animate-pulse rounded-lg flex-shrink-0"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-gray-200 animate-pulse rounded w-2/3"></div>
+                  <div class="h-3 bg-gray-200 animate-pulse rounded w-1/4"></div>
+                </div>
+                <div class="w-16 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-24 h-6 bg-gray-200 animate-pulse rounded-full"></div>
+                <div class="w-20 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-24 h-4 bg-gray-200 animate-pulse rounded"></div>
+              </div>
+              <div class="flex items-center gap-4 px-5 py-4">
+                <div class="w-12 h-12 bg-gray-200 animate-pulse rounded-lg flex-shrink-0"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-gray-200 animate-pulse rounded w-1/2"></div>
+                  <div class="h-3 bg-gray-200 animate-pulse rounded w-1/4"></div>
+                </div>
+                <div class="w-16 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-24 h-6 bg-gray-200 animate-pulse rounded-full"></div>
+                <div class="w-20 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-24 h-4 bg-gray-200 animate-pulse rounded"></div>
+              </div>
+              <div class="flex items-center gap-4 px-5 py-4">
+                <div class="w-12 h-12 bg-gray-200 animate-pulse rounded-lg flex-shrink-0"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-gray-200 animate-pulse rounded w-3/5"></div>
+                  <div class="h-3 bg-gray-200 animate-pulse rounded w-1/3"></div>
+                </div>
+                <div class="w-16 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-24 h-6 bg-gray-200 animate-pulse rounded-full"></div>
+                <div class="w-20 h-4 bg-gray-200 animate-pulse rounded"></div>
+                <div class="w-24 h-4 bg-gray-200 animate-pulse rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <span class="ann-block">@behavior: Skeleton mirrors State 1 DOM exactly · sidebar + table + page header skeletonized · bg-gray-200 animate-pulse on all content areas · WCAG: aria-busy="true" on main region</span>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 3 — NO PRODUCTS YET (Empty state)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-3" class="state-banner">
+    <span class="state-tag">STATE 3</span>
+    <span class="font-semibold">No Products — Empty State (First-time seller)</span>
+    <span class="state-desc">GET /api/v1/seller/products returns [] · Active subscription · US-004 onboarding nudge</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <header class="bg-white border border-gray-200 rounded-xl mb-6 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-bold text-blue-700">🛒 ShopNest</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-sm text-gray-600 font-medium">Seller Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">● Subscription Active</span>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+            <span>Priya's Boutique</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="flex gap-6 items-start">
+        <aside class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4" role="navigation" aria-label="Seller dashboard navigation">
+          <div class="space-y-1">
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item active" aria-current="page">📦 Products</div>
+            <div class="nav-item">🛍 Orders</div>
+            <div class="nav-item">💰 Payouts</div>
+            <div class="border-t border-gray-100 my-2"></div>
+            <div class="nav-item">⚙️ Settings</div>
+            <div class="nav-item">💳 Subscription</div>
+          </div>
+        </aside>
+
+        <main class="seller-main">
+          <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">My Products</h1>
+            <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+              + Add New Product
+            </button>
+          </div>
+
+          <!-- @component: EmptyProductsPanel · first-time seller onboarding nudge -->
+          <div class="bg-white border border-gray-200 rounded-2xl p-16 text-center" role="status" aria-label="No products yet">
+            <div class="text-7xl mb-6" aria-hidden="true">📦</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-3">No products yet</h2>
+            <p class="text-gray-500 mb-2 max-w-sm mx-auto">Start listing your products for buyers to discover. Your first product will go to admin review before going live.</p>
+            <p class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 inline-block mb-8">⏳ New listings require admin approval before appearing to buyers (feature flag: ff_product_admin_approval=true)</p>
+            <div>
+              <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                Add Your First Product →
+              </button>
+            </div>
+          </div>
+          <span class="ann-block">@component: EmptyProductsPanel · role="status" · CTA → State 6 (Add Product form) · admin approval note explains why listing won't appear immediately (US-005) · ff_product_admin_approval flag mentioned for seller transparency</span>
+        </main>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 4 — API ERROR
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-4" class="state-banner">
+    <span class="state-tag">STATE 4</span>
+    <span class="font-semibold">API Error — Products Load Failure</span>
+    <span class="state-desc">GET /api/v1/seller/products returns 5xx · Next.js error.tsx boundary · sidebar preserved</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <header class="bg-white border border-gray-200 rounded-xl mb-6 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-bold text-blue-700">🛒 ShopNest</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-sm text-gray-600 font-medium">Seller Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">● Subscription Active</span>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+            <span>Priya's Boutique</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="flex gap-6 items-start">
+        <aside class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4" role="navigation" aria-label="Seller dashboard navigation">
+          <div class="space-y-1">
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item active" aria-current="page">📦 Products</div>
+            <div class="nav-item">🛍 Orders</div>
+            <div class="nav-item">💰 Payouts</div>
+          </div>
+        </aside>
+
+        <main class="seller-main">
+          <!-- @component: ErrorPanel · role="alert" · retry available · sidebar still functional -->
+          <div class="bg-white rounded-2xl border border-red-200 p-16 text-center" role="alert" aria-live="assertive">
+            <div class="text-5xl mb-4" aria-hidden="true">⚠️</div>
+            <h2 class="text-xl font-bold text-red-800 mb-2">Couldn't load your products</h2>
+            <p class="text-gray-600 mb-2">There was a problem fetching your product list. Please try again.</p>
+            <p class="text-xs text-gray-400 font-mono mb-8">Error: 503 Service Unavailable</p>
+            <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2" onclick="window.location.reload()">
+              Try Again
+            </button>
+          </div>
+          <span class="ann-block">@component: ErrorPanel · role="alert" aria-live="assertive" · sidebar nav remains functional during error · CloudWatch logs error_code + seller_id + request_id · Next.js error.tsx boundary</span>
+        </main>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 5 — SUBSCRIPTION GATE (Expired/suspended subscription)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-5" class="state-banner">
+    <span class="state-tag">STATE 5</span>
+    <span class="font-semibold">Subscription Gate — Expired or Suspended</span>
+    <span class="state-desc">Subscription.status ≠ ACTIVE · Triple-Gate enforced · All products hidden from buyers · FR-SUB-005</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <!-- TopBar: subscription expired indicator -->
+      <header class="bg-white border border-red-200 rounded-xl mb-6 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-bold text-blue-700">🛒 ShopNest</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-sm text-gray-600 font-medium">Seller Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <!-- @component: SubscriptionExpiredBadge -->
+          <span class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-semibold border border-red-200">⚠ Subscription Expired</span>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+            <span>Priya's Boutique</span>
+          </div>
+        </div>
+      </header>
+      <span class="ann-block">@component: SubscriptionExpiredBadge · GET /api/v1/seller/me → subscription.status ≠ ACTIVE · badge: red border + text · A-05-009</span>
+
+      <div class="flex gap-6 items-start">
+        <aside class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4" role="navigation" aria-label="Seller dashboard navigation">
+          <div class="space-y-1">
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item active" aria-current="page">📦 Products</div>
+            <div class="nav-item">🛍 Orders</div>
+            <div class="nav-item">💰 Payouts</div>
+            <div class="border-t border-gray-100 my-2"></div>
+            <div class="nav-item">⚙️ Settings</div>
+            <!-- Subscription tab highlighted -->
+            <div class="nav-item text-red-600 bg-red-50 font-semibold">💳 Subscription ⚠</div>
+          </div>
+        </aside>
+
+        <main class="seller-main">
+          <!-- Full-page subscription gate overlay -->
+          <!-- @component: SubscriptionGatePanel · blocks product management · role="alert" · FR-SUB-005 -->
+          <div class="bg-white border border-red-200 rounded-2xl p-12 text-center" role="alert" aria-label="Subscription expired — products hidden from buyers">
+
+            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span class="text-4xl" aria-hidden="true">🔒</span>
+            </div>
+            <h2 class="text-2xl font-bold text-red-800 mb-3">Your subscription has expired</h2>
+            <p class="text-gray-600 mb-4 max-w-md mx-auto">Your seller subscription has expired. <strong>All your product listings are currently hidden from buyers</strong> and your store is inactive.</p>
+
+            <!-- Urgent impact callout -->
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-left max-w-md mx-auto">
+              <h3 class="text-sm font-semibold text-red-800 mb-2">What happens until you renew:</h3>
+              <ul class="text-sm text-red-700 space-y-1">
+                <li>• All 4 of your products are hidden from buyers</li>
+                <li>• New orders cannot be placed on your products</li>
+                <li>• Your seller profile is marked inactive</li>
+                <li>• Existing orders and payouts are unaffected</li>
+              </ul>
+            </div>
+            <span class="ann-block">@behavior: Triple-Gate: Seller.ACTIVE AND Subscription.ACTIVE AND Product.ACTIVE — Subscription.EXPIRED fails gate 2 → all products hidden · product count from GET /api/v1/seller/products (still accessible to seller, just hidden from buyers) · FR-SUB-005</span>
+
+            <!-- Renewal CTA -->
+            <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2" aria-label="Renew subscription">
+              Renew Subscription — ₹1,999/month
+            </button>
+            <p class="text-xs text-gray-400 mt-3">Powered by Razorpay Subscriptions · Auto-renews monthly · Cancel anytime</p>
+            <span class="ann-block">@component: RenewalCTA · → /seller/subscription → Razorpay Subscriptions API · price ₹1,999/month (CLAUDE.md) · OQ-003 (price TBD — shown as placeholder)</span>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 6 — ADD PRODUCT FORM
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-6" class="state-banner">
+    <span class="state-tag">STATE 6</span>
+    <span class="font-semibold">Add New Product — Form (Valid state)</span>
+    <span class="state-desc">Route: /seller/products/add · POST /api/v1/seller/products · US-004 · Admin review on submit · CW: char counter + image helper text</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <header class="bg-white border border-gray-200 rounded-xl mb-6 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-bold text-blue-700">🛒 ShopNest</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-sm text-gray-600 font-medium">Seller Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">● Subscription Active</span>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+            <span>Priya's Boutique</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="flex gap-6 items-start">
+        <aside class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4" role="navigation" aria-label="Seller dashboard navigation">
+          <div class="space-y-1">
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item active" aria-current="page">📦 Products</div>
+            <div class="nav-item">🛍 Orders</div>
+            <div class="nav-item">💰 Payouts</div>
+            <div class="border-t border-gray-100 my-2"></div>
+            <div class="nav-item">⚙️ Settings</div>
+            <div class="nav-item">💳 Subscription</div>
+          </div>
+        </aside>
+
+        <main class="seller-main">
+          <!-- Breadcrumb -->
+          <nav aria-label="Breadcrumb" class="mb-5">
+            <ol class="flex items-center gap-2 text-sm text-gray-500">
+              <li><a href="#" class="text-blue-600 hover:underline">Products</a></li>
+              <li aria-hidden="true">›</li>
+              <li class="text-gray-800 font-medium" aria-current="page">Add New Product</li>
+            </ol>
+          </nav>
+
+          <!-- Admin review notice banner -->
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+            <span class="text-xl" aria-hidden="true">⏳</span>
+            <div>
+              <p class="text-sm text-amber-800 font-medium">Your product will go to admin review before going live</p>
+              <p class="text-sm text-amber-700">Once submitted, our team reviews your listing within 1–2 business days. You'll receive an email with the outcome.</p>
+            </div>
+          </div>
+
+          <!-- @component: AddProductForm · POST /api/v1/seller/products · US-004 -->
+          <div class="bg-white border border-gray-200 rounded-2xl p-8">
+            <h1 class="text-xl font-bold text-gray-900 mb-6">Add New Product</h1>
+
+            <form novalidate aria-label="Add new product form">
+
+              <!-- Product Name -->
+              <div class="mb-6">
+                <label for="prod-name" class="block text-sm font-medium text-gray-700 mb-1">Product Name <span class="text-red-500" aria-hidden="true">*</span></label>
+                <input type="text" id="prod-name" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Women's Floral Kurti - Summer Collection" required aria-required="true" maxlength="200" />
+                <div class="flex justify-between mt-1">
+                  <p class="text-gray-500 text-xs">Use a clear, descriptive name buyers will search for</p>
+                  <p class="text-gray-400 text-xs font-mono">0 / 200</p>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="mb-6">
+                <label for="prod-desc" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="text-red-500" aria-hidden="true">*</span></label>
+                <textarea id="prod-desc" name="description" rows="5" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" placeholder="Describe your product — materials, sizing, care instructions, features..." required aria-required="true" maxlength="5000"></textarea>
+                <!-- Character counter — CW mitigation: visible, red when > 4800 -->
+                <div class="flex justify-between mt-1">
+                  <p class="text-gray-500 text-xs">Minimum 50 characters required</p>
+                  <p class="text-gray-400 text-xs font-mono" id="desc-counter" aria-live="polite" aria-atomic="true">0 / 5000</p>
+                </div>
+                <span class="ann-block">@component: CharCounter · aria-live="polite" · turns red + bold at 4800+ chars (CW-DescCounter mitigation) · disabled submit if description &lt; 50 chars</span>
+              </div>
+
+              <!-- Price + Stock row -->
+              <div class="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label for="prod-price" class="block text-sm font-medium text-gray-700 mb-1">Price (₹) <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                    <span class="px-3 bg-gray-50 text-gray-600 text-sm border-r border-gray-300 py-3">₹</span>
+                    <input type="number" id="prod-price" name="price" class="flex-1 px-4 py-3 text-sm focus:outline-none" placeholder="799" required aria-required="true" min="1" step="1" inputmode="numeric" />
+                  </div>
+                  <p class="text-gray-500 text-xs mt-1">Minimum ₹1.00 · Stored as integer paise (A-05-010)</p>
+                </div>
+                <div>
+                  <label for="prod-stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <input type="number" id="prod-stock" name="stock_quantity" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="50" required aria-required="true" min="0" step="1" inputmode="numeric" />
+                  <p class="text-gray-500 text-xs mt-1">How many units are available to sell</p>
+                </div>
+              </div>
+
+              <!-- Category -->
+              <div class="mb-6">
+                <label for="prod-category" class="block text-sm font-medium text-gray-700 mb-1">Category <span class="text-red-500" aria-hidden="true">*</span></label>
+                <select id="prod-category" name="category_id" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" required aria-required="true">
+                  <option value="">Select a category</option>
+                  <option>Women's Clothing</option>
+                  <option>Men's Clothing</option>
+                  <option>Accessories</option>
+                  <option>Footwear</option>
+                  <option>Electronics</option>
+                  <option>Home &amp; Kitchen</option>
+                  <option>Beauty &amp; Personal Care</option>
+                  <option>Sports &amp; Outdoors</option>
+                </select>
+              </div>
+
+              <!-- Product Images -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Product Images <span class="text-red-500" aria-hidden="true">*</span></label>
+                <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" role="button" tabindex="0" aria-label="Upload product images">
+                  <div class="text-4xl mb-3" aria-hidden="true">🖼</div>
+                  <p class="text-sm text-gray-600 font-medium mb-1">Drag and drop images here, or click to browse</p>
+                  <p class="text-xs text-gray-400">Accepts: JPG, PNG, WebP only · Max 5MB per image · Min 800×800px · Up to 8 images</p>
+                  <input type="file" multiple accept="image/jpeg,image/png,image/webp" class="hidden" aria-label="Upload images" />
+                  <button type="button" class="mt-4 bg-blue-50 text-blue-600 border border-blue-200 px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Browse Files
+                  </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Images uploaded to AWS S3 · Served via CloudFront CDN · First image = primary listing thumbnail</p>
+                <span class="ann-block">@component: ImageUploader · accepts JPG/PNG/WebP only (CW-ImageType mitigation) · helper text visible before upload · file type error: "Please upload JPG, PNG, or WebP images only" · S3 multipart upload · A-05-004 full-bleed product images on PDP</span>
+              </div>
+
+              <!-- Submit + Cancel -->
+              <div class="flex items-center gap-4 pt-2">
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                  Submit for Review
+                </button>
+                <a href="/seller/products" class="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-4 px-8 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                  Cancel
+                </a>
+              </div>
+              <span class="ann-block">@behavior: Submit → POST /api/v1/seller/products · server-side validation · on success: product status = "Pending Review" → redirect /seller/products with success toast · on error: inline field errors (State 7) · CTA label "Submit for Review" (not "Publish") — sets correct expectation</span>
+
+            </form>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 7 — ADD PRODUCT FORM — VALIDATION ERRORS
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-7" class="state-banner">
+    <span class="state-tag">STATE 7</span>
+    <span class="font-semibold">Add Product — Form Validation Errors</span>
+    <span class="state-desc">POST /api/v1/seller/products → 400 validation error · inline field errors · WCAG 3.3.1 · DRF serializer errors</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <header class="bg-white border border-gray-200 rounded-xl mb-6 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-bold text-blue-700">🛒 ShopNest</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-sm text-gray-600 font-medium">Seller Dashboard</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+          <span>Priya's Boutique</span>
+        </div>
+      </header>
+
+      <div class="flex gap-6 items-start">
+        <aside class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4" role="navigation" aria-label="Seller dashboard navigation">
+          <div class="space-y-1">
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item active" aria-current="page">📦 Products</div>
+            <div class="nav-item">🛍 Orders</div>
+            <div class="nav-item">💰 Payouts</div>
+          </div>
+        </aside>
+
+        <main class="seller-main">
+          <!-- Summary error banner at top of form -->
+          <!-- @component: FormErrorSummary · role="alert" · links to each field error · WCAG 3.3.1 -->
+          <div class="bg-red-50 border border-red-300 rounded-xl p-4 mb-5 flex items-start gap-3" role="alert" aria-live="assertive">
+            <span class="text-red-500 text-xl" aria-hidden="true">⚠</span>
+            <div>
+              <p class="text-red-800 font-semibold text-sm mb-1">Please fix 3 errors before submitting:</p>
+              <ul class="text-sm text-red-700 space-y-0.5">
+                <li>• <a href="#err-name" class="underline hover:text-red-900">Product name is required</a></li>
+                <li>• <a href="#err-desc" class="underline hover:text-red-900">Description must be at least 50 characters</a></li>
+                <li>• <a href="#err-images" class="underline hover:text-red-900">At least 1 product image is required</a></li>
+              </ul>
+            </div>
+          </div>
+          <span class="ann-block">@component: FormErrorSummary · role="alert" aria-live="assertive" · focus moves to error summary on submit · links to individual field errors with href="#err-{field}" · WCAG 3.3.1 Error Identification + 2.4.3 Focus Order</span>
+
+          <div class="bg-white border border-gray-200 rounded-2xl p-8">
+            <h1 class="text-xl font-bold text-gray-900 mb-6">Add New Product</h1>
+
+            <form novalidate aria-label="Add new product form">
+
+              <!-- Product Name — ERROR STATE -->
+              <div class="mb-6">
+                <label for="err-name" class="block text-sm font-medium text-gray-700 mb-1">Product Name <span class="text-red-500" aria-hidden="true">*</span></label>
+                <input type="text" id="err-name" name="name" class="w-full border-2 border-red-400 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-red-50" value="" aria-required="true" aria-invalid="true" aria-describedby="err-name-msg" />
+                <p id="err-name-msg" class="text-red-600 text-xs mt-1 flex items-center gap-1" role="alert">
+                  <span aria-hidden="true">⚠</span> Product name is required
+                </p>
+              </div>
+
+              <!-- Description — ERROR STATE (too short) -->
+              <div class="mb-6">
+                <label for="err-desc" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="text-red-500" aria-hidden="true">*</span></label>
+                <textarea id="err-desc" name="description" rows="5" class="w-full border-2 border-red-400 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-red-50 resize-none" aria-required="true" aria-invalid="true" aria-describedby="err-desc-msg">Nice product</textarea>
+                <div class="flex justify-between mt-1">
+                  <p id="err-desc-msg" class="text-red-600 text-xs flex items-center gap-1" role="alert">
+                    <span aria-hidden="true">⚠</span> Description must be at least 50 characters (currently 12)
+                  </p>
+                  <p class="text-red-600 text-xs font-mono font-bold" aria-live="polite">12 / 5000</p>
+                </div>
+              </div>
+
+              <!-- Price — VALID -->
+              <div class="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label for="err-price" class="block text-sm font-medium text-gray-700 mb-1">Price (₹) <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                    <span class="px-3 bg-gray-50 text-gray-600 text-sm border-r border-gray-300 py-3">₹</span>
+                    <input type="number" id="err-price" name="price" class="flex-1 px-4 py-3 text-sm focus:outline-none" value="799" min="1" />
+                  </div>
+                </div>
+                <div>
+                  <label for="err-stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <input type="number" id="err-stock" name="stock_quantity" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="20" min="0" />
+                </div>
+              </div>
+
+              <!-- Images — ERROR STATE -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Product Images <span class="text-red-500" aria-hidden="true">*</span></label>
+                <div class="border-2 border-dashed border-red-400 rounded-xl p-8 text-center bg-red-50" id="err-images">
+                  <div class="text-4xl mb-3" aria-hidden="true">🖼</div>
+                  <p class="text-sm text-red-700 font-medium mb-1">No images uploaded yet</p>
+                  <p class="text-xs text-gray-400">Accepts: JPG, PNG, WebP only · Max 5MB per image</p>
+                  <button type="button" class="mt-4 bg-blue-50 text-blue-600 border border-blue-200 px-5 py-2 rounded-lg text-sm font-medium">Browse Files</button>
+                </div>
+                <p id="err-images-msg" class="text-red-600 text-xs mt-1 flex items-center gap-1" role="alert">
+                  <span aria-hidden="true">⚠</span> At least 1 product image is required
+                </p>
+              </div>
+
+              <!-- Submit (disabled state — errors present) -->
+              <div class="flex items-center gap-4 pt-2">
+                <button type="submit" class="bg-orange-300 text-white font-bold py-4 px-8 rounded-xl text-base cursor-not-allowed" disabled aria-disabled="true">
+                  Submit for Review
+                </button>
+                <a href="/seller/products" class="border border-gray-300 text-gray-700 font-medium py-4 px-8 rounded-xl text-base">Cancel</a>
+              </div>
+              <span class="ann-block">@behavior: Submit disabled while any required field is invalid · aria-disabled="true" · DRF serializer returns 400 {field: [error_msg]} on server-side fail · Focus moves to FormErrorSummary on submit attempt · WCAG 3.3.1, 3.3.2, 3.3.3</span>
+            </form>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 8 — EDIT PRODUCT (Re-review warning banner)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-8" class="state-banner">
+    <span class="state-tag">STATE 8</span>
+    <span class="font-semibold">Edit Product — Re-review Warning for Name/Description Changes</span>
+    <span class="state-desc">Route: /seller/products/{id}/edit · GET /api/v1/seller/products/{id} · FR-PRODUCT-007/008 · A-05-013 re-review banner</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <header class="bg-white border border-gray-200 rounded-xl mb-6 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-xl font-bold text-blue-700">🛒 ShopNest</span>
+          <span class="text-gray-300">|</span>
+          <span class="text-sm text-gray-600 font-medium">Seller Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">● Subscription Active</span>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+            <span>Priya's Boutique</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="flex gap-6 items-start">
+        <aside class="seller-sidebar bg-white border border-gray-200 rounded-xl p-4" role="navigation" aria-label="Seller dashboard navigation">
+          <div class="space-y-1">
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item active" aria-current="page">📦 Products</div>
+            <div class="nav-item">🛍 Orders</div>
+            <div class="nav-item">💰 Payouts</div>
+            <div class="border-t border-gray-100 my-2"></div>
+            <div class="nav-item">⚙️ Settings</div>
+            <div class="nav-item">💳 Subscription</div>
+          </div>
+        </aside>
+
+        <main class="seller-main">
+          <!-- Breadcrumb -->
+          <nav aria-label="Breadcrumb" class="mb-5">
+            <ol class="flex items-center gap-2 text-sm text-gray-500">
+              <li><a href="#" class="text-blue-600 hover:underline">Products</a></li>
+              <li aria-hidden="true">›</li>
+              <li class="text-gray-800 font-medium" aria-current="page">Edit Product</li>
+            </ol>
+          </nav>
+
+          <!-- @component: ReReviewWarningBanner · A-05-013 · FR-PRODUCT-007/008 -->
+          <!-- Shown when name or description field is focused/changed -->
+          <div class="bg-amber-50 border border-amber-300 rounded-xl p-4 mb-6 flex items-start gap-3" role="note" aria-label="Re-review warning">
+            <span class="text-xl" aria-hidden="true">⚠️</span>
+            <div>
+              <p class="text-sm text-amber-800 font-semibold mb-1">Changing name or description requires admin re-review</p>
+              <p class="text-sm text-amber-700">If you change the product name or description, this listing will be submitted for admin review again and <strong>temporarily hidden from buyers</strong> until approved. Price and stock changes take effect immediately without re-review.</p>
+            </div>
+          </div>
+          <span class="ann-block">@component: ReReviewWarningBanner · role="note" · A-05-013 · shown on form load for edit page (always visible) · FR-PRODUCT-007: price/stock = immediate · FR-PRODUCT-008: name/desc = re-review · banner text distinguishes which fields trigger re-review</span>
+
+          <div class="bg-white border border-gray-200 rounded-2xl p-8">
+            <h1 class="text-xl font-bold text-gray-900 mb-6">Edit Product</h1>
+
+            <!-- @component: EditProductForm · PATCH /api/v1/seller/products/{id} · pre-populated from GET /api/v1/seller/products/{id} -->
+            <form novalidate aria-label="Edit product form">
+
+              <!-- Product Name — editable, triggers re-review if changed -->
+              <div class="mb-6">
+                <label for="edit-name" class="block text-sm font-medium text-gray-700 mb-1">
+                  Product Name <span class="text-red-500" aria-hidden="true">*</span>
+                  <span class="ml-2 text-xs text-amber-600 font-normal">⚠ Changes trigger re-review</span>
+                </label>
+                <input type="text" id="edit-name" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="Women's Floral Kurti - Summer Collection" required aria-required="true" maxlength="200" aria-describedby="edit-name-note" />
+                <p id="edit-name-note" class="text-amber-600 text-xs mt-1">Changing this will trigger admin re-review and temporarily hide the product</p>
+              </div>
+
+              <!-- Description — editable, triggers re-review if changed -->
+              <div class="mb-6">
+                <label for="edit-desc" class="block text-sm font-medium text-gray-700 mb-1">
+                  Description <span class="text-red-500" aria-hidden="true">*</span>
+                  <span class="ml-2 text-xs text-amber-600 font-normal">⚠ Changes trigger re-review</span>
+                </label>
+                <textarea id="edit-desc" name="description" rows="5" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" required aria-required="true" maxlength="5000">Beautiful hand-stitched floral kurti in breathable cotton blend. Available in sizes XS-3XL. Machine washable. Pairs well with leggings or jeans. Perfect for summer.</textarea>
+                <div class="flex justify-between mt-1">
+                  <p class="text-gray-500 text-xs">Minimum 50 characters required</p>
+                  <p class="text-gray-400 text-xs font-mono" aria-live="polite">187 / 5000</p>
+                </div>
+              </div>
+
+              <!-- Price + Stock — NO re-review · immediate effect -->
+              <div class="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label for="edit-price" class="block text-sm font-medium text-gray-700 mb-1">
+                    Price (₹) <span class="text-red-500" aria-hidden="true">*</span>
+                    <span class="ml-2 text-xs text-green-600 font-normal">✓ No re-review needed</span>
+                  </label>
+                  <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                    <span class="px-3 bg-gray-50 text-gray-600 text-sm border-r border-gray-300 py-3">₹</span>
+                    <input type="number" id="edit-price" name="price" class="flex-1 px-4 py-3 text-sm focus:outline-none" value="799" min="1" />
+                  </div>
+                  <p class="text-green-600 text-xs mt-1">Price changes go live immediately (FR-PRODUCT-007)</p>
+                </div>
+                <div>
+                  <label for="edit-stock" class="block text-sm font-medium text-gray-700 mb-1">
+                    Stock Quantity <span class="text-red-500" aria-hidden="true">*</span>
+                    <span class="ml-2 text-xs text-green-600 font-normal">✓ No re-review needed</span>
+                  </label>
+                  <input type="number" id="edit-stock" name="stock_quantity" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="42" min="0" />
+                  <p class="text-green-600 text-xs mt-1">Stock updates go live immediately (FR-PRODUCT-008)</p>
+                </div>
+              </div>
+              <span class="ann-block">@component: EditProductForm · price/stock fields labelled "No re-review needed" in green · name/desc fields labelled "Changes trigger re-review" in amber · PATCH /api/v1/seller/products/{id} · server determines which fields changed → sets re_review_required flag · A-05-013</span>
+
+              <!-- Submit + Cancel -->
+              <div class="flex items-center gap-4 pt-2">
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                  Save Changes
+                </button>
+                <a href="/seller/products" class="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-4 px-8 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                  Cancel
+                </a>
+              </div>
+              <span class="ann-block">@behavior: PATCH /api/v1/seller/products/{id} · if name/desc changed: status → "Pending Review", product hidden from buyers, email sent · if only price/stock changed: status unchanged, live immediately · redirect to /seller/products with appropriate success toast per scenario</span>
+            </form>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SPEC FOOTER
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="bg-gray-900 text-gray-400 px-10 py-6 text-xs font-mono">
+    <div class="max-w-screen-xl mx-auto">
+      <div class="text-gray-200 font-bold mb-3 text-sm">SCR-003 — Seller Product Management · Specification Summary</div>
+      <div class="grid grid-cols-4 gap-6">
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">States (8)</div>
+          <div>1. Product List Default</div>
+          <div>2. Loading Skeleton</div>
+          <div>3. No Products (Empty)</div>
+          <div>4. API Error</div>
+          <div>5. Subscription Gate</div>
+          <div>6. Add Product Form</div>
+          <div>7. Form Validation Errors</div>
+          <div>8. Edit Product (Re-review)</div>
+        </div>
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">User Stories</div>
+          <div>US-004 Add Product</div>
+          <div>US-005 Product Status Visibility</div>
+          <div>US-006 Edit Product</div>
+          <div>US-007 Subscription Gate</div>
+        </div>
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">Key API Calls</div>
+          <div>GET /api/v1/seller/products</div>
+          <div>GET /api/v1/seller/me</div>
+          <div>POST /api/v1/seller/products</div>
+          <div>PATCH /api/v1/seller/products/{id}</div>
+          <div>GET /api/v1/seller/products/{id}</div>
+        </div>
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">Key Assumptions</div>
+          <div>A-05-009 4-tab sidebar nav</div>
+          <div>A-05-011 "Pending Review" term</div>
+          <div>A-05-012 Inline rejection reason</div>
+          <div>A-05-013 Re-review warning banner</div>
+          <div>A-05-010 ₹1 minimum price</div>
+          <div>Triple-Gate: Seller+Sub+Product</div>
+          <div>FR-PRODUCT-007 price immediate</div>
+          <div>FR-PRODUCT-008 desc re-review</div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-4 pt-4 text-gray-500">
+        ShopNest · Phase 5 UX Design (Testing Version) · Desktop 1440px reference · Tailwind CSS CDN · 2026-05-14
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

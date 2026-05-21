@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SCR-008 — Order Tracking · ShopNest UX Wireframe</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+  .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; margin-bottom: 0; }
+  .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; margin-bottom: 0; max-width: 1440px; }
+  .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; cursor: help; }
+  .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+  .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+  .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+  .buyer-nav { background: white; border-bottom: 1px solid #E5E7EB; padding: 0 40px; height: 64px; display: flex; align-items: center; gap: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .buyer-nav .logo { font-size: 20px; font-weight: 800; color: #1A56DB; white-space: nowrap; }
+  .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .status-active { background: #DCFCE7; color: #15803D; }
+  .status-pending { background: #FEF9C3; color: #92400E; }
+  .status-shipped { background: #DBEAFE; color: #1E40AF; }
+  .status-delivered { background: #D1FAE5; color: #065F46; }
+  .status-cancelled { background: #FEE2E2; color: #991B1B; }
+  .timeline-step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .timeline-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+  .timeline-dot.done { background: #16A34A; color: white; }
+  .timeline-dot.current { background: #D97706; color: white; }
+  .timeline-dot.future { background: #E5E7EB; color: #6B7280; }
+  .timeline-dot.cancelled { background: #DC2626; color: white; }
+  .timeline-line { height: 2px; flex: 1; background: #E5E7EB; margin-top: 18px; }
+  .timeline-line.done { background: #16A34A; }
+  .timeline-line.partial { background: linear-gradient(to right, #16A34A 50%, #E5E7EB 50%); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  PAGE HEADER                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="bg-white border-b border-gray-200 px-10 py-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-1 rounded mr-2">SCR-008</span>
+      <span class="text-lg font-bold text-gray-900">Order Tracking</span>
+      <span class="text-sm text-gray-500 ml-3">Route: /orders/track/{token} · CSR · Minimal buyer shell · Guest accessible</span>
+    </div>
+    <div class="text-xs text-gray-400">ShopNest · Phase 5 UX · 2026-05-15</div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="text-sm font-bold text-blue-800 mb-2">States in this screen (8):</div>
+  <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-blue-700">
+    <a href="#state-1" class="hover:underline">1 · Active (Payment Confirmed)</a>
+    <a href="#state-2" class="hover:underline">2 · Loading Skeleton</a>
+    <a href="#state-3" class="hover:underline">3 · Shipped with AWB</a>
+    <a href="#state-4" class="hover:underline">4 · Delivered</a>
+    <a href="#state-5" class="hover:underline">5 · Cancellable (Pre-confirm)</a>
+    <a href="#state-6" class="hover:underline">6 · Cancellation Blocked</a>
+    <a href="#state-7" class="hover:underline">7 · Cancelled</a>
+    <a href="#state-8" class="hover:underline">8 · Invalid Token</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  REUSABLE MINIMAL NAV COMPONENT (annotated inline)     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<!-- ═══ STATE 1 — Active (Payment Confirmed) ══════════════ -->
+<div id="state-1">
+  <div class="state-banner">STATE 1 · Active — Payment Confirmed · Trigger: Valid token → GET /api/v1/orders/track/{token} returns status=PAYMENT_CONFIRMED</div>
+  <div class="state-section">
+
+    <!-- Minimal Nav -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <div style="width: 100%; max-width: 680px;">
+
+        <!-- Order Header -->
+        <div class="mb-2 flex items-start justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+              Order #SN-2026-001234
+              <span class="ann" title="Annotation 1">1</span>
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">Placed 14 May 2026 · 2 items</p>
+          </div>
+          <span class="badge status-pending mt-1">PAYMENT CONFIRMED</span>
+        </div>
+
+        <!-- Status Timeline -->
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 mt-5">
+          <div class="text-sm font-semibold text-gray-700 mb-5">Order Status</div>
+          <div role="list" aria-label="Order status timeline" class="flex items-start">
+            <!-- Step 1 — Done -->
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done" aria-current="step">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Payment<br/>Confirmed</div>
+              <div class="text-xs text-center text-gray-400 mt-0.5">14 May 2026</div>
+            </div>
+            <div class="timeline-line future mt-0" style="margin-top: 18px;"></div>
+            <!-- Step 2 — Future -->
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot future">2</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Processing</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <!-- Step 3 — Future -->
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot future">3</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Shipped</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <!-- Step 4 — Future -->
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot future">4</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Delivered</div>
+            </div>
+          </div>
+          <span class="ann" title="Annotation 2">2</span>
+        </div>
+
+        <!-- Items -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
+          <div class="text-sm font-semibold text-gray-700 mb-4">Items in this order</div>
+          <!-- Item Row -->
+          <div class="flex items-center gap-4">
+            <div class="w-20 h-20 bg-blue-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">👗</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Blue Cotton Kurti</p>
+              <p class="text-xs text-gray-500 mt-0.5">Size: M · Colour: Blue</p>
+              <p class="text-xs text-gray-500">Qty: 1 · Sold by <span class="text-blue-600">Priya's Boutique</span></p>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <p class="text-sm font-bold text-gray-900">₹999.00</p>
+              <span class="ann" title="Annotation 3">3</span>
+            </div>
+          </div>
+          <hr class="my-4 border-gray-100" />
+          <div class="flex items-center gap-4">
+            <div class="w-20 h-20 bg-orange-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">👜</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Woven Jute Handbag</p>
+              <p class="text-xs text-gray-500 mt-0.5">Colour: Natural</p>
+              <p class="text-xs text-gray-500">Qty: 1 · Sold by <span class="text-blue-600">Priya's Boutique</span></p>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <p class="text-sm font-bold text-gray-900">₹649.00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two-col: Address + Summary -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <!-- Delivery Address -->
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <div class="text-sm font-semibold text-gray-700 mb-3">Delivery Address</div>
+            <p class="text-sm font-medium text-gray-900">Rahul Kumar</p>
+            <p class="text-sm text-gray-600 mt-1">42, Green Park Extension</p>
+            <p class="text-sm text-gray-600">New Delhi — 110016</p>
+            <p class="text-sm text-gray-600">Delhi, India</p>
+            <p class="text-sm text-gray-500 mt-1">📞 +91 98765 43210</p>
+          </div>
+          <!-- Order Summary -->
+          <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <div class="text-sm font-semibold text-gray-700 mb-3">Order Summary</div>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between text-gray-600"><span>Subtotal (2 items)</span><span>₹1,648.00</span></div>
+              <div class="flex justify-between text-gray-600"><span>Shipping</span><span class="text-green-600 font-medium">FREE</span></div>
+              <div class="flex justify-between text-gray-600"><span>GST (included)</span><span>₹0.00</span></div>
+              <hr class="border-gray-100" />
+              <div class="flex justify-between font-bold text-gray-900"><span>Total Paid</span><span>₹1,648.00</span></div>
+              <div class="text-xs text-gray-400 mt-1">Paid via UPI · 14 May 2026 11:32 AM</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cancel Button -->
+        <div class="flex justify-center mt-2 pb-4">
+          <button class="px-8 py-2.5 text-sm font-semibold text-orange-600 border-2 border-orange-400 rounded-xl hover:bg-orange-50 cursor-pointer bg-white">
+            Cancel Order
+          </button>
+          <span class="ann" title="Annotation 4">4</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mt-6 max-w-2xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">① Token URL:</span> URL contains HMAC-SHA256 signed token (generated at order creation) — no authentication required. Guests who checked out can track their order. Token expires after 90 days.</div>
+      <div class="ann-block"><span class="font-bold">② Timeline accessibility:</span> <code>role="list"</code> on timeline wrapper; each step <code>role="listitem"</code>; current step has <code>aria-current="step"</code> (WCAG 1.3.1). Done steps use ✓ with green background for sighted users.</div>
+      <div class="ann-block"><span class="font-bold">③ Product image:</span> alt="Blue Cotton Kurti product image" on actual <code>&lt;img&gt;</code> tag (WCAG 1.1.1). Icon placeholder shown in wireframe only.</div>
+      <div class="ann-block"><span class="font-bold">④ Cancel Order visibility:</span> Button shown only when <code>status=PAYMENT_CONFIRMED</code> — before seller begins processing. Hidden once seller confirms (BR-002).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATE 2 — Loading Skeleton ═══════════════════════ -->
+<div id="state-2">
+  <div class="state-banner">STATE 2 · Loading Skeleton · Trigger: Page load — awaiting GET /api/v1/orders/track/{token} response</div>
+  <div class="state-section">
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+    <div class="mt-10 flex justify-center">
+      <div style="width: 100%; max-width: 680px;">
+        <!-- Order header shimmer -->
+        <div class="flex justify-between mb-6">
+          <div>
+            <div class="skeleton h-7 w-56 mb-2"></div>
+            <div class="skeleton h-4 w-36"></div>
+          </div>
+          <div class="skeleton h-6 w-32 rounded-full"></div>
+        </div>
+        <!-- Timeline shimmer -->
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4">
+          <div class="skeleton h-4 w-24 mb-5"></div>
+          <div class="flex items-center gap-2">
+            <div class="skeleton w-9 h-9 rounded-full flex-shrink-0"></div>
+            <div class="skeleton h-2 flex-1"></div>
+            <div class="skeleton w-9 h-9 rounded-full flex-shrink-0"></div>
+            <div class="skeleton h-2 flex-1"></div>
+            <div class="skeleton w-9 h-9 rounded-full flex-shrink-0"></div>
+            <div class="skeleton h-2 flex-1"></div>
+            <div class="skeleton w-9 h-9 rounded-full flex-shrink-0"></div>
+          </div>
+          <div class="flex justify-between mt-3 px-2">
+            <div class="skeleton h-3 w-16"></div>
+            <div class="skeleton h-3 w-14"></div>
+            <div class="skeleton h-3 w-12"></div>
+            <div class="skeleton h-3 w-16"></div>
+          </div>
+        </div>
+        <!-- Item card shimmer -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
+          <div class="skeleton h-4 w-32 mb-4"></div>
+          <div class="flex gap-4">
+            <div class="skeleton w-20 h-20 rounded-lg flex-shrink-0"></div>
+            <div class="flex-1 space-y-2">
+              <div class="skeleton h-4 w-3/4"></div>
+              <div class="skeleton h-3 w-1/2"></div>
+              <div class="skeleton h-3 w-2/3"></div>
+            </div>
+            <div class="flex-shrink-0">
+              <div class="skeleton h-5 w-16"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Address + Summary shimmer -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="bg-white border border-gray-200 rounded-xl p-5 space-y-2">
+            <div class="skeleton h-4 w-28 mb-3"></div>
+            <div class="skeleton h-3 w-3/4"></div>
+            <div class="skeleton h-3 w-full"></div>
+            <div class="skeleton h-3 w-2/3"></div>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5 space-y-2">
+            <div class="skeleton h-4 w-28 mb-3"></div>
+            <div class="skeleton h-3 w-full"></div>
+            <div class="skeleton h-3 w-full"></div>
+            <div class="skeleton h-3 w-2/3"></div>
+            <div class="skeleton h-5 w-full mt-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 max-w-2xl mx-auto">
+      <div class="ann-block"><span class="font-bold">Skeleton pattern:</span> All content placeholders use shimmer animation. No spinner — skeleton prevents layout shift (CLS improvement). Loading state typically &lt;200ms on good mobile; shown as fallback.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATE 3 — Shipped with AWB ═══════════════════════ -->
+<div id="state-3">
+  <div class="state-banner">STATE 3 · Shipped with AWB · Trigger: GET returns status=SHIPPED; seller has entered AWB number</div>
+  <div class="state-section">
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+    <div class="mt-10 flex justify-center">
+      <div style="width: 100%; max-width: 680px;">
+        <div class="mb-2 flex items-start justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Order #SN-2026-001234</h1>
+            <p class="text-sm text-gray-500 mt-1">Placed 14 May 2026</p>
+          </div>
+          <span class="badge status-shipped mt-1">SHIPPED</span>
+        </div>
+        <!-- Timeline — Shipped as current -->
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 mt-5">
+          <div class="text-sm font-semibold text-gray-700 mb-5">Order Status</div>
+          <div role="list" aria-label="Order status timeline" class="flex items-start">
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Payment<br/>Confirmed</div>
+            </div>
+            <div class="timeline-line done" style="margin-top: 18px;"></div>
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Processing</div>
+            </div>
+            <div class="timeline-line done" style="margin-top: 18px;"></div>
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot current" aria-current="step">🚚</div>
+              <div class="text-xs text-center mt-2 font-semibold text-amber-700">Shipped</div>
+              <div class="text-xs text-center text-gray-400 mt-0.5">15 May 2026</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot future">4</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Delivered</div>
+            </div>
+          </div>
+        </div>
+        <!-- Shipping Info Card -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-4">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-2xl">📦</span>
+            <div>
+              <div class="text-sm font-bold text-blue-900">Shipped via Delhivery</div>
+              <div class="text-xs text-blue-600 mt-0.5">Expected delivery: 18 May 2026</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between bg-white border border-blue-200 rounded-lg px-4 py-3">
+            <div>
+              <div class="text-xs text-gray-500">AWB / Tracking Number</div>
+              <div class="text-sm font-mono font-bold text-gray-900 mt-0.5">1234567890</div>
+            </div>
+            <button class="px-3 py-1.5 text-xs font-semibold text-blue-700 border border-blue-400 rounded-lg hover:bg-blue-50">Copy AWB</button>
+          </div>
+          <p class="text-xs text-blue-600 mt-3">Track your package directly on the Delhivery website using the AWB number above.</p>
+        </div>
+        <!-- Item -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-blue-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0"><span class="text-xl">👗</span></div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Blue Cotton Kurti</p>
+              <p class="text-xs text-gray-500">Qty: 1 · Sold by Priya's Boutique</p>
+            </div>
+            <div class="text-sm font-bold text-gray-900">₹999.00</div>
+          </div>
+        </div>
+        <!-- Cancel unavailable -->
+        <div class="text-center py-2">
+          <p class="text-sm text-gray-400 italic">Order has been shipped — cancellation not available</p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 max-w-2xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">AWB entered by seller:</span> Seller manually enters AWB in seller dashboard (carrier integration is post-MVP per CLAUDE.md). ShopNest stores AWB string on SubOrder and surfaces it here.</div>
+      <div class="ann-block"><span class="font-bold">Cancel unavailable post-ship:</span> Per BR-002, cancellation is only available in PAYMENT_CONFIRMED status. Once shipped, text replaces the button to avoid user confusion.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATE 4 — Delivered ═══════════════════════════════ -->
+<div id="state-4">
+  <div class="state-banner">STATE 4 · Delivered · Trigger: GET returns status=DELIVERED</div>
+  <div class="state-section">
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+    <div class="mt-10 flex justify-center">
+      <div style="width: 100%; max-width: 680px;">
+        <!-- Success Banner -->
+        <div class="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl p-4 mb-5">
+          <span class="text-2xl">✅</span>
+          <div>
+            <p class="text-sm font-bold text-green-800">Your order has been delivered!</p>
+            <p class="text-xs text-green-600 mt-0.5">Delivered on 18 May 2026 · Thank you for shopping with ShopNest</p>
+          </div>
+        </div>
+        <div class="mb-2 flex items-start justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Order #SN-2026-001234</h1>
+            <p class="text-sm text-gray-500 mt-1">Placed 14 May 2026</p>
+          </div>
+          <span class="badge status-delivered mt-1">DELIVERED</span>
+        </div>
+        <!-- Timeline — all done -->
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 mt-5">
+          <div class="text-sm font-semibold text-gray-700 mb-5">Order Status</div>
+          <div role="list" aria-label="Order status timeline" class="flex items-start">
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Payment<br/>Confirmed</div>
+            </div>
+            <div class="timeline-line done" style="margin-top: 18px;"></div>
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Processing</div>
+            </div>
+            <div class="timeline-line done" style="margin-top: 18px;"></div>
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Shipped</div>
+            </div>
+            <div class="timeline-line done" style="margin-top: 18px;"></div>
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done" aria-current="step">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Delivered</div>
+              <div class="text-xs text-center text-gray-400 mt-0.5">18 May 2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-blue-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0"><span class="text-xl">👗</span></div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Blue Cotton Kurti</p>
+              <p class="text-xs text-gray-500">Qty: 1 · Sold by Priya's Boutique</p>
+            </div>
+            <div class="text-sm font-bold text-gray-900">₹999.00</div>
+          </div>
+        </div>
+        <div class="text-center py-2">
+          <p class="text-xs text-gray-400">Returns &amp; exchanges are post-MVP. Contact support for issues with your order.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATE 5 — Cancellable (Pre-confirmation) ══════════ -->
+<div id="state-5">
+  <div class="state-banner">STATE 5 · Cancellable — Pre-confirmation · Trigger: User clicks "Cancel Order" (status=PAYMENT_CONFIRMED)</div>
+  <div class="state-section">
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+    <div class="mt-10 flex justify-center">
+      <div style="width: 100%; max-width: 680px;">
+        <div class="mb-2 flex items-start justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Order #SN-2026-001234</h1>
+            <p class="text-sm text-gray-500 mt-1">Placed 14 May 2026</p>
+          </div>
+          <span class="badge status-pending mt-1">PAYMENT CONFIRMED</span>
+        </div>
+        <!-- Same timeline as State 1 (abbreviated) -->
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 mt-5">
+          <div class="flex items-start">
+            <div class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Payment<br/>Confirmed</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <div class="timeline-step">
+              <div class="timeline-dot future">2</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Processing</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <div class="timeline-step">
+              <div class="timeline-dot future">3</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Shipped</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <div class="timeline-step">
+              <div class="timeline-dot future">4</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Delivered</div>
+            </div>
+          </div>
+        </div>
+        <!-- Item -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-blue-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0"><span class="text-xl">👗</span></div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Blue Cotton Kurti</p>
+              <p class="text-xs text-gray-500">Qty: 1 · Sold by Priya's Boutique</p>
+            </div>
+            <div class="text-sm font-bold text-gray-900">₹999.00</div>
+          </div>
+        </div>
+        <!-- Cancel + inline confirmation -->
+        <div class="flex flex-col items-center gap-3 py-2">
+          <button class="px-8 py-2.5 text-sm font-semibold text-red-600 border-2 border-red-400 rounded-xl hover:bg-red-50 bg-white">
+            Cancel Order
+          </button>
+          <!-- Inline Confirmation Box (shown after click) -->
+          <div role="alert" class="w-full bg-red-50 border border-red-200 rounded-xl p-5 mt-2">
+            <div class="flex items-start gap-3 mb-4">
+              <span class="text-xl">⚠️</span>
+              <div>
+                <p class="text-sm font-bold text-red-800">Are you sure you want to cancel this order?</p>
+                <p class="text-sm text-red-700 mt-1">You will receive a full refund of <strong>₹1,648.00</strong> within 3–7 business days to your original payment method.</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button class="flex-1 py-2.5 text-sm font-bold text-white bg-red-600 border-none rounded-xl cursor-pointer">Yes, Cancel Order</button>
+              <button class="flex-1 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl cursor-pointer">Keep Order</button>
+            </div>
+          </div>
+          <span class="ann" title="Annotation 5">5</span>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 max-w-2xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">⑤ Inline confirmation:</span> Avoids full modal — keeps user on page with immediate visual context. Reduces mobile drop-off vs. modal dismiss patterns. Confirmation box uses <code>role="alert"</code> for screen reader announcement.</div>
+      <div class="ann-block"><span class="font-bold">⑥ Cancel API call:</span> <code>POST /api/v1/orders/{'{id}'}/cancel</code> → triggers Razorpay refund via Refunds API immediately. Idempotency ensured via <code>WebhookIdempotencyLog.razorpay_webhook_id</code> unique constraint.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATE 6 — Cancellation Blocked ═══════════════════ -->
+<div id="state-6">
+  <div class="state-banner">STATE 6 · Cancellation Blocked · Trigger: GET returns status=PROCESSING — seller has confirmed order (BR-002)</div>
+  <div class="state-section">
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+    <div class="mt-10 flex justify-center">
+      <div style="width: 100%; max-width: 680px;">
+        <div class="mb-2 flex items-start justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Order #SN-2026-001234</h1>
+            <p class="text-sm text-gray-500 mt-1">Placed 14 May 2026</p>
+          </div>
+          <span class="badge status-pending mt-1">PROCESSING</span>
+        </div>
+        <!-- Timeline — Processing is current -->
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 mt-5">
+          <div class="flex items-start">
+            <div class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Payment<br/>Confirmed</div>
+            </div>
+            <div class="timeline-line done" style="margin-top: 18px;"></div>
+            <div class="timeline-step">
+              <div class="timeline-dot current" aria-current="step">⚙️</div>
+              <div class="text-xs text-center mt-2 font-semibold text-amber-700">Processing</div>
+              <div class="text-xs text-center text-gray-400 mt-0.5">15 May 2026</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <div class="timeline-step">
+              <div class="timeline-dot future">3</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Shipped</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px;"></div>
+            <div class="timeline-step">
+              <div class="timeline-dot future">4</div>
+              <div class="text-xs text-center mt-2 text-gray-500">Delivered</div>
+            </div>
+          </div>
+        </div>
+        <!-- Items -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-blue-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0"><span class="text-xl">👗</span></div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Blue Cotton Kurti</p>
+              <p class="text-xs text-gray-500">Qty: 1 · Sold by Priya's Boutique</p>
+            </div>
+            <div class="text-sm font-bold text-gray-900">₹999.00</div>
+          </div>
+        </div>
+        <!-- Cancellation blocked message -->
+        <div class="text-center py-2">
+          <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-xl px-5 py-3 text-sm text-blue-700">
+            <span class="text-blue-500 text-base">ℹ️</span>
+            <span>Cancellation not available — seller is processing your order.</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-2">Business Rule BR-002: cancellation only available before seller confirms</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATE 7 — Cancelled ═══════════════════════════════ -->
+<div id="state-7">
+  <div class="state-banner">STATE 7 · Cancelled · Trigger: GET returns status=CANCELLED — buyer had cancelled order</div>
+  <div class="state-section">
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+    <div class="mt-10 flex justify-center">
+      <div style="width: 100%; max-width: 680px;">
+        <div class="mb-2 flex items-start justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Order #SN-2026-001234</h1>
+            <p class="text-sm text-gray-500 mt-1">Placed 14 May 2026 · Cancelled 14 May 2026</p>
+          </div>
+          <span class="badge status-cancelled mt-1">CANCELLED</span>
+        </div>
+        <!-- Timeline — Cancelled replaces Delivered -->
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-4 mt-5">
+          <div class="text-sm font-semibold text-gray-700 mb-5">Order Status</div>
+          <div role="list" aria-label="Order status timeline" class="flex items-start">
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot done">✓</div>
+              <div class="text-xs text-center mt-2 font-semibold text-green-700">Payment<br/>Confirmed</div>
+            </div>
+            <div class="timeline-line done" style="margin-top: 18px; background: #DC2626;"></div>
+            <div role="listitem" class="timeline-step">
+              <div class="timeline-dot cancelled" aria-current="step" style="font-size:18px; font-weight: 900;">✕</div>
+              <div class="text-xs text-center mt-2 font-semibold text-red-700">Cancelled</div>
+              <div class="text-xs text-center text-gray-400 mt-0.5">14 May 2026</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px; opacity: 0.3;"></div>
+            <div role="listitem" class="timeline-step" style="opacity: 0.3;">
+              <div class="timeline-dot future" style="background: #E5E7EB; color: #D1D5DB;">3</div>
+              <div class="text-xs text-center mt-2 text-gray-300">Shipped</div>
+            </div>
+            <div class="timeline-line future" style="margin-top: 18px; opacity: 0.3;"></div>
+            <div role="listitem" class="timeline-step" style="opacity: 0.3;">
+              <div class="timeline-dot future" style="background: #E5E7EB; color: #D1D5DB;">4</div>
+              <div class="text-xs text-center mt-2 text-gray-300">Delivered</div>
+            </div>
+          </div>
+        </div>
+        <!-- Refund Notice -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-4">
+          <div class="flex items-start gap-3">
+            <span class="text-xl">💸</span>
+            <div>
+              <p class="text-sm font-bold text-amber-900">Refund initiated</p>
+              <p class="text-sm text-amber-800 mt-1">₹1,648.00 will be returned to your original payment method within <strong>3–7 business days</strong>.</p>
+              <p class="text-xs text-amber-700 mt-2">Refund ID: rfnd_xyz123abc · Initiated 14 May 2026</p>
+            </div>
+          </div>
+        </div>
+        <!-- Item (greyed) -->
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-4 opacity-60">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0"><span class="text-xl grayscale">👗</span></div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-600 line-through">Blue Cotton Kurti</p>
+              <p class="text-xs text-gray-400">Qty: 1 · Sold by Priya's Boutique</p>
+            </div>
+            <div class="text-sm font-bold text-gray-400 line-through">₹999.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATE 8 — Invalid Token ══════════════════════════ -->
+<div id="state-8">
+  <div class="state-banner">STATE 8 · Invalid Token · Trigger: GET /api/v1/orders/track/{token} returns 404 or 410 (expired/invalid HMAC token)</div>
+  <div class="state-section">
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <div class="flex-1"></div>
+      <a href="#" class="text-sm text-blue-600 font-medium hover:underline">← Back to Home</a>
+    </div>
+    <div class="mt-20 flex justify-center pb-20">
+      <div class="text-center" style="max-width: 480px;">
+        <div role="alert">
+          <div class="text-7xl text-gray-300 mb-6">🔒</div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-3">This tracking link is invalid or expired</h2>
+          <p class="text-sm text-gray-500 mb-2">The link you followed may have expired or the order ID is incorrect.</p>
+          <p class="text-sm text-gray-500 mb-8">If you have an account, sign in to view all your orders.</p>
+          <div class="flex justify-center gap-3">
+            <button class="btn-primary px-6">Sign In to My Account</button>
+            <button class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50">Back to Home</button>
+          </div>
+          <p class="text-xs text-gray-400 mt-6">Tracking links are valid for 90 days from order placement date.</p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 max-w-2xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">Invalid token:</span> Backend returns HTTP 404 (not 200 with error body) to prevent token enumeration. <code>role="alert"</code> on the error container ensures screen readers announce the error state immediately (WCAG 4.1.3).</div>
+      <div class="ann-block"><span class="font-bold">Token security:</span> HMAC-SHA256 token uses order UUID + secret key. Tokens are not stored in DB — validated on the fly. 90-day expiry enforced server-side by checking order.created_at.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SPEC FOOTER -->
+<div class="spec-footer">
+  <div class="text-base font-bold text-white mb-4">SCR-008 — Spec Summary</div>
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="border-bottom: 1px solid #334155;">
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">States</th>
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">User Stories</th>
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">API Calls</th>
+        <th style="text-align: left; padding: 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">WCAG Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          8 states total<br/>
+          <span style="color: #94A3B8; font-size: 11px;">1 · Payment Confirmed<br/>2 · Loading Skeleton<br/>3 · Shipped + AWB<br/>4 · Delivered<br/>5 · Cancel Pre-confirm<br/>6 · Cancel Blocked<br/>7 · Cancelled<br/>8 · Invalid Token</span>
+        </td>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          US-019 — Track Order<br/>US-020 — Cancel Order<br/><span style="color: #94A3B8; font-size: 11px;">From REQUIREMENTS.md §3.3<br/>Business Rule BR-002</span>
+        </td>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          <code style="background: #0F172A; padding: 2px 6px; border-radius: 4px; font-size: 11px; display: block; margin-bottom: 4px;">GET /api/v1/orders/track/{'{token}'}</code>
+          <code style="background: #0F172A; padding: 2px 6px; border-radius: 4px; font-size: 11px; display: block;">POST /api/v1/orders/{'{id}'}/cancel</code>
+          <span style="color: #94A3B8; font-size: 11px; margin-top: 4px; display: block;">No auth required for GET · Cancel triggers Razorpay refund</span>
+        </td>
+        <td style="padding: 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          Timeline role="list" (1.3.1)<br/>aria-current="step" on active (1.3.1)<br/>Cancel confirm role="alert" (4.1.3)<br/>Invalid token role="alert" (4.1.3)<br/>Image alt text (1.1.1)<br/>Focus management on cancel (2.4.3)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="mt-6 text-xs text-gray-500 border-t border-gray-700 pt-4">
+    ShopNest · Phase 5 UX Design · SCR-008 Order Tracking · Generated 2026-05-15 · Review with Product Owner before Phase 6
+  </div>
+</div>
+
+</body>
+</html>

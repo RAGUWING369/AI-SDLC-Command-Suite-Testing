@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-020 — Admin Product Approval Queue · ShopNest UX Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 0; max-width: 100%; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-approve { background: #16A34A; color: white; border: none; border-radius: 12px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-reject { background: transparent; color: #DC2626; border: 2px solid #DC2626; border-radius: 12px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    .admin-layout { display: flex; min-height: calc(100vh - 56px); }
+    .admin-sidebar { width: 240px; flex-shrink: 0; background: #1E293B; padding: 16px; }
+    .admin-main { flex: 1; padding: 32px 40px; background: #F9FAFB; }
+    .admin-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #94A3B8; cursor: pointer; margin-bottom: 2px; }
+    .admin-nav-item.active { background: #334155; color: white; font-weight: 600; }
+    .admin-header { background: #1E293B; height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .data-table th { background: #F9FAFB; color: #6B7280; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #F3F4F6; color: #111827; vertical-align: middle; }
+    .data-table tr.expanded-row td { background: #EFF6FF; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-amber { background: #FEF9C3; color: #92400E; }
+    .badge-red { background: #FEE2E2; color: #991B1B; }
+    .tab-bar { display: flex; border-bottom: 2px solid #E5E7EB; margin-bottom: 20px; }
+    .tab { padding: 10px 20px; font-size: 14px; font-weight: 500; color: #6B7280; border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; }
+    .tab.active { color: #1A56DB; border-bottom-color: #1A56DB; font-weight: 600; }
+    .modal-card { background: white; border-radius: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); padding: 32px; max-width: 460px; width: 100%; }
+    .img-thumb { width: 48px; height: 48px; background: #E5E7EB; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #9CA3AF; text-align: center; flex-shrink: 0; }
+    .img-preview { width: 120px; height: 90px; background: #E5E7EB; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #9CA3AF; text-align: center; cursor: pointer; transition: transform 0.15s; border: 2px solid transparent; }
+    .img-preview:hover { transform: scale(1.05); border-color: #3B82F6; }
+    .ann-section { padding: 16px 40px 24px 40px; background: #FFFBEB; border-top: 1px solid #FDE68A; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN HEADER
+════════════════════════════════════════════════════════════════ -->
+<div style="background:#1E3A5F; color:white; padding:16px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div>
+    <div style="font-size:11px; font-weight:600; color:#93C5FD; text-transform:uppercase; letter-spacing:0.08em;">ShopNest UX Wireframe · Phase 5</div>
+    <div style="font-size:20px; font-weight:800; margin-top:2px;">SCR-020 — Admin Product Approval Queue</div>
+    <div style="font-size:12px; color:#CBD5E1; margin-top:2px;">Route: /admin/products · CSR · Admin Sidebar Shell · 7 States</div>
+  </div>
+  <div style="font-size:12px; color:#94A3B8; text-align:right;">
+    <div>Phase 5 — UX Design</div>
+    <div style="margin-top:2px;">2026-05-15</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div style="font-size:12px; font-weight:700; color:#1E40AF; margin-bottom:8px;">TABLE OF CONTENTS</div>
+  <div style="display:flex; gap:24px; flex-wrap:wrap;">
+    <a href="#s1" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 1 — Queue Default (Pending Tab)</a>
+    <a href="#s2" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 2 — Loading Skeleton</a>
+    <a href="#s3" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 3 — Empty Queue</a>
+    <a href="#s4" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 4 — Product Row Expanded</a>
+    <a href="#s5" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 5 — Image Enlarged</a>
+    <a href="#s6" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 6 — Approve Action</a>
+    <a href="#s7" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 7 — Reject Modal</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 1 — Queue Default (Pending Tab)
+════════════════════════════════════════════════════════════════ -->
+<div id="s1">
+  <div class="state-banner">STATE 1 · Queue Default (Pending Tab) · Trigger: Admin navigates to /admin/products — GET /api/v1/admin/products/?status=PENDING_REVIEW returns 4 results shown (7 total pending)</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+      <div style="flex:1;"></div>
+      <div style="width:32px; height:32px; border-radius:50%; background:#334155; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white;">A</div>
+    </div>
+
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+          <span style="margin-left:auto; background:#F59E0B; color:#1F2937; font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px;">7</span>
+          <span class="ann">1</span>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="admin-main">
+        <div style="margin-bottom:24px;">
+          <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0;">Product Approvals</h1>
+          <div style="font-size:13px; color:#6B7280; margin-top:4px;">Review and approve seller product listings</div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar" role="tablist">
+          <div class="tab active" role="tab" aria-selected="true">Pending <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">7</span></div>
+          <div class="tab" role="tab" aria-selected="false">Approved <span class="ann">3</span></div>
+          <div class="tab" role="tab" aria-selected="false">Rejected</div>
+        </div>
+
+        <!-- Data Table -->
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:56px;"></th>
+                <th>Product Name <span class="ann">2</span></th>
+                <th>Seller</th>
+                <th>Price</th>
+                <th>Submitted</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr>
+                <td><div class="img-thumb">IMG</div></td>
+                <td><div style="font-weight:600; color:#111827;">Blue Cotton Kurti</div><div style="font-size:12px; color:#6B7280;">Women's Clothing</div></td>
+                <td><div style="font-size:13px; color:#374151;">Priya's Boutique</div></td>
+                <td><div style="font-weight:600;">₹999</div></td>
+                <td>14 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">View <span style="font-size:10px;">▼</span></button></td>
+              </tr>
+              <!-- Row 2 -->
+              <tr>
+                <td><div class="img-thumb">IMG</div></td>
+                <td><div style="font-weight:600; color:#111827;">Green Embroidered Saree</div><div style="font-size:12px; color:#6B7280;">Women's Clothing</div></td>
+                <td><div style="font-size:13px; color:#374151;">Priya's Boutique</div></td>
+                <td><div style="font-weight:600;">₹2,499</div></td>
+                <td>13 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">View <span style="font-size:10px;">▼</span></button></td>
+              </tr>
+              <!-- Row 3 -->
+              <tr>
+                <td><div class="img-thumb">IMG</div></td>
+                <td><div style="font-weight:600; color:#111827;">Red Silk Dupatta</div><div style="font-size:12px; color:#6B7280;">Accessories</div></td>
+                <td><div style="font-size:13px; color:#374151;">Vikram Handicrafts</div></td>
+                <td><div style="font-weight:600;">₹599</div></td>
+                <td>13 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">View <span style="font-size:10px;">▼</span></button></td>
+              </tr>
+              <!-- Row 4 -->
+              <tr>
+                <td><div class="img-thumb">IMG</div></td>
+                <td><div style="font-weight:600; color:#111827;">Leather Wallet</div><div style="font-size:12px; color:#6B7280;">Men's Accessories</div></td>
+                <td><div style="font-size:13px; color:#374151;">Vikram Handicrafts</div></td>
+                <td><div style="font-weight:600;">₹1,299</div></td>
+                <td>12 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">View <span style="font-size:10px;">▼</span></button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 16px; background:#F9FAFB; border-top:1px solid #E5E7EB; font-size:12px; color:#6B7280;">Showing 4 of 7 pending products · <a href="#" style="color:#1D4ED8; text-decoration:none;">Load more</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="ann-section">
+      <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:8px;">STATE 1 ANNOTATIONS</div>
+      <div class="ann-block"><span class="ann">1</span> Product queue is critical for marketplace supply — admin should process within OQ-004 SLA (pending stakeholder confirmation). Sidebar badge provides constant visibility of queue depth.</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">2</span> Table shows 48×48px thumbnail from CloudFront CDN. Full-size images reviewable in expanded row (State 4). Thumbnails use <code>loading="lazy"</code> for performance.</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">3</span> Tab counts update after each approve/reject action without full page reload — optimistic UI updates counter immediately, confirmed on next API response.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 2 — Loading Skeleton
+════════════════════════════════════════════════════════════════ -->
+<div id="s2">
+  <div class="state-banner">STATE 2 · Loading Skeleton · Trigger: Page load in-flight — GET /api/v1/admin/products/?status=PENDING_REVIEW pending response</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="margin-bottom:8px;"><div class="skeleton" style="height:14px; width:80px; margin:0 12px;"></div></div>
+        <div style="padding:10px 12px;"><div class="skeleton" style="height:16px; width:100px;"></div></div>
+        <div style="padding:10px 12px;"><div class="skeleton" style="height:16px; width:120px;"></div></div>
+        <div style="padding:10px 12px;"><div class="skeleton" style="height:16px; width:130px;"></div></div>
+      </div>
+      <div class="admin-main">
+        <div class="skeleton" style="height:28px; width:220px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:14px; width:300px; margin-bottom:24px;"></div>
+        <div style="display:flex; gap:16px; margin-bottom:20px;">
+          <div class="skeleton" style="height:36px; width:130px;"></div>
+          <div class="skeleton" style="height:36px; width:100px;"></div>
+          <div class="skeleton" style="height:36px; width:100px;"></div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr><th style="width:56px;"></th><th>Product Name</th><th>Seller</th><th>Price</th><th>Submitted</th><th style="text-align:right;">Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><div class="skeleton" style="width:48px; height:48px; border-radius:8px;"></div></td><td><div class="skeleton" style="height:16px; width:140px; margin-bottom:6px;"></div><div class="skeleton" style="height:12px; width:90px;"></div></td><td><div class="skeleton" style="height:14px; width:120px;"></div></td><td><div class="skeleton" style="height:16px; width:60px;"></div></td><td><div class="skeleton" style="height:14px; width:80px;"></div></td><td style="text-align:right;"><div class="skeleton" style="height:32px; width:72px; margin-left:auto;"></div></td></tr>
+              <tr><td><div class="skeleton" style="width:48px; height:48px; border-radius:8px;"></div></td><td><div class="skeleton" style="height:16px; width:160px; margin-bottom:6px;"></div><div class="skeleton" style="height:12px; width:90px;"></div></td><td><div class="skeleton" style="height:14px; width:110px;"></div></td><td><div class="skeleton" style="height:16px; width:60px;"></div></td><td><div class="skeleton" style="height:14px; width:80px;"></div></td><td style="text-align:right;"><div class="skeleton" style="height:32px; width:72px; margin-left:auto;"></div></td></tr>
+              <tr><td><div class="skeleton" style="width:48px; height:48px; border-radius:8px;"></div></td><td><div class="skeleton" style="height:16px; width:120px; margin-bottom:6px;"></div><div class="skeleton" style="height:12px; width:80px;"></div></td><td><div class="skeleton" style="height:14px; width:130px;"></div></td><td><div class="skeleton" style="height:16px; width:50px;"></div></td><td><div class="skeleton" style="height:14px; width:80px;"></div></td><td style="text-align:right;"><div class="skeleton" style="height:32px; width:72px; margin-left:auto;"></div></td></tr>
+              <tr><td><div class="skeleton" style="width:48px; height:48px; border-radius:8px;"></div></td><td><div class="skeleton" style="height:16px; width:110px; margin-bottom:6px;"></div><div class="skeleton" style="height:12px; width:100px;"></div></td><td><div class="skeleton" style="height:14px; width:125px;"></div></td><td><div class="skeleton" style="height:16px; width:65px;"></div></td><td><div class="skeleton" style="height:14px; width:80px;"></div></td><td style="text-align:right;"><div class="skeleton" style="height:32px; width:72px; margin-left:auto;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 3 — Empty Queue
+════════════════════════════════════════════════════════════════ -->
+<div id="s3">
+  <div class="state-banner">STATE 3 · Empty Queue · Trigger: GET /api/v1/admin/products/?status=PENDING_REVIEW returns empty list — all submissions reviewed</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+        </div>
+      </div>
+      <div class="admin-main">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 24px 0;">Product Approvals</h1>
+        <div class="tab-bar">
+          <div class="tab active">Pending <span style="background:#F3F4F6; color:#6B7280; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">0</span></div>
+          <div class="tab">Approved</div>
+          <div class="tab">Rejected</div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; padding:64px 40px; text-align:center;">
+          <div style="font-size:48px; margin-bottom:16px;">📦</div>
+          <h2 style="font-size:20px; font-weight:700; color:#374151; margin:0 0 8px 0;">No products pending review.</h2>
+          <div style="font-size:14px; color:#6B7280;">All submissions have been processed. Check the Approved or Rejected tabs for history.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 4 — Product Row Expanded
+════════════════════════════════════════════════════════════════ -->
+<div id="s4">
+  <div class="state-banner">STATE 4 · Product Row Expanded · Trigger: Admin clicks "View ▼" on Blue Cotton Kurti row — expanded detail panel with images and full description shown</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="admin-nav-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Seller Queue
+        </div>
+        <div class="admin-nav-item active">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Product Queue
+          <span style="margin-left:auto; background:#F59E0B; color:#1F2937; font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px;">7</span>
+        </div>
+      </div>
+      <div class="admin-main">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 24px 0;">Product Approvals</h1>
+        <div class="tab-bar">
+          <div class="tab active">Pending <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">7</span></div>
+          <div class="tab">Approved</div>
+          <div class="tab">Rejected</div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr><th style="width:56px;"></th><th>Product Name</th><th>Seller</th><th>Price</th><th>Submitted</th><th style="text-align:right;">Actions</th></tr>
+            </thead>
+            <tbody>
+              <!-- Expanded row -->
+              <tr class="expanded-row" aria-expanded="true">
+                <td><div class="img-thumb" style="border:2px solid #3B82F6;">IMG</div></td>
+                <td><div style="font-weight:600; color:#1D4ED8;">Blue Cotton Kurti</div><div style="font-size:12px; color:#6B7280;">Women's Clothing</div></td>
+                <td>Priya's Boutique</td>
+                <td><div style="font-weight:600;">₹999</div></td>
+                <td>14 May 2026</td>
+                <td style="text-align:right;"><button style="background:#DBEAFE; color:#1D4ED8; border:1px solid #93C5FD; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">View <span style="font-size:10px;">▲</span></button></td>
+              </tr>
+              <!-- Expanded detail panel -->
+              <tr>
+                <td colspan="6" style="background:#EFF6FF; padding:0;">
+                  <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; margin:12px 16px; padding:24px;">
+                    <h3 style="font-size:16px; font-weight:700; color:#1E40AF; margin:0 0 20px 0;">Blue Cotton Kurti — Review</h3>
+
+                    <!-- Image gallery -->
+                    <div style="margin-bottom:20px;">
+                      <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">
+                        Product Images <span class="ann">6</span> <span style="font-size:11px; color:#6B7280; font-weight:400; text-transform:none;">(click to enlarge)</span>
+                      </div>
+                      <div style="display:flex; gap:12px;">
+                        <div style="text-align:center;">
+                          <div class="img-preview" title="Click to enlarge" role="button" aria-label="Product image 1 — click to enlarge" tabindex="0">
+                            <div style="font-size:10px; color:#9CA3AF;">Image 1<br/>120×90</div>
+                          </div>
+                          <div style="font-size:10px; color:#9CA3AF; margin-top:4px;">Click to enlarge</div>
+                        </div>
+                        <div style="text-align:center;">
+                          <div class="img-preview" title="Click to enlarge" role="button" aria-label="Product image 2 — click to enlarge" tabindex="0">
+                            <div style="font-size:10px; color:#9CA3AF;">Image 2<br/>120×90</div>
+                          </div>
+                          <div style="font-size:10px; color:#9CA3AF; margin-top:4px;">Click to enlarge</div>
+                        </div>
+                        <div style="text-align:center;">
+                          <div class="img-preview" title="Click to enlarge" role="button" aria-label="Product image 3 — click to enlarge" tabindex="0">
+                            <div style="font-size:10px; color:#9CA3AF;">Image 3<br/>120×90</div>
+                          </div>
+                          <div style="font-size:10px; color:#9CA3AF; margin-top:4px;">Click to enlarge</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Product details grid -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Product Name</div>
+                        <div style="font-size:14px; color:#111827; font-weight:600;">Blue Cotton Kurti</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Price</div>
+                        <div style="font-size:14px; color:#111827; font-weight:600;">₹999.00 <span style="font-size:12px; color:#6B7280; font-weight:400;">(99,900 paise)</span></div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Stock Units</div>
+                        <div style="font-size:14px; color:#111827;">50 units</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Category</div>
+                        <div style="font-size:14px; color:#111827;">Women's Clothing</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Seller <span class="ann">5</span></div>
+                        <div style="font-size:14px; color:#111827;">Priya's Boutique (Bangalore)</div>
+                        <div style="font-size:12px; color:#1D4ED8;">priya@example.com</div>
+                      </div>
+                      <div>
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Submitted</div>
+                        <div style="font-size:14px; color:#111827;">14 May 2026, 09:18 AM IST</div>
+                      </div>
+                      <div style="grid-column:1/-1;">
+                        <div style="font-size:11px; font-weight:600; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Description <span class="ann">4</span></div>
+                        <div style="font-size:14px; color:#111827; line-height:1.6; background:white; border:1px solid #E5E7EB; border-radius:8px; padding:12px;">
+                          Handloom cotton kurti, perfect for daily wear. Available in sizes S, M, L, XL. Material: 100% cotton. Wash care: gentle machine wash cold, do not bleach, tumble dry low. Designed for comfort and style — ideal for casual and semi-formal occasions.
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div style="display:flex; gap:12px; justify-content:flex-end;">
+                      <button class="btn-reject" aria-label="Reject Blue Cotton Kurti product listing">Reject</button>
+                      <button class="btn-approve" aria-label="Approve Blue Cotton Kurti product listing">Approve</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <!-- Other rows -->
+              <tr>
+                <td><div class="img-thumb">IMG</div></td>
+                <td><div style="font-weight:600;">Green Embroidered Saree</div><div style="font-size:12px; color:#6B7280;">Women's Clothing</div></td>
+                <td>Priya's Boutique</td><td>₹2,499</td><td>13 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+              <tr>
+                <td><div class="img-thumb">IMG</div></td>
+                <td><div style="font-weight:600;">Red Silk Dupatta</div><div style="font-size:12px; color:#6B7280;">Accessories</div></td>
+                <td>Vikram Handicrafts</td><td>₹599</td><td>13 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+              <tr>
+                <td><div class="img-thumb">IMG</div></td>
+                <td><div style="font-weight:600;">Leather Wallet</div><div style="font-size:12px; color:#6B7280;">Men's Accessories</div></td>
+                <td>Vikram Handicrafts</td><td>₹1,299</td><td>12 May 2026</td>
+                <td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="ann-section">
+      <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:8px;">STATE 4 ANNOTATIONS</div>
+      <div class="ann-block"><span class="ann">4</span> Full product description shown — admin must read to assess quality and accuracy. Minimum 100 characters enforced at seller submission time (validation in DRF serializer).</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">5</span> Seller email shown for admin to contact if description is ambiguous before rejecting (see OQ-004 — contact before rejecting borderline cases).</div>
+      <div class="ann-block" style="margin-top:6px;"><span class="ann">6</span> Images clickable to enlarge (State 5) — critical for image quality assessment. This was a key friction point identified in the Phase 5 cognitive walkthrough: admin cannot judge image quality from thumbnails alone.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 5 — Image Enlarged (Lightbox)
+════════════════════════════════════════════════════════════════ -->
+<div id="s5">
+  <div class="state-banner">STATE 5 · Image Enlarged (Lightbox) · Trigger: Admin clicks one of the 3 product image thumbnails in State 4 expanded panel</div>
+  <div class="state-section" style="position:relative; min-height:500px;">
+
+    <!-- Background (blurred State 4 context) -->
+    <div style="filter:blur(3px); pointer-events:none; min-height:300px;">
+      <div class="admin-header"><div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span></div></div>
+      <div style="height:260px; background:#F9FAFB; display:flex; align-items:center; justify-content:center;">
+        <div style="font-size:14px; color:#9CA3AF;">[State 4 product review content behind overlay]</div>
+      </div>
+    </div>
+
+    <!-- Lightbox overlay -->
+    <div role="dialog" aria-modal="true" aria-label="Product image enlarged view" style="position:absolute; inset:0; background:rgba(0,0,0,0.82); display:flex; align-items:center; justify-content:center; z-index:50;">
+      <div style="position:relative;">
+        <!-- Close button -->
+        <button aria-label="Close enlarged image view" style="position:absolute; top:-44px; right:0; width:36px; height:36px; border-radius:50%; background:white; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#1F2937;">×</button>
+
+        <!-- Large image placeholder -->
+        <div style="width:500px; height:400px; background:#D1D5DB; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px;" role="img" aria-label="Blue Cotton Kurti — product image 1 (enlarged)">
+          <svg width="48" height="48" fill="none" stroke="#9CA3AF" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div style="font-size:13px; color:#6B7280;">Blue Cotton Kurti — Image 1 (500×400px)</div>
+          <div style="font-size:11px; color:#9CA3AF;">Served from AWS CloudFront CDN</div>
+        </div>
+
+        <!-- Navigation hints -->
+        <div style="display:flex; justify-content:center; gap:8px; margin-top:16px;">
+          <div style="width:8px; height:8px; border-radius:50%; background:white;"></div>
+          <div style="width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.4);"></div>
+          <div style="width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.4);"></div>
+        </div>
+        <div style="text-align:center; margin-top:8px; font-size:11px; color:rgba(255,255,255,0.5);">Image 1 of 3 · Press Esc to close · ← → to navigate</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 6 — Approve Action
+════════════════════════════════════════════════════════════════ -->
+<div id="s6">
+  <div class="state-banner">STATE 6 · Approve Action · Trigger: Admin clicks "Approve" in expanded panel — POST /api/v1/admin/products/{id}/approve/ returns 200; product.status → ACTIVE</div>
+  <div class="state-section">
+
+    <div class="admin-header">
+      <div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span> <span style="font-size:13px; font-weight:500; color:#94A3B8; margin-left:8px;">Admin</span></div>
+    </div>
+
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div style="font-size:10px; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.08em; padding:0 12px; margin-bottom:8px;">Navigation</div>
+        <div class="admin-nav-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> Dashboard</div>
+        <div class="admin-nav-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> Seller Queue</div>
+        <div class="admin-nav-item active"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg> Product Queue <span style="margin-left:auto; background:#F59E0B; color:#1F2937; font-size:10px; font-weight:700; padding:1px 6px; border-radius:999px;">6</span></div>
+      </div>
+      <div class="admin-main">
+        <h1 style="font-size:24px; font-weight:800; color:#111827; margin:0 0 20px 0;">Product Approvals</h1>
+        <!-- Success toast banner -->
+        <div style="background:#F0FDF4; border:1px solid #86EFAC; border-radius:10px; padding:14px 16px; margin-bottom:20px; display:flex; align-items:flex-start; gap:10px;" role="status">
+          <span style="font-size:20px; line-height:1;">✅</span>
+          <div>
+            <div style="font-size:14px; font-weight:700; color:#15803D;">Blue Cotton Kurti approved.</div>
+            <div style="font-size:12px; color:#166534; margin-top:2px;">Product is now visible on the marketplace. Redis cache invalidated. Seller notified via AWS SES. <span class="ann">8</span></div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab active">Pending <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; margin-left:6px;">6</span></div>
+          <div class="tab">Approved</div>
+          <div class="tab">Rejected</div>
+        </div>
+        <div style="background:white; border:1px solid #E5E7EB; border-radius:12px; overflow:hidden;">
+          <table class="data-table">
+            <thead><tr><th style="width:56px;"></th><th>Product Name</th><th>Seller</th><th>Price</th><th>Submitted</th><th style="text-align:right;">Status</th></tr></thead>
+            <tbody>
+              <tr style="opacity:0.5; background:#F0FDF4;">
+                <td><div class="img-thumb" style="border:2px solid #86EFAC;">IMG</div></td>
+                <td><div style="font-weight:600;">Blue Cotton Kurti</div><div style="font-size:12px; color:#6B7280;">Women's Clothing</div></td>
+                <td>Priya's Boutique</td><td>₹999</td><td>14 May 2026</td>
+                <td style="text-align:right;"><span class="badge badge-green">✓ Approved</span></td>
+              </tr>
+              <tr><td><div class="img-thumb">IMG</div></td><td><div style="font-weight:600;">Green Embroidered Saree</div><div style="font-size:12px; color:#6B7280;">Women's Clothing</div></td><td>Priya's Boutique</td><td>₹2,499</td><td>13 May 2026</td><td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td></tr>
+              <tr><td><div class="img-thumb">IMG</div></td><td><div style="font-weight:600;">Red Silk Dupatta</div><div style="font-size:12px; color:#6B7280;">Accessories</div></td><td>Vikram Handicrafts</td><td>₹599</td><td>13 May 2026</td><td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td></tr>
+              <tr><td><div class="img-thumb">IMG</div></td><td><div style="font-weight:600;">Leather Wallet</div><div style="font-size:12px; color:#6B7280;">Men's Accessories</div></td><td>Vikram Handicrafts</td><td>₹1,299</td><td>12 May 2026</td><td style="text-align:right;"><button style="background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer;">View ▼</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="ann-section">
+      <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:8px;">STATE 6 ANNOTATIONS</div>
+      <div class="ann-block"><span class="ann">8</span> Approve = POST /api/v1/admin/products/{id}/approve/ → product.status → ACTIVE. Redis product catalog cache invalidated immediately. Product visible on marketplace within ~30s (cache TTL 1h but explicit invalidation on approval). Seller receives SES email notification.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 7 — Reject Modal
+════════════════════════════════════════════════════════════════ -->
+<div id="s7">
+  <div class="state-banner">STATE 7 · Reject Modal · Trigger: Admin clicks "Reject" in expanded panel — modal overlay requires rejection reason before API call is made</div>
+  <div class="state-section" style="position:relative;">
+
+    <!-- Blurred background -->
+    <div style="filter:blur(2px); pointer-events:none; min-height:360px;">
+      <div class="admin-header"><div style="font-size:18px; font-weight:800; color:white;">Shop<span style="color:#F97316;">Nest</span></div></div>
+      <div class="admin-layout" style="min-height:300px;">
+        <div class="admin-sidebar"></div>
+        <div class="admin-main"><h1 style="font-size:24px; font-weight:800; color:#111827;">Product Approvals</h1></div>
+      </div>
+    </div>
+
+    <!-- Modal overlay -->
+    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:50;">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reject-modal-title">
+        <h2 id="reject-modal-title" style="font-size:20px; font-weight:800; color:#111827; margin:0 0 6px 0;">Reject Product Listing</h2>
+        <div style="font-size:14px; color:#6B7280; margin-bottom:20px;">Product: <strong>Blue Cotton Kurti</strong> · Priya's Boutique</div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+            Rejection Reason <span style="color:#EF4444;">*</span>
+            <span class="ann">7</span>
+          </label>
+          <textarea class="form-field" rows="4" placeholder="Please explain why this product listing is rejected..." style="resize:vertical;" required aria-required="true">Product images are low quality and do not clearly show the product. Please upload high-resolution images showing front, back, and label. Minimum 800×800px required.</textarea>
+          <div style="font-size:11px; color:#6B7280; margin-top:6px; display:flex; align-items:flex-start; gap:4px;">
+            <span style="font-size:14px;">ℹ️</span>
+            This reason will be shown in the seller's product dashboard (SCR-003) AND emailed to them via AWS SES.
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button style="background:white; color:#374151; border:1px solid #D1D5DB; border-radius:12px; padding:8px 18px; font-size:14px; font-weight:600; cursor:pointer;">Cancel</button>
+          <button style="background:#DC2626; color:white; border:none; border-radius:12px; padding:8px 18px; font-size:14px; font-weight:600; cursor:pointer;" aria-label="Confirm rejection of Blue Cotton Kurti">Confirm Reject</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="ann-section" style="position:relative; z-index:0;">
+      <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:8px;">STATE 7 ANNOTATIONS</div>
+      <div class="ann-block"><span class="ann">7</span> Rejection reason stored in <code>product.rejection_reason</code> field; displayed inline in SCR-003 (seller product list) AND emailed via SES (BR-009). Enforced required field — blank reason blocked by DRF serializer validation.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SPEC FOOTER
+════════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-size:14px; font-weight:700; color:#F1F5F9; margin-bottom:16px;">SCR-020 — Admin Product Approval Queue · Specification</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">States</strong><br/>7 (Default, Loading, Empty, Expanded, Image Enlarged, Approve, Reject Modal)</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">User Stories</strong><br/>US-005, US-022, US-030</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">API Endpoints</strong><br/>GET /api/v1/admin/products/?status=PENDING_REVIEW<br/>POST /api/v1/admin/products/{id}/approve/<br/>POST /api/v1/admin/products/{id}/reject/</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">WCAG</strong><br/>Image enlarged view role="dialog" focus managed (2.1.2); enlarged image has alt text (1.1.1); reject reason required (3.3.2); tab roles (4.1.2); image thumbnails role="button" tabindex (2.1.1)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px; font-size:11px; color:#475569;">ShopNest · Phase 5 UX Design · Generated 2026-05-15 · Admin Product Queue</div>
+</div>
+
+</body>
+</html>

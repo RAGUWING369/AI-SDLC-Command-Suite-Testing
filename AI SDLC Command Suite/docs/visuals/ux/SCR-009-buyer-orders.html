@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SCR-009 — Buyer Order History · ShopNest UX Wireframe</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+  .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; margin-bottom: 0; }
+  .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; margin-bottom: 0; max-width: 1440px; }
+  .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; cursor: help; }
+  .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+  .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+  .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+  .buyer-nav { background: white; border-bottom: 1px solid #E5E7EB; padding: 0 40px; height: 64px; display: flex; align-items: center; gap: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .buyer-nav .logo { font-size: 20px; font-weight: 800; color: #1A56DB; white-space: nowrap; }
+  .buyer-nav .search-bar { flex: 1; border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 16px; font-size: 14px; background: #F9FAFB; }
+  .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .status-active { background: #DCFCE7; color: #15803D; }
+  .status-pending { background: #FEF9C3; color: #92400E; }
+  .status-shipped { background: #DBEAFE; color: #1E40AF; }
+  .status-delivered { background: #D1FAE5; color: #065F46; }
+  .status-cancelled { background: #FEE2E2; color: #991B1B; }
+  .order-card { border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; background: white; transition: box-shadow 0.15s; }
+  .order-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  PAGE HEADER                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="bg-white border-b border-gray-200 px-10 py-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-1 rounded mr-2">SCR-009</span>
+      <span class="text-lg font-bold text-gray-900">Buyer Order History</span>
+      <span class="text-sm text-gray-500 ml-3">Route: /orders · CSR · Buyer shell · Auth-gated</span>
+    </div>
+    <div class="text-xs text-gray-400">ShopNest · Phase 5 UX · 2026-05-15</div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="text-sm font-bold text-blue-800 mb-2">States in this screen (4):</div>
+  <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-blue-700">
+    <a href="#state-1" class="hover:underline">1 · Order List (Default)</a>
+    <a href="#state-2" class="hover:underline">2 · Loading Skeleton</a>
+    <a href="#state-3" class="hover:underline">3 · Empty State</a>
+    <a href="#state-4" class="hover:underline">4 · API Error</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 1 — Order List (Default)                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-1">
+  <div class="state-banner">STATE 1 · Order List (Default) · Trigger: Authenticated buyer navigates to /orders — GET /api/v1/orders/?buyer=me&page=1 returns 200 with orders</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav — Logged In -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500 cursor-pointer hover:text-gray-700">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600 cursor-pointer hover:text-gray-800">🛒 Cart (2)</span>
+      <!-- Logged-in avatar -->
+      <div class="flex items-center gap-2 cursor-pointer">
+        <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">RK</div>
+        <span class="text-sm font-medium text-gray-700">Rahul ▾</span>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="mt-8 max-w-3xl mx-auto">
+
+      <!-- Page Title Row -->
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">My Orders</h1>
+        <div class="text-sm text-gray-500">3 orders found</div>
+      </div>
+
+      <!-- Order List -->
+      <div role="list" aria-label="Order history">
+
+        <!-- Order Card 1 — Delivered -->
+        <div role="listitem" class="order-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-bold text-gray-900">#SN-2026-001234</span>
+              <span class="badge status-delivered">✓ DELIVERED</span>
+              <span class="ann" title="Annotation 3">3</span>
+            </div>
+            <span class="text-xs text-gray-400">18 May 2026</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <!-- Product Image -->
+            <div class="w-16 h-16 bg-blue-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">👗</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Blue Cotton Kurti</p>
+              <p class="text-xs text-gray-500 mt-0.5">Qty: 1</p>
+              <p class="text-xs text-gray-400">Sold by <span class="text-blue-600">Priya's Boutique</span></p>
+            </div>
+            <div class="text-right flex-shrink-0 flex flex-col items-end gap-2">
+              <span class="text-sm font-bold text-gray-900">₹999.00</span>
+              <a href="#" class="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                Track Order <span>→</span>
+              </a>
+              <span class="ann" title="Annotation 4">4</span>
+            </div>
+          </div>
+          <!-- Placed label + date on a sub-row -->
+          <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-xs text-gray-400">Placed: 14 May 2026 · 2 items total</span>
+            <span class="text-xs text-green-600 font-medium">Delivered 18 May 2026</span>
+          </div>
+        </div>
+
+        <!-- Order Card 2 — Processing (amber) -->
+        <div role="listitem" class="order-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-bold text-gray-900">#SN-2026-001198</span>
+              <span class="badge status-pending">⚙ PROCESSING</span>
+            </div>
+            <span class="text-xs text-gray-400">15 May 2026</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-amber-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">👟</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Casual Canvas Sneakers</p>
+              <p class="text-xs text-gray-500 mt-0.5">Qty: 1 · Size: UK 9</p>
+              <p class="text-xs text-gray-400">Sold by <span class="text-blue-600">StepUp Footwear</span></p>
+            </div>
+            <div class="text-right flex-shrink-0 flex flex-col items-end gap-2">
+              <span class="text-sm font-bold text-gray-900">₹1,499.00</span>
+              <a href="#" class="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                Track Order <span>→</span>
+              </a>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-xs text-gray-400">Placed: 15 May 2026 · 1 item</span>
+            <span class="text-xs text-amber-600 font-medium">Seller is processing your order</span>
+          </div>
+        </div>
+
+        <!-- Order Card 3 — Shipped (blue) -->
+        <div role="listitem" class="order-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-bold text-gray-900">#SN-2026-001056</span>
+              <span class="badge status-shipped">🚚 SHIPPED</span>
+            </div>
+            <span class="text-xs text-gray-400">12 May 2026</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-green-50 border border-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">📱</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">Wireless Bluetooth Earbuds Pro</p>
+              <p class="text-xs text-gray-500 mt-0.5">Qty: 1 · Colour: Black</p>
+              <p class="text-xs text-gray-400">Sold by <span class="text-blue-600">TechGadgets India</span></p>
+            </div>
+            <div class="text-right flex-shrink-0 flex flex-col items-end gap-2">
+              <span class="text-sm font-bold text-gray-900">₹2,299.00</span>
+              <a href="#" class="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                Track Order <span>→</span>
+              </a>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-xs text-gray-400">Placed: 12 May 2026 · 1 item</span>
+            <span class="text-xs text-blue-600 font-medium">Expected: 17 May 2026 · AWB: 9876543210</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex justify-center items-center gap-4 mt-6 pb-4">
+        <button disabled class="px-4 py-2 text-sm font-medium text-gray-300 bg-white border border-gray-200 rounded-lg cursor-not-allowed">← Previous</button>
+        <span class="text-sm text-gray-600">Page <strong>1</strong> of 1</span>
+        <button disabled class="px-4 py-2 text-sm font-medium text-gray-300 bg-white border border-gray-200 rounded-lg cursor-not-allowed">Next →</button>
+      </div>
+
+    </div>
+
+    <!-- Annotation Block -->
+    <div class="mt-6 max-w-3xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">① Ordering:</span> Orders listed newest-first (<code>created_at DESC</code>). Most recently placed order is most relevant to buyer — active/in-transit orders appear at top.</div>
+      <div class="ann-block"><span class="font-bold">② Product image:</span> Served from CloudFront CDN at 64×64px. <code>alt="{'{product name}'} thumbnail"</code> on actual <code>&lt;img&gt;</code> tag (WCAG 1.1.1). Emoji placeholders used in wireframe only.</div>
+      <div class="ann-block"><span class="font-bold">③ Status badge:</span> Uses identical design system colours as SCR-008 order tracking screen (consistency rule). Badge text includes icon prefix for non-colour-only communication (WCAG 1.4.1).</div>
+      <div class="ann-block"><span class="font-bold">④ "Track Order →" link:</span> Links to <code>/orders/track/{'{token}'}</code> for guest orders or <code>/orders/{'{id}'}</code> for authenticated buyers. Token fetched from order object in API response.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 2 — Loading Skeleton                            -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-2">
+  <div class="state-banner">STATE 2 · Loading Skeleton · Trigger: Page load — awaiting GET /api/v1/orders/?buyer=me&page=1 response</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav — Logged In -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600">🛒 Cart (2)</span>
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">RK</div>
+        <span class="text-sm font-medium text-gray-700">Rahul ▾</span>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div class="skeleton h-8 w-36"></div>
+        <div class="skeleton h-4 w-24"></div>
+      </div>
+
+      <!-- 3 Order Card Skeletons -->
+      <div class="space-y-3">
+        <!-- Skeleton Card 1 -->
+        <div class="order-card">
+          <!-- Top row: order num + badge + date -->
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="skeleton h-4 w-36"></div>
+              <div class="skeleton h-5 w-20 rounded-full"></div>
+            </div>
+            <div class="skeleton h-3 w-20"></div>
+          </div>
+          <!-- Main row: image + text + price -->
+          <div class="flex items-center gap-4">
+            <div class="skeleton w-16 h-16 rounded-lg flex-shrink-0"></div>
+            <div class="flex-1 space-y-2">
+              <div class="skeleton h-4 w-3/4"></div>
+              <div class="skeleton h-3 w-1/3"></div>
+              <div class="skeleton h-3 w-2/5"></div>
+            </div>
+            <div class="flex-shrink-0 flex flex-col items-end gap-2">
+              <div class="skeleton h-5 w-16"></div>
+              <div class="skeleton h-4 w-24"></div>
+            </div>
+          </div>
+          <!-- Sub-row -->
+          <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between">
+            <div class="skeleton h-3 w-40"></div>
+            <div class="skeleton h-3 w-32"></div>
+          </div>
+        </div>
+
+        <!-- Skeleton Card 2 -->
+        <div class="order-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="skeleton h-4 w-36"></div>
+              <div class="skeleton h-5 w-24 rounded-full"></div>
+            </div>
+            <div class="skeleton h-3 w-20"></div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="skeleton w-16 h-16 rounded-lg flex-shrink-0"></div>
+            <div class="flex-1 space-y-2">
+              <div class="skeleton h-4 w-4/5"></div>
+              <div class="skeleton h-3 w-2/5"></div>
+              <div class="skeleton h-3 w-1/2"></div>
+            </div>
+            <div class="flex-shrink-0 flex flex-col items-end gap-2">
+              <div class="skeleton h-5 w-20"></div>
+              <div class="skeleton h-4 w-24"></div>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between">
+            <div class="skeleton h-3 w-36"></div>
+            <div class="skeleton h-3 w-40"></div>
+          </div>
+        </div>
+
+        <!-- Skeleton Card 3 -->
+        <div class="order-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="skeleton h-4 w-36"></div>
+              <div class="skeleton h-5 w-16 rounded-full"></div>
+            </div>
+            <div class="skeleton h-3 w-20"></div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="skeleton w-16 h-16 rounded-lg flex-shrink-0"></div>
+            <div class="flex-1 space-y-2">
+              <div class="skeleton h-4 w-2/3"></div>
+              <div class="skeleton h-3 w-1/4"></div>
+              <div class="skeleton h-3 w-1/3"></div>
+            </div>
+            <div class="flex-shrink-0 flex flex-col items-end gap-2">
+              <div class="skeleton h-5 w-20"></div>
+              <div class="skeleton h-4 w-24"></div>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between">
+            <div class="skeleton h-3 w-36"></div>
+            <div class="skeleton h-3 w-44"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination skeleton -->
+      <div class="flex justify-center items-center gap-4 mt-6 pb-4">
+        <div class="skeleton h-9 w-28 rounded-lg"></div>
+        <div class="skeleton h-4 w-20"></div>
+        <div class="skeleton h-9 w-20 rounded-lg"></div>
+      </div>
+    </div>
+
+    <div class="mt-4 max-w-3xl mx-auto">
+      <div class="ann-block"><span class="font-bold">Skeleton strategy:</span> 3 card skeletons match expected result count — avoids large layout shift when content loads. Shimmer animation direction is left-to-right (natural reading direction). No spinner shown — skeleton pattern preferred for list content.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 3 — Empty State (No Orders)                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-3">
+  <div class="state-banner">STATE 3 · Empty State · Trigger: GET /api/v1/orders/?buyer=me returns 200 with empty results array (first-time buyer)</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav — Logged In -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600">🛒 Cart (0)</span>
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">RK</div>
+        <span class="text-sm font-medium text-gray-700">Rahul ▾</span>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto">
+      <h1 class="text-2xl font-bold text-gray-900 mb-6">My Orders</h1>
+
+      <!-- Empty State Illustration -->
+      <div class="flex flex-col items-center py-16 text-center">
+        <div class="text-8xl mb-6">📦</div>
+        <h2 class="text-xl font-bold text-gray-800 mb-2">You haven't placed any orders yet</h2>
+        <p class="text-sm text-gray-500 mb-8 max-w-sm">Discover products from verified sellers across categories. Fast delivery, secure payments via Razorpay.</p>
+        <button class="btn-primary px-10 py-3 text-base">Start Shopping</button>
+        <p class="text-xs text-gray-400 mt-4">Browsing as Rahul Kumar · <a href="#" class="text-blue-500 hover:underline">View Account Settings</a></p>
+      </div>
+    </div>
+
+    <div class="mt-4 max-w-3xl mx-auto">
+      <div class="ann-block"><span class="font-bold">Empty state design:</span> Uses friendly illustration + clear value proposition rather than just "No orders." CTA leads directly to homepage product browsing. Avoids dead-end experience for new buyers.</div>
+      <div class="ann-block"><span class="font-bold">Auth note:</span> This screen is auth-gated. If no valid JWT found in httpOnly cookie, middleware redirects to <code>/auth/login?next=/orders</code> before this page renders. The empty state is only shown to authenticated buyers with zero orders.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 4 — API Error                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-4">
+  <div class="state-banner">STATE 4 · API Error · Trigger: GET /api/v1/orders/?buyer=me returns 5xx or network timeout after 10s</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav — Logged In -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600">🛒 Cart (2)</span>
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">RK</div>
+        <span class="text-sm font-medium text-gray-700">Rahul ▾</span>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto">
+      <h1 class="text-2xl font-bold text-gray-900 mb-6">My Orders</h1>
+
+      <!-- Error Region -->
+      <div aria-live="polite" role="region" aria-label="Error notification">
+        <div class="flex flex-col items-center py-16 text-center">
+          <div class="text-7xl mb-5 grayscale">❌</div>
+          <h2 class="text-xl font-bold text-red-700 mb-2">Unable to load your orders</h2>
+          <p class="text-sm text-gray-500 mb-2">There was a problem connecting to our servers.</p>
+          <p class="text-sm text-gray-500 mb-8">Please try again in a moment. Your orders are safe.</p>
+
+          <!-- Retry button — focus management -->
+          <button class="btn-primary px-10 py-3 text-base" autofocus>
+            ↻ Retry
+          </button>
+
+          <div class="mt-8 bg-gray-50 border border-gray-200 rounded-xl p-4 text-left max-w-md">
+            <div class="text-xs font-semibold text-gray-600 mb-2">Troubleshooting tips:</div>
+            <ul class="text-xs text-gray-500 space-y-1 list-disc list-inside">
+              <li>Check your internet connection</li>
+              <li>Wait a few seconds then click Retry</li>
+              <li>If the problem persists, contact support at help@shopnest.in</li>
+            </ul>
+          </div>
+
+          <p class="text-xs text-gray-400 mt-6">Error code: 503 · <span class="font-mono">GET /api/v1/orders/</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 max-w-3xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">aria-live="polite":</span> Error region uses <code>aria-live="polite"</code> so screen readers announce the error after any ongoing announcement completes (WCAG 4.1.3). Does not interrupt current reading.</div>
+      <div class="ann-block"><span class="font-bold">Focus management:</span> On retry failure, focus returns to the Retry button (<code>autofocus</code> / <code>ref.focus()</code>) so keyboard users can immediately retry without tabbing through the page again (WCAG 2.4.3).</div>
+      <div class="ann-block"><span class="font-bold">Retry logic:</span> Exponential backoff — first retry immediately, second after 2s, third after 5s. After 3 retries, shows "Still having trouble?" with a support email link. Prevents hammering the API during outage.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SPEC FOOTER                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div class="text-base font-bold text-white mb-4">SCR-009 — Spec Summary</div>
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="border-bottom: 1px solid #334155;">
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">States</th>
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">User Stories</th>
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">API Calls</th>
+        <th style="text-align: left; padding: 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">WCAG Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          4 states total<br/>
+          <span style="color: #94A3B8; font-size: 11px;">1 · Order List (Default)<br/>2 · Loading Skeleton<br/>3 · Empty State<br/>4 · API Error</span>
+        </td>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          US-027 — View Order History<br/><span style="color: #94A3B8; font-size: 11px;">From REQUIREMENTS.md §3.3<br/>Auth-gated: JWT required</span>
+        </td>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          <code style="background: #0F172A; padding: 2px 6px; border-radius: 4px; font-size: 11px; display: block; margin-bottom: 4px;">GET /api/v1/orders/?buyer=me&amp;page={'{n}'}</code>
+          <span style="color: #94A3B8; font-size: 11px; display: block; margin-top: 4px;">Paginated · 10 per page · sorted created_at DESC</span>
+          <span style="color: #94A3B8; font-size: 11px;">401 → redirect to /auth/login?next=/orders</span>
+        </td>
+        <td style="padding: 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          Order list role="list" (1.3.1)<br/>Auth redirect (security, not WCAG)<br/>Error aria-live="polite" (4.1.3)<br/>Focus management on retry (2.4.3)<br/>Image alt text (1.1.1)<br/>Badge non-colour indicator (1.4.1)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Design System Consistency Note -->
+  <div class="mt-6 border-t border-gray-700 pt-4">
+    <div class="text-xs font-semibold text-gray-400 mb-2">Design System Consistency</div>
+    <div class="flex gap-6 text-xs">
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full bg-green-600"></span><span class="text-gray-300">Delivered — #16A34A</span></div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full bg-amber-600"></span><span class="text-gray-300">Processing — #D97706</span></div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full bg-blue-600"></span><span class="text-gray-300">Shipped — #1E40AF</span></div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full bg-red-600"></span><span class="text-gray-300">Cancelled — #991B1B</span></div>
+      <span class="text-gray-500">Same tokens as SCR-008 tracking screen</span>
+    </div>
+  </div>
+
+  <div class="mt-4 text-xs text-gray-500">
+    ShopNest · Phase 5 UX Design · SCR-009 Buyer Order History · Generated 2026-05-15 · Review with Product Owner before Phase 6
+  </div>
+</div>
+
+</body>
+</html>

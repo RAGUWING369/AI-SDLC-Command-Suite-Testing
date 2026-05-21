@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-002 — Cart & Checkout · ShopNest Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ── Viewport lock: desktop 1440px reference frame ── */
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+    /* ── Annotation styles ── */
+    .ann {
+      display: inline-block;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      color: #92400e;
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-top: 2px;
+      line-height: 1.6;
+    }
+    .ann-block {
+      display: block;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      color: #92400e;
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    /* ── State section dividers ── */
+    .state-banner {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 10px 40px;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-top: 3px solid #3b82f6;
+    }
+    .state-tag {
+      background: #3b82f6;
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+    .state-desc { color: #94a3b8; font-size: 12px; }
+    .state-section { padding: 40px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+
+    /* ── Skeleton pulse ── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .animate-pulse { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SCREEN IDENTITY HEADER
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="bg-blue-900 text-white px-10 py-5">
+    <div class="max-w-screen-xl mx-auto flex items-start justify-between">
+      <div>
+        <div class="text-xs text-blue-300 font-mono mb-1">SHOPNEST · PHASE 5 UX DESIGN (TESTING) · WIREFRAME SPECIFICATION</div>
+        <h1 class="text-2xl font-bold">SCR-002 — Cart &amp; Checkout</h1>
+        <p class="text-blue-200 text-sm mt-1">Route: /cart → /checkout · Personas: Rahul (buyer), Anjali (guest) · User Stories: US-013, US-014, US-015, US-016, US-017</p>
+      </div>
+      <div class="text-right text-xs text-blue-300 font-mono">
+        <div>Viewport: 1440px desktop reference</div>
+        <div>States: 10 total (scroll to view all)</div>
+        <div>Generated: 2026-05-14</div>
+      </div>
+    </div>
+    <!-- Table of contents -->
+    <div class="max-w-screen-xl mx-auto mt-4 flex flex-wrap gap-2">
+      <a href="#state-1" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 1 · Cart Default</a>
+      <a href="#state-2" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 2 · Loading</a>
+      <a href="#state-3" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 3 · Empty Cart</a>
+      <a href="#state-4" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 4 · API Error</a>
+      <a href="#state-5" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 5 · Guest Checkout</a>
+      <a href="#state-6" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 6 · Auth Checkout</a>
+      <a href="#state-7" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 7 · Payment Gateway</a>
+      <a href="#state-8" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 8 · Order Success</a>
+      <a href="#state-9" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 9 · Guest Success</a>
+      <a href="#state-10" class="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded font-mono">State 10 · Payment Failed</a>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 1 — CART DEFAULT (Authenticated buyer, items in cart)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-1" class="state-banner">
+    <span class="state-tag">STATE 1</span>
+    <span class="font-semibold">Cart Default — Authenticated Buyer · Items Present</span>
+    <span class="state-desc">Route: /cart · Zustand cart store · GET /api/v1/cart · Redis TTL 24h</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <!-- @component: GlobalNav (buyer) -->
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between" role="navigation" aria-label="Main navigation">
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold tracking-tight">🛒 ShopNest</span>
+          <div class="flex items-center bg-white rounded-lg overflow-hidden">
+            <input type="text" placeholder="Search products..." class="text-gray-800 px-4 py-2 w-96 text-sm outline-none" aria-label="Search products" />
+            <button class="bg-orange-500 text-white px-4 py-2 text-sm font-semibold">Search</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm">
+          <span>Hi, Rahul 👋</span>
+          <a href="#" class="relative">
+            🛒 Cart
+            <!-- @component: CartBadge · Zustand cart.items.length · aria-label="Cart, 2 items" -->
+            <span class="absolute -top-2 -right-3 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold" aria-label="2 items in cart">2</span>
+          </a>
+          <a href="#">Orders</a>
+        </div>
+      </nav>
+      <span class="ann-block">@component: GlobalNav · buyer authenticated · cart badge synced from Zustand store · GET /api/v1/cart on mount</span>
+
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex items-center gap-2 text-sm text-gray-500">
+          <li><a href="#" class="text-blue-600 hover:underline">Home</a></li>
+          <li aria-hidden="true">›</li>
+          <li class="text-gray-800 font-medium" aria-current="page">Shopping Cart</li>
+        </ol>
+      </nav>
+
+      <!-- Page Heading -->
+      <h1 class="text-2xl font-bold text-gray-900 mb-8">Shopping Cart <span class="text-lg font-normal text-gray-500">(2 items)</span></h1>
+
+      <!-- 2-column layout: cart items (left) + order summary (right) -->
+      <div class="flex gap-8 items-start">
+
+        <!-- LEFT: Cart Items (70%) -->
+        <div class="flex-1 space-y-4">
+
+          <!-- Cart Item 1 -->
+          <!-- @component: CartItemRow · data-source: GET /api/v1/cart (items[]) -->
+          <div class="bg-white rounded-2xl border border-gray-200 p-6 flex gap-6 items-start">
+            <!-- Product image -->
+            <div class="w-28 h-28 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200">
+              <span class="text-4xl">👟</span>
+              <!-- @component: ProductThumb · CloudFront CDN img · 112×112px · object-fit cover -->
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-start gap-4">
+                <div>
+                  <a href="#" class="text-gray-900 font-semibold text-base hover:text-blue-700 line-clamp-2">Running Shoes - Air Flex Pro (White, Size 42)</a>
+                  <span class="ann">ProductName · max 2 lines · linked to PDP /products/{slug}</span>
+                  <div class="text-sm text-gray-500 mt-1">Seller: <a href="#" class="text-blue-600 hover:underline">SportZone India</a></div>
+                  <div class="text-sm text-green-600 font-medium mt-1">✓ In Stock · Ships in 2–3 days</div>
+                </div>
+                <!-- Remove button -->
+                <button class="text-gray-400 hover:text-red-500 text-lg p-1 rounded" aria-label="Remove Running Shoes from cart">🗑</button>
+              </div>
+
+              <div class="flex items-center justify-between mt-4">
+                <!-- Quantity Stepper -->
+                <!-- @component: QuantityStepper · PATCH /api/v1/cart/items/{id} · Zustand update · max=stock_quantity -->
+                <div class="flex items-center">
+                  <button class="w-10 h-10 border border-gray-300 rounded-l-lg text-gray-600 hover:bg-gray-50 text-lg font-medium" aria-label="Decrease quantity">−</button>
+                  <span class="w-14 h-10 border-t border-b border-gray-300 flex items-center justify-center font-semibold text-gray-800" aria-live="polite" aria-atomic="true">1</span>
+                  <button class="w-10 h-10 border border-gray-300 rounded-r-lg text-gray-600 hover:bg-gray-50 text-lg font-medium" aria-label="Increase quantity">+</button>
+                </div>
+                <span class="ann">QuantityStepper · debounced PATCH /api/v1/cart/items/{id} on change · 40×40px desktop</span>
+
+                <!-- Price -->
+                <div class="text-right">
+                  <div class="text-xl font-bold text-gray-900">₹2,499</div>
+                  <div class="text-sm text-gray-400 line-through">₹3,499</div>
+                  <span class="ann">Price from cart.items[].price_paise ÷ 100 · formatted with ₹ symbol</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cart Item 2 -->
+          <div class="bg-white rounded-2xl border border-gray-200 p-6 flex gap-6 items-start">
+            <div class="w-28 h-28 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200">
+              <span class="text-4xl">🎧</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-start gap-4">
+                <div>
+                  <a href="#" class="text-gray-900 font-semibold text-base hover:text-blue-700 line-clamp-2">Wireless Bluetooth Headphones - Bass Pro X</a>
+                  <div class="text-sm text-gray-500 mt-1">Seller: <a href="#" class="text-blue-600 hover:underline">AudioWorld Store</a></div>
+                  <div class="text-sm text-green-600 font-medium mt-1">✓ In Stock · Ships in 1–2 days</div>
+                </div>
+                <button class="text-gray-400 hover:text-red-500 text-lg p-1 rounded" aria-label="Remove Headphones from cart">🗑</button>
+              </div>
+              <div class="flex items-center justify-between mt-4">
+                <div class="flex items-center">
+                  <button class="w-10 h-10 border border-gray-300 rounded-l-lg text-gray-600 hover:bg-gray-50 text-lg font-medium" aria-label="Decrease quantity">−</button>
+                  <span class="w-14 h-10 border-t border-b border-gray-300 flex items-center justify-center font-semibold text-gray-800" aria-live="polite" aria-atomic="true">1</span>
+                  <button class="w-10 h-10 border border-gray-300 rounded-r-lg text-gray-600 hover:bg-gray-50 text-lg font-medium" aria-label="Increase quantity">+</button>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-bold text-gray-900">₹1,899</div>
+                  <div class="text-sm text-gray-400 line-through">₹2,500</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seller note / split-order notice -->
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+            <span class="font-semibold">📦 Note:</span> Items are from 2 separate sellers. Each seller ships independently. You'll receive separate tracking for each package.
+            <span class="ann-block">Multi-vendor split order notice · shown when items.sellers.length > 1 · BR-MULTI-01</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Order Summary (30%) -->
+        <!-- @component: OrderSummaryPanel · data-source: GET /api/v1/cart (totals) -->
+        <div class="w-80 flex-shrink-0 space-y-4">
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between text-gray-600">
+                <span>Price (2 items)</span>
+                <span>₹4,398</span>
+              </div>
+              <div class="flex justify-between text-green-600">
+                <span>Discount</span>
+                <span>− ₹1,602</span>
+              </div>
+              <div class="flex justify-between text-gray-600">
+                <span>Delivery</span>
+                <span class="text-green-600 font-medium">FREE</span>
+              </div>
+              <div class="border-t border-gray-200 pt-3 flex justify-between font-bold text-gray-900 text-base">
+                <span>Total Amount</span>
+                <span>₹4,398</span>
+              </div>
+              <div class="text-xs text-gray-500 text-center">Inclusive of all taxes</div>
+            </div>
+            <span class="ann-block">OrderSummaryPanel · totals computed server-side · cart.totals from GET /api/v1/cart · monetary values in paise</span>
+
+            <!-- Checkout CTA -->
+            <!-- @component: CheckoutCTA · navigates to /checkout · POST /api/v1/orders/checkout-session -->
+            <button class="w-full mt-5 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2" aria-label="Proceed to checkout for ₹4,398">
+              Proceed to Checkout
+            </button>
+            <span class="ann-block">CheckoutCTA · POST /api/v1/orders/checkout-session → redirect /checkout?session_id={id} · disabled if cart empty</span>
+
+            <p class="text-xs text-gray-400 text-center mt-3">🔒 Safe and Secure Payments. Easy returns.</p>
+          </div>
+
+          <!-- Payment method icons -->
+          <div class="bg-white rounded-2xl border border-gray-200 p-4">
+            <p class="text-xs text-gray-500 mb-3 font-medium">Accepted payments</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">UPI</span>
+              <span class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">Visa</span>
+              <span class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">Mastercard</span>
+              <span class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">NetBanking</span>
+              <span class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">EMI</span>
+            </div>
+            <span class="ann-block">Payment icons · static display · Razorpay supported methods · no interaction</span>
+          </div>
+        </div>
+      </div><!-- end 2-col -->
+
+    </div><!-- max-w -->
+  </div><!-- state-section -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 2 — LOADING (Skeleton — mirrors State 1 DOM exactly)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-2" class="state-banner">
+    <span class="state-tag">STATE 2</span>
+    <span class="font-semibold">Loading — Skeleton Screen</span>
+    <span class="state-desc">Cart data fetching · GET /api/v1/cart · Zustand isLoading=true · mirrors State 1 DOM structure exactly</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <!-- Nav skeleton -->
+      <div class="bg-gray-200 animate-pulse rounded-xl mb-8 h-14"></div>
+      <!-- Breadcrumb skeleton -->
+      <div class="h-4 bg-gray-200 animate-pulse rounded w-48 mb-6"></div>
+      <!-- Heading skeleton -->
+      <div class="h-8 bg-gray-200 animate-pulse rounded w-56 mb-8"></div>
+
+      <div class="flex gap-8 items-start">
+        <!-- Left: cart items skeleton -->
+        <div class="flex-1 space-y-4">
+          <!-- Cart item 1 skeleton -->
+          <div class="bg-white rounded-2xl border border-gray-200 p-6 flex gap-6">
+            <div class="w-28 h-28 bg-gray-200 animate-pulse rounded-xl flex-shrink-0"></div>
+            <div class="flex-1 space-y-3">
+              <div class="h-5 bg-gray-200 animate-pulse rounded w-3/4"></div>
+              <div class="h-4 bg-gray-200 animate-pulse rounded w-1/3"></div>
+              <div class="h-4 bg-gray-200 animate-pulse rounded w-1/4"></div>
+              <div class="flex justify-between mt-4">
+                <div class="flex gap-0">
+                  <div class="w-10 h-10 bg-gray-200 animate-pulse rounded-l-lg"></div>
+                  <div class="w-14 h-10 bg-gray-200 animate-pulse"></div>
+                  <div class="w-10 h-10 bg-gray-200 animate-pulse rounded-r-lg"></div>
+                </div>
+                <div class="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Cart item 2 skeleton -->
+          <div class="bg-white rounded-2xl border border-gray-200 p-6 flex gap-6">
+            <div class="w-28 h-28 bg-gray-200 animate-pulse rounded-xl flex-shrink-0"></div>
+            <div class="flex-1 space-y-3">
+              <div class="h-5 bg-gray-200 animate-pulse rounded w-2/3"></div>
+              <div class="h-4 bg-gray-200 animate-pulse rounded w-1/3"></div>
+              <div class="h-4 bg-gray-200 animate-pulse rounded w-1/4"></div>
+              <div class="flex justify-between mt-4">
+                <div class="flex gap-0">
+                  <div class="w-10 h-10 bg-gray-200 animate-pulse rounded-l-lg"></div>
+                  <div class="w-14 h-10 bg-gray-200 animate-pulse"></div>
+                  <div class="w-10 h-10 bg-gray-200 animate-pulse rounded-r-lg"></div>
+                </div>
+                <div class="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: order summary skeleton -->
+        <div class="w-80 flex-shrink-0">
+          <div class="bg-white rounded-2xl border border-gray-200 p-6 space-y-3">
+            <div class="h-6 bg-gray-200 animate-pulse rounded w-40 mb-4"></div>
+            <div class="h-4 bg-gray-200 animate-pulse rounded w-full"></div>
+            <div class="h-4 bg-gray-200 animate-pulse rounded w-full"></div>
+            <div class="h-4 bg-gray-200 animate-pulse rounded w-3/4"></div>
+            <div class="h-px bg-gray-200 my-2"></div>
+            <div class="h-5 bg-gray-200 animate-pulse rounded w-full"></div>
+            <div class="h-14 bg-gray-200 animate-pulse rounded-xl mt-4"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <span class="ann-block">@behavior: Skeleton — all content replaced with bg-gray-200 animate-pulse · same grid positions as State 1 · no layout shift on load · WCAG: aria-busy="true" on cart container</span>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 3 — EMPTY CART
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-3" class="state-banner">
+    <span class="state-tag">STATE 3</span>
+    <span class="font-semibold">Empty Cart</span>
+    <span class="state-desc">cart.items.length === 0 · Zustand cart store · no API error</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <!-- Nav (same as State 1 but cart badge = 0) -->
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold">🛒 ShopNest</span>
+          <div class="flex items-center bg-white rounded-lg overflow-hidden">
+            <input type="text" placeholder="Search products..." class="text-gray-800 px-4 py-2 w-96 text-sm outline-none" aria-label="Search products" />
+            <button class="bg-orange-500 text-white px-4 py-2 text-sm font-semibold">Search</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm">
+          <span>Hi, Rahul 👋</span>
+          <a href="#">🛒 Cart</a>
+          <a href="#">Orders</a>
+        </div>
+      </nav>
+
+      <!-- Empty state panel -->
+      <!-- @component: EmptyCartPanel · shown when cart.items.length === 0 · centered full-width -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-16 text-center max-w-lg mx-auto" role="status" aria-label="Your cart is empty">
+        <div class="text-8xl mb-6" aria-hidden="true">🛒</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-3">Your cart is empty</h2>
+        <p class="text-gray-500 mb-8">Looks like you haven't added anything yet.<br>Explore our products and find something you love!</p>
+        <a href="/" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+          Continue Shopping
+        </a>
+      </div>
+      <span class="ann-block">@component: EmptyCartPanel · CTA → / (homepage) · no checkout button rendered · aria: role="status" aria-label="Your cart is empty"</span>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 4 — API ERROR
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-4" class="state-banner">
+    <span class="state-tag">STATE 4</span>
+    <span class="font-semibold">API Error — Cart Load Failure</span>
+    <span class="state-desc">GET /api/v1/cart returns 5xx or network timeout · Next.js error.tsx boundary</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold">🛒 ShopNest</span>
+          <div class="flex items-center bg-white rounded-lg overflow-hidden">
+            <input type="text" placeholder="Search products..." class="text-gray-800 px-4 py-2 w-96 text-sm outline-none" aria-label="Search products" />
+            <button class="bg-orange-500 text-white px-4 py-2 text-sm font-semibold">Search</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm">
+          <span>Hi, Rahul 👋</span>
+          <a href="#">🛒 Cart</a>
+        </div>
+      </nav>
+
+      <!-- @component: ErrorPanel · Next.js error.tsx boundary · retry + fallback actions -->
+      <div class="bg-white rounded-2xl border border-red-200 p-16 text-center max-w-lg mx-auto" role="alert" aria-live="assertive">
+        <div class="text-6xl mb-6" aria-hidden="true">⚠️</div>
+        <h2 class="text-2xl font-bold text-red-800 mb-3">Something went wrong</h2>
+        <p class="text-gray-600 mb-2">We couldn't load your cart right now.</p>
+        <p class="text-sm text-gray-400 mb-8 font-mono">Error: Unable to fetch cart data (503)</p>
+        <div class="flex gap-3 justify-center">
+          <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2" onclick="window.location.reload()">
+            Try Again
+          </button>
+          <a href="/" class="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+            Back to Home
+          </a>
+        </div>
+      </div>
+      <span class="ann-block">@component: ErrorPanel · role="alert" aria-live="assertive" · Retry → window.location.reload() · CloudWatch logs error_code + request_id · Next.js error.tsx boundary catches render errors</span>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 5 — GUEST CHECKOUT FORM (Inline validation on blur)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-5" class="state-banner">
+    <span class="state-tag">STATE 5</span>
+    <span class="font-semibold">Guest Checkout — Shipping Form (Unauthenticated)</span>
+    <span class="state-desc">Route: /checkout · ff_guest_checkout=true · POST /api/v1/orders/guest-checkout · US-015 · inline validation on blur (WCAG 3.3.1)</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold">🛒 ShopNest</span>
+          <div class="flex items-center bg-white rounded-lg overflow-hidden">
+            <input type="text" placeholder="Search products..." class="text-gray-800 px-4 py-2 w-80 text-sm outline-none" aria-label="Search products" />
+            <button class="bg-orange-500 text-white px-4 py-2 text-sm font-semibold">Search</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm">
+          <a href="#" class="text-white hover:underline">Sign In</a>
+          <a href="#" class="bg-white text-blue-700 font-bold px-4 py-2 rounded-lg text-sm hover:bg-blue-50">Register</a>
+        </div>
+      </nav>
+
+      <!-- Progress stepper -->
+      <!-- @component: CheckoutStepper · steps: Bag → Address → Payment → Confirmation -->
+      <div class="flex items-center justify-center gap-0 mb-8" role="progressbar" aria-valuenow="2" aria-valuemin="1" aria-valuemax="4" aria-label="Checkout step 2 of 4: Address">
+        <div class="flex items-center">
+          <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">✓</div>
+          <div class="text-xs text-green-600 font-medium ml-2">Bag</div>
+        </div>
+        <div class="w-16 h-px bg-green-500 mx-3"></div>
+        <div class="flex items-center">
+          <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+          <div class="text-xs text-orange-600 font-bold ml-2">Address</div>
+        </div>
+        <div class="w-16 h-px bg-gray-300 mx-3"></div>
+        <div class="flex items-center">
+          <div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+          <div class="text-xs text-gray-400 ml-2">Payment</div>
+        </div>
+        <div class="w-16 h-px bg-gray-300 mx-3"></div>
+        <div class="flex items-center">
+          <div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold">4</div>
+          <div class="text-xs text-gray-400 ml-2">Confirm</div>
+        </div>
+      </div>
+      <span class="ann-block">@component: CheckoutStepper · 4 steps · role="progressbar" · aria-valuenow=2 · completed steps show ✓ · US-015 guest checkout flow</span>
+
+      <!-- Guest notice banner -->
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+        <span class="text-2xl" aria-hidden="true">👤</span>
+        <div>
+          <p class="text-sm text-blue-800 font-medium">You're checking out as a guest</p>
+          <p class="text-sm text-blue-600">
+            <a href="#" class="font-semibold underline hover:text-blue-800">Sign in</a> or <a href="#" class="font-semibold underline hover:text-blue-800">create an account</a> to save your address and track orders easily.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex gap-8 items-start">
+
+        <!-- LEFT: Shipping form -->
+        <!-- @component: GuestCheckoutForm · POST /api/v1/orders/guest-checkout · inline validation on blur (WCAG 3.3.1) -->
+        <div class="flex-1">
+          <div class="bg-white rounded-2xl border border-gray-200 p-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-6">Delivery Address</h2>
+
+            <form novalidate aria-label="Guest checkout shipping form">
+              <!-- Name row -->
+              <div class="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                  <label for="guest-fname" class="block text-sm font-medium text-gray-700 mb-1">First Name <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <input type="text" id="guest-fname" name="first_name" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Anjali" required aria-required="true" autocomplete="given-name" />
+                </div>
+                <div>
+                  <label for="guest-lname" class="block text-sm font-medium text-gray-700 mb-1">Last Name <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <input type="text" id="guest-lname" name="last_name" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Sharma" required aria-required="true" autocomplete="family-name" />
+                </div>
+              </div>
+
+              <!-- Email (shown with error state) -->
+              <div class="mb-5">
+                <label for="guest-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address <span class="text-red-500" aria-hidden="true">*</span></label>
+                <input type="email" id="guest-email" name="email" class="w-full border-2 border-red-400 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-red-50" value="anjali@" placeholder="anjali@example.com" required aria-required="true" aria-describedby="email-error" aria-invalid="true" autocomplete="email" />
+                <!-- Inline validation error — shown on blur -->
+                <p id="email-error" class="text-red-600 text-xs mt-1 flex items-center gap-1" role="alert">
+                  <span aria-hidden="true">⚠</span> Please enter a valid email address
+                </p>
+                <span class="ann-block">@behavior: Inline validation on blur · aria-invalid="true" · aria-describedby → error id · error role="alert" · WCAG 3.3.1 Error Identification · A-05-006</span>
+              </div>
+
+              <!-- Phone -->
+              <div class="mb-5">
+                <label for="guest-phone" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number <span class="text-red-500" aria-hidden="true">*</span></label>
+                <div class="flex">
+                  <span class="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-600 text-sm rounded-l-lg">+91</span>
+                  <input type="tel" id="guest-phone" name="phone" class="flex-1 border border-gray-300 rounded-r-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="9876543210" required aria-required="true" autocomplete="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" />
+                </div>
+                <p class="text-gray-500 text-xs mt-1">Used for delivery updates only</p>
+              </div>
+
+              <!-- Address line 1 -->
+              <div class="mb-5">
+                <label for="guest-addr1" class="block text-sm font-medium text-gray-700 mb-1">Address Line 1 <span class="text-red-500" aria-hidden="true">*</span></label>
+                <input type="text" id="guest-addr1" name="address_line1" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="House No., Building, Street" required aria-required="true" autocomplete="address-line1" />
+              </div>
+
+              <!-- Address line 2 -->
+              <div class="mb-5">
+                <label for="guest-addr2" class="block text-sm font-medium text-gray-700 mb-1">Address Line 2 <span class="text-gray-500 font-normal">(optional)</span></label>
+                <input type="text" id="guest-addr2" name="address_line2" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Locality, Area, Colony" autocomplete="address-line2" />
+              </div>
+
+              <!-- City / State / Pincode row -->
+              <div class="grid grid-cols-3 gap-4 mb-5">
+                <div>
+                  <label for="guest-city" class="block text-sm font-medium text-gray-700 mb-1">City <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <input type="text" id="guest-city" name="city" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Mumbai" required aria-required="true" autocomplete="address-level2" />
+                </div>
+                <div>
+                  <label for="guest-state" class="block text-sm font-medium text-gray-700 mb-1">State <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <select id="guest-state" name="state" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" required aria-required="true" autocomplete="address-level1">
+                    <option value="">Select State</option>
+                    <option>Maharashtra</option>
+                    <option>Karnataka</option>
+                    <option>Tamil Nadu</option>
+                    <option>Delhi</option>
+                    <option>Gujarat</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="guest-pin" class="block text-sm font-medium text-gray-700 mb-1">PIN Code <span class="text-red-500" aria-hidden="true">*</span></label>
+                  <input type="text" id="guest-pin" name="pincode" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="400001" required aria-required="true" inputmode="numeric" pattern="[1-9][0-9]{5}" maxlength="6" autocomplete="postal-code" />
+                </div>
+              </div>
+              <span class="ann-block">@behavior: All * fields required · autocomplete attrs for mobile autofill · India-only: +91 prefix, 6-digit PIN · state select pre-populated with Indian states · WCAG: explicit &lt;label&gt; for= on every field</span>
+
+              <!-- Submit button -->
+              <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors mt-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                Continue to Payment →
+              </button>
+              <span class="ann-block">@behavior: Submit → validates all fields · on pass: POST /api/v1/orders/guest-checkout → Razorpay modal · on fail: shows inline errors per field (blur + submit)</span>
+            </form>
+          </div>
+        </div>
+
+        <!-- RIGHT: Mini order summary (same panel, abbreviated) -->
+        <div class="w-80 flex-shrink-0">
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-base font-bold text-gray-900 mb-4">Order Summary</h3>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">👟</div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-gray-800 font-medium text-xs line-clamp-1">Running Shoes - Air Flex Pro</div>
+                  <div class="text-gray-500 text-xs">Qty: 1</div>
+                </div>
+                <div class="text-gray-800 font-semibold text-xs">₹2,499</div>
+              </div>
+              <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🎧</div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-gray-800 font-medium text-xs line-clamp-1">Wireless Headphones Bass Pro X</div>
+                  <div class="text-gray-500 text-xs">Qty: 1</div>
+                </div>
+                <div class="text-gray-800 font-semibold text-xs">₹1,899</div>
+              </div>
+              <div class="flex justify-between text-gray-600 text-xs pt-1">
+                <span>Delivery</span><span class="text-green-600 font-medium">FREE</span>
+              </div>
+              <div class="flex justify-between font-bold text-gray-900 text-sm border-t border-gray-200 pt-2">
+                <span>Total</span><span>₹4,398</span>
+              </div>
+            </div>
+          </div>
+          <!-- Security badge -->
+          <div class="bg-green-50 border border-green-200 rounded-xl p-4 mt-3">
+            <p class="text-xs text-green-800 font-medium">🔒 Secure Checkout</p>
+            <p class="text-xs text-green-600 mt-1">Your payment is processed by Razorpay. ShopNest never stores your card data.</p>
+            <span class="ann-block">@copy: NFR-SEC-007 — zero card data stored · Razorpay PCI-DSS SAQ A · A-05-007</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 6 — AUTHENTICATED CHECKOUT (Saved address pre-filled)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-6" class="state-banner">
+    <span class="state-tag">STATE 6</span>
+    <span class="font-semibold">Authenticated Checkout — Saved Address Pre-filled</span>
+    <span class="state-desc">Route: /checkout · Buyer logged in · GET /api/v1/users/me/addresses · US-014</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold">🛒 ShopNest</span>
+          <div class="flex items-center bg-white rounded-lg overflow-hidden">
+            <input type="text" placeholder="Search products..." class="text-gray-800 px-4 py-2 w-80 text-sm outline-none" aria-label="Search products" />
+            <button class="bg-orange-500 text-white px-4 py-2 text-sm font-semibold">Search</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm">
+          <span>Hi, Rahul 👋</span>
+          <a href="#">🛒 Cart (2)</a>
+        </div>
+      </nav>
+
+      <!-- Progress stepper (Address step active) -->
+      <div class="flex items-center justify-center gap-0 mb-8" role="progressbar" aria-valuenow="2" aria-valuemin="1" aria-valuemax="4" aria-label="Checkout step 2 of 4: Address">
+        <div class="flex items-center"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">✓</div><div class="text-xs text-green-600 font-medium ml-2">Bag</div></div>
+        <div class="w-16 h-px bg-green-500 mx-3"></div>
+        <div class="flex items-center"><div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div><div class="text-xs text-orange-600 font-bold ml-2">Address</div></div>
+        <div class="w-16 h-px bg-gray-300 mx-3"></div>
+        <div class="flex items-center"><div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold">3</div><div class="text-xs text-gray-400 ml-2">Payment</div></div>
+        <div class="w-16 h-px bg-gray-300 mx-3"></div>
+        <div class="flex items-center"><div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold">4</div><div class="text-xs text-gray-400 ml-2">Confirm</div></div>
+      </div>
+
+      <div class="flex gap-8 items-start">
+        <div class="flex-1">
+          <div class="bg-white rounded-2xl border border-gray-200 p-8">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-xl font-bold text-gray-900">Select Delivery Address</h2>
+              <button class="text-sm text-blue-600 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded">+ Add New Address</button>
+            </div>
+
+            <!-- Saved address options -->
+            <!-- @component: AddressSelector · GET /api/v1/users/me/addresses · radio group -->
+            <div class="space-y-3" role="radiogroup" aria-label="Select delivery address">
+              <!-- Address 1 — selected -->
+              <label class="flex items-start gap-4 p-4 border-2 border-blue-500 bg-blue-50 rounded-xl cursor-pointer">
+                <input type="radio" name="address" class="mt-1 text-blue-600" checked aria-checked="true" />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="font-semibold text-gray-900">Rahul Verma</span>
+                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-medium">Home</span>
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">Default</span>
+                  </div>
+                  <p class="text-sm text-gray-600">42, Bandra West, Near Bandstand<br />Mumbai, Maharashtra — 400050</p>
+                  <p class="text-sm text-gray-600 mt-1">📞 +91 98765 43210</p>
+                  <div class="flex gap-3 mt-2">
+                    <button class="text-xs text-blue-600 hover:underline" type="button">Edit</button>
+                    <button class="text-xs text-red-500 hover:underline" type="button">Remove</button>
+                  </div>
+                </div>
+              </label>
+
+              <!-- Address 2 — not selected -->
+              <label class="flex items-start gap-4 p-4 border border-gray-200 bg-white rounded-xl cursor-pointer hover:border-gray-300">
+                <input type="radio" name="address" class="mt-1 text-blue-600" aria-checked="false" />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="font-semibold text-gray-900">Rahul Verma</span>
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">Office</span>
+                  </div>
+                  <p class="text-sm text-gray-600">301, Nirman House, BKC<br />Mumbai, Maharashtra — 400051</p>
+                  <p class="text-sm text-gray-600 mt-1">📞 +91 98765 43210</p>
+                  <div class="flex gap-3 mt-2">
+                    <button class="text-xs text-blue-600 hover:underline" type="button">Edit</button>
+                    <button class="text-xs text-red-500 hover:underline" type="button">Remove</button>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <span class="ann-block">@component: AddressSelector · role="radiogroup" · GET /api/v1/users/me/addresses · selected: border-2 border-blue-500 · keyboard: arrow keys navigate options · US-014</span>
+
+            <!-- Delivery CTA -->
+            <button class="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+              Deliver to This Address →
+            </button>
+            <span class="ann-block">@behavior: POST /api/v1/orders/checkout-session {address_id} → returns razorpay_order_id → Razorpay Checkout.js modal opens (State 7)</span>
+          </div>
+        </div>
+
+        <!-- Right: Order summary (abbreviated) -->
+        <div class="w-80 flex-shrink-0">
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-base font-bold text-gray-900 mb-4">Order Summary</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between text-gray-600"><span>Price (2 items)</span><span>₹4,398</span></div>
+              <div class="flex justify-between text-green-600"><span>Discount</span><span>− ₹1,602</span></div>
+              <div class="flex justify-between text-gray-600"><span>Delivery</span><span class="text-green-600 font-medium">FREE</span></div>
+              <div class="border-t pt-2 flex justify-between font-bold text-gray-900 text-base"><span>Total</span><span>₹4,398</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 7 — PAYMENT GATEWAY (Razorpay modal delegation)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-7" class="state-banner">
+    <span class="state-tag">STATE 7</span>
+    <span class="font-semibold">Payment Gateway — Razorpay Modal (Delegated UI)</span>
+    <span class="state-desc">Razorpay Checkout.js renders its own modal · ShopNest UI frozen behind overlay · US-016 · NFR-SEC-007</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <!-- ShopNest page (frozen, dimmed) -->
+      <div class="relative">
+        <div class="opacity-30 pointer-events-none">
+          <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+            <span class="text-xl font-bold">🛒 ShopNest</span>
+            <span class="text-sm">Hi, Rahul 👋</span>
+          </nav>
+          <div class="bg-white rounded-2xl border border-gray-200 p-8 h-48"></div>
+        </div>
+
+        <!-- Razorpay modal overlay -->
+        <!-- @component: RazorpayModal · Razorpay Checkout.js · ShopNest does NOT design this UI · NFR-SEC-007 A-05-007 -->
+        <div class="absolute inset-0 flex items-center justify-center" aria-modal="true" role="dialog" aria-label="Razorpay payment dialog">
+          <div class="bg-white rounded-2xl shadow-2xl w-96 overflow-hidden border border-gray-200">
+            <!-- Razorpay header (Razorpay-branded, not ShopNest) -->
+            <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-base">ShopNest</div>
+                <div class="text-blue-200 text-sm">Secure Payment · ₹4,398</div>
+              </div>
+              <div class="text-xs text-blue-300">Powered by Razorpay</div>
+            </div>
+
+            <!-- Payment method tabs (Razorpay renders these) -->
+            <div class="border-b border-gray-200">
+              <div class="flex text-sm">
+                <button class="px-5 py-3 border-b-2 border-blue-600 text-blue-600 font-semibold">UPI</button>
+                <button class="px-5 py-3 text-gray-500 hover:text-gray-700">Card</button>
+                <button class="px-5 py-3 text-gray-500 hover:text-gray-700">NetBanking</button>
+                <button class="px-5 py-3 text-gray-500 hover:text-gray-700">EMI</button>
+              </div>
+            </div>
+
+            <!-- UPI input (Razorpay renders this) -->
+            <div class="p-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Enter UPI ID</label>
+              <div class="flex">
+                <input type="text" placeholder="yourname@upi" class="flex-1 border border-gray-300 rounded-l-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <button class="bg-blue-600 text-white px-4 py-3 rounded-r-lg text-sm font-medium">Verify</button>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Or pay with QR code / saved UPI apps</p>
+              <button class="w-full mt-5 bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-sm">Pay ₹4,398</button>
+            </div>
+
+            <!-- Razorpay security footer -->
+            <div class="bg-gray-50 border-t border-gray-200 px-6 py-3 text-center">
+              <p class="text-xs text-gray-400">🔒 Secured by Razorpay · PCI-DSS compliant</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotation box below the wireframe -->
+      <div class="mt-6">
+        <span class="ann-block">@component: RazorpayModal · This UI is rendered entirely by Razorpay Checkout.js (external script) · ShopNest does NOT design, control, or style this modal · ShopNest never sees card data (NFR-SEC-007, PCI-DSS SAQ A) · ShopNest page is frozen/dimmed with pointer-events:none while modal is open · On payment success: Razorpay fires handler.success(response) → POST /api/v1/orders/verify-payment → redirect /checkout/success?order_id={id} · On failure: handler.error(response) → State 10 (Payment Failed)</span>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 8 — ORDER SUCCESS (Registered buyer)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-8" class="state-banner">
+    <span class="state-tag">STATE 8</span>
+    <span class="font-semibold">Order Success — Registered Buyer</span>
+    <span class="state-desc">Route: /checkout/success?order_id={uuid} · POST /api/v1/orders/verify-payment confirmed · Zustand cart cleared · US-017</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold">🛒 ShopNest</span>
+        </div>
+        <div class="flex items-center gap-6 text-sm">
+          <span>Hi, Rahul 👋</span>
+          <a href="#">🛒 Cart (0)</a>
+          <a href="#">Orders</a>
+        </div>
+      </nav>
+
+      <!-- @component: OrderSuccessPanel · US-017 · Zustand clearCart() called on mount -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-12 max-w-2xl mx-auto text-center" role="status" aria-label="Order placed successfully">
+
+        <!-- Success icon -->
+        <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-5xl" aria-hidden="true">✅</span>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h1>
+        <p class="text-gray-500 mb-6">Thank you, Rahul! Your order has been confirmed and sellers have been notified.</p>
+
+        <!-- Order details card -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 text-left mb-6">
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Order ID</div>
+              <div class="text-gray-900 font-mono font-bold text-sm">#SN-2026-A4F8B</div>
+            </div>
+            <div>
+              <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Amount Paid</div>
+              <div class="text-gray-900 font-bold">₹4,398</div>
+            </div>
+            <div>
+              <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Items</div>
+              <div class="text-gray-900">2 items · 2 sellers</div>
+            </div>
+            <div>
+              <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Estimated Delivery</div>
+              <div class="text-gray-900 font-medium">3–5 business days</div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-200">
+            <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Delivering to</div>
+            <div class="text-gray-900 text-sm">42, Bandra West, Near Bandstand, Mumbai, Maharashtra — 400050</div>
+          </div>
+        </div>
+        <span class="ann-block">@data: order_id from /checkout/success?order_id={uuid} · Zustand clearCart() on mount · confirmation email sent via AWS SES Celery task · ARCHITECTURE.md email queue</span>
+
+        <!-- Email confirmation note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-800">
+          📧 A confirmation email has been sent to <strong>rahul@example.com</strong>
+          <span class="ann-block">@behavior: Email dispatched via Celery email queue · AWS SES · template: order_confirmation.html</span>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex gap-3 justify-center">
+          <a href="/orders" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+            View My Orders
+          </a>
+          <a href="/" class="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-4 px-8 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+            Continue Shopping
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 9 — ORDER SUCCESS (Guest buyer — with tracking token)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-9" class="state-banner">
+    <span class="state-tag">STATE 9</span>
+    <span class="font-semibold">Order Success — Guest Buyer (HMAC Tracking Token)</span>
+    <span class="state-desc">Route: /checkout/success?order_id={uuid}&amp;tracking_token={hmac} · No user account · US-015 · US-017 · ADR-004</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold">🛒 ShopNest</span>
+        </div>
+        <div class="flex items-center gap-6 text-sm">
+          <a href="#" class="text-white hover:underline">Sign In</a>
+          <a href="#" class="bg-white text-blue-700 font-bold px-4 py-2 rounded-lg text-sm">Register</a>
+        </div>
+      </nav>
+
+      <!-- @component: GuestOrderSuccessPanel · US-015 · tracking_token is HMAC-SHA256 (ADR-004) -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-12 max-w-2xl mx-auto text-center" role="status" aria-label="Order placed successfully">
+
+        <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-5xl" aria-hidden="true">✅</span>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Order Placed!</h1>
+        <p class="text-gray-500 mb-6">Thank you for your order, Anjali. Save your tracking link to follow your delivery.</p>
+
+        <!-- Order details card -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 text-left mb-6">
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Order ID</div>
+              <div class="text-gray-900 font-mono font-bold">#SN-2026-C9E2D</div>
+            </div>
+            <div>
+              <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Amount Paid</div>
+              <div class="text-gray-900 font-bold">₹4,398</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tracking token display — PROMINENT -->
+        <!-- @component: GuestTrackingToken · GET /api/v1/orders/track/{tracking_token} · HMAC-SHA256 · ADR-004 -->
+        <div class="bg-amber-50 border-2 border-amber-400 rounded-xl p-6 mb-6 text-left">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-2xl" aria-hidden="true">🔗</span>
+            <h3 class="font-bold text-amber-900 text-base">Your Order Tracking Link</h3>
+          </div>
+          <p class="text-amber-800 text-sm mb-3">Since you checked out as a guest, use this link to track your order. <strong>Save it now</strong> — it won't be shown again on this page.</p>
+          <!-- Tracking URL display -->
+          <div class="bg-white border border-amber-300 rounded-lg p-3 font-mono text-xs text-gray-700 break-all mb-3" aria-label="Tracking URL">
+            https://shopnest.in/orders/track/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          </div>
+          <!-- Copy button -->
+          <button class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" aria-label="Copy tracking link to clipboard">
+            📋 Copy Tracking Link
+          </button>
+          <span class="ann-block">@component: GuestTrackingToken · HMAC-SHA256 token (ADR-004) · GET /api/v1/orders/track/{token} — no auth required · Copy: navigator.clipboard.writeText() · Also emailed to anjali@example.com (Celery SES task) · A-05-008 · CW-GuestTrackURL mitigation</span>
+        </div>
+
+        <!-- Email confirmation note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-800 text-left">
+          📧 Confirmation email with tracking link sent to <strong>anjali@example.com</strong>
+        </div>
+
+        <!-- Account creation upsell -->
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6 text-left">
+          <h3 class="font-semibold text-gray-800 mb-1">💡 Create an account for easier tracking</h3>
+          <p class="text-sm text-gray-500 mb-3">Register with this email to track all orders from your dashboard, skip the checkout form next time, and get exclusive deals.</p>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            Create Account with This Email
+          </button>
+        </div>
+
+        <a href="/" class="inline-block border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-8 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+          Continue Shopping
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE 10 — PAYMENT FAILED
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div id="state-10" class="state-banner">
+    <span class="state-tag">STATE 10</span>
+    <span class="font-semibold">Payment Failed — Razorpay handler.error() triggered</span>
+    <span class="state-desc">Route: /checkout/failure?order_id={uuid}&amp;error={code} · Order status: payment_failed · Cart preserved · Retry available</span>
+  </div>
+  <div class="state-section">
+    <div class="max-w-screen-xl mx-auto">
+
+      <nav class="bg-blue-700 text-white rounded-xl mb-8 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8"><span class="text-xl font-bold">🛒 ShopNest</span></div>
+        <div class="flex items-center gap-6 text-sm"><span>Hi, Rahul 👋</span><a href="#">🛒 Cart (2)</a></div>
+      </nav>
+
+      <!-- @component: PaymentFailurePanel · role="alert" · cart preserved for retry -->
+      <div class="bg-white rounded-2xl border border-red-200 p-12 max-w-2xl mx-auto text-center" role="alert" aria-live="assertive">
+
+        <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-5xl" aria-hidden="true">❌</span>
+        </div>
+        <h1 class="text-3xl font-bold text-red-800 mb-2">Payment Failed</h1>
+        <p class="text-gray-600 mb-2">Your payment could not be processed.</p>
+        <p class="text-sm text-gray-400 font-mono mb-6">Error: BAD_REQUEST_ERROR · payment_method: UPI · code: PAYMENT_CANCELLED</p>
+
+        <!-- What happened -->
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 text-left mb-6">
+          <h3 class="font-semibold text-gray-800 mb-2">ℹ️ What happened?</h3>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• Your payment was cancelled or declined</li>
+            <li>• <strong>No amount has been charged</strong> to your account</li>
+            <li>• Your cart items are still saved — you can try again</li>
+          </ul>
+        </div>
+        <span class="ann-block">@behavior: Razorpay handler.error(response) → POST /api/v1/orders/payment-failure {order_id, error_code} · Order status → payment_failed · Cart NOT cleared · Retry re-opens Razorpay Checkout.js modal · No money deducted message shown for buyer trust</span>
+
+        <!-- Retry actions -->
+        <div class="flex gap-3 justify-center flex-wrap">
+          <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+            Retry Payment
+          </button>
+          <a href="/cart" class="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-4 px-8 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+            Back to Cart
+          </a>
+          <a href="/" class="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-4 px-8 rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+            Continue Shopping
+          </a>
+        </div>
+
+        <!-- Support contact -->
+        <p class="text-xs text-gray-400 mt-6">Still having trouble? <a href="mailto:support@shopnest.in" class="text-blue-600 hover:underline">Contact support</a></p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SPEC FOOTER
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="bg-gray-900 text-gray-400 px-10 py-6 text-xs font-mono">
+    <div class="max-w-screen-xl mx-auto">
+      <div class="text-gray-200 font-bold mb-3 text-sm">SCR-002 — Cart &amp; Checkout · Specification Summary</div>
+      <div class="grid grid-cols-4 gap-6">
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">States (10)</div>
+          <div>1. Cart Default</div>
+          <div>2. Loading Skeleton</div>
+          <div>3. Empty Cart</div>
+          <div>4. API Error</div>
+          <div>5. Guest Checkout Form</div>
+          <div>6. Authenticated Checkout</div>
+          <div>7. Razorpay Modal</div>
+          <div>8. Order Success (Auth)</div>
+          <div>9. Order Success (Guest)</div>
+          <div>10. Payment Failed</div>
+        </div>
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">User Stories</div>
+          <div>US-013 Add to Cart</div>
+          <div>US-014 Buyer Checkout</div>
+          <div>US-015 Guest Checkout</div>
+          <div>US-016 Payment</div>
+          <div>US-017 Order Confirmation</div>
+        </div>
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">Key API Calls</div>
+          <div>GET /api/v1/cart</div>
+          <div>PATCH /api/v1/cart/items/{id}</div>
+          <div>POST /api/v1/orders/checkout-session</div>
+          <div>POST /api/v1/orders/guest-checkout</div>
+          <div>POST /api/v1/orders/verify-payment</div>
+          <div>POST /api/v1/orders/payment-failure</div>
+          <div>GET /api/v1/orders/track/{token}</div>
+        </div>
+        <div>
+          <div class="text-gray-300 font-semibold mb-2">WCAG / A11Y</div>
+          <div>Inline validation on blur (3.3.1)</div>
+          <div>role="alert" on errors</div>
+          <div>role="progressbar" stepper</div>
+          <div>role="radiogroup" addresses</div>
+          <div>aria-live="polite" qty stepper</div>
+          <div>All form fields: explicit label</div>
+          <div>Focus ring: 2px solid #1A56DB</div>
+          <div>Razorpay modal: role="dialog"</div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-4 pt-4 text-gray-500">
+        ShopNest · Phase 5 UX Design (Testing Version) · Desktop 1440px reference · Tailwind CSS CDN · 2026-05-14
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

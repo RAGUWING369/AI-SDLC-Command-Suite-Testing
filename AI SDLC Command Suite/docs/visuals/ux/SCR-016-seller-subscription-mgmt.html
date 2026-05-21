@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-016 — Seller Subscription Management · ShopNest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-danger { background: transparent; color: #DC2626; border: 2px solid #DC2626; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .seller-layout { display: flex; min-height: calc(100vh - 56px); }
+    .seller-sidebar { width: 240px; flex-shrink: 0; background: white; border-right: 1px solid #E5E7EB; padding: 16px; }
+    .seller-main { flex: 1; padding: 32px 40px; background: #F9FAFB; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #6B7280; cursor: pointer; margin-bottom: 2px; }
+    .nav-item.active { background: #EFF6FF; color: #1D4ED8; font-weight: 600; }
+    .seller-header { background: white; border-bottom: 1px solid #E5E7EB; height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px; font-weight: 600; color: #111827; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .data-table th { background: #F9FAFB; color: #6B7280; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid #F3F4F6; color: #111827; }
+    .data-table tr:hover td { background: #F9FAFB; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-red { background: #FEE2E2; color: #991B1B; }
+    .badge-gray { background: #F3F4F6; color: #6B7280; }
+    /* Modal overlay */
+    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 50; }
+    .modal { background: white; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE HEADER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div style="background:#1E293B;padding:16px 40px;">
+  <span style="color:#94A3B8;font-size:12px;font-weight:700;letter-spacing:0.08em;">SHOPNEST · WIREFRAME</span>
+  <span style="color:#F97316;font-size:12px;font-weight:700;margin-left:12px;">SCR-016 — Seller Subscription Management</span>
+  <span style="color:#64748B;font-size:12px;margin-left:12px;">Route: /seller/subscription · CSR</span>
+</div>
+
+<div class="toc">
+  <p style="font-size:12px;font-weight:700;color:#1E40AF;margin:0 0 8px 0;">TABLE OF CONTENTS — 4 States</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+    <a href="#s1" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S1 · Active Subscription</a>
+    <a href="#s2" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S2 · Expired Subscription</a>
+    <a href="#s3" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S3 · Cancellation Confirm Modal</a>
+    <a href="#s4" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S4 · Cancelled</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 · Active Subscription -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s1">
+  <div class="state-banner">STATE 1 · Active Subscription &nbsp;|&nbsp; Trigger: Seller navigates to /seller/subscription, Subscription.status = ACTIVE &nbsp;|&nbsp; API: GET /api/v1/seller/subscription/ → 200 OK</div>
+
+  <!-- Header -->
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <!-- Sidebar -->
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item active">💳 <span>Subscription <span style="background:#DCFCE7;color:#15803D;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px;">✓ Active</span></span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Subscription</h1>
+
+      <!-- Subscription Status Card -->
+      <div style="border:2px solid #22C55E;border-radius:16px;padding:24px;background:white;max-width:520px;margin-bottom:32px;position:relative;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+          <div>
+            <span class="badge badge-green" style="margin-bottom:12px;font-size:12px;padding:4px 10px;">● Active</span>
+            <h3 style="font-size:20px;font-weight:700;color:#111827;margin:8px 0 4px 0;">ShopNest Seller Plan</h3>
+            <div style="font-size:28px;font-weight:800;color:#111827;margin:4px 0 2px 0;">₹1,999 <span style="font-size:16px;font-weight:400;color:#6B7280;">/ month</span></div>
+            <div style="font-size:13px;color:#6B7280;margin-top:6px;">Next billing: <strong style="color:#374151;">14 June 2026</strong></div>
+            <div style="font-size:12px;color:#9CA3AF;margin-top:2px;">Payment method: Razorpay (auto-debit) <span class="ann">2</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <div style="width:56px;height:56px;background:#F0FDF4;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;">💳</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid #F3F4F6;display:flex;justify-content:flex-end;">
+          <button style="background:transparent;color:#6B7280;border:1px solid #D1D5DB;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;" aria-label="Cancel subscription — opens confirmation dialog">Cancel Subscription <span class="ann">1</span></button>
+        </div>
+      </div>
+
+      <!-- Annotation Blocks -->
+      <div class="ann-block">
+        <span class="ann">1</span> "Cancel Subscription" button opens confirmation modal (State 3) — not immediate action; required to prevent accidental cancellation
+      </div>
+      <div class="ann-block" style="margin-top:6px;">
+        <span class="ann">2</span> Cancellation takes effect at end of billing period, not immediately; Razorpay Subscriptions API handles grace period via subscription.ended webhook
+      </div>
+
+      <!-- Billing History -->
+      <h2 style="font-size:18px;font-weight:700;color:#111827;margin:32px 0 16px 0;">Billing History</h2>
+
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;max-width:800px;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Status</th>
+              <th scope="col">Invoice <span class="ann">3</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#374151;font-weight:500;">14 May 2026</td>
+              <td style="font-weight:600;">₹1,999.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download GST invoice PDF for May 2026">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td style="color:#374151;font-weight:500;">14 Apr 2026</td>
+              <td style="font-weight:600;">₹1,999.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download GST invoice PDF for Apr 2026">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td style="color:#374151;font-weight:500;">14 Mar 2026</td>
+              <td style="font-weight:600;">₹1,999.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download GST invoice PDF for Mar 2026">Download PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ann-block" style="margin-top:12px;max-width:800px;">
+        <span class="ann">3</span> Billing history invoices = GST-compliant PDFs generated by WeasyPrint, stored in S3, served via CloudFront signed URL. 7-year financial record retention per REQUIREMENTS.md §5.1
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 · Expired Subscription -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s2">
+  <div class="state-banner">STATE 2 · Expired Subscription &nbsp;|&nbsp; Trigger: Subscription.status = EXPIRED (payment failed / not renewed) &nbsp;|&nbsp; Products hidden from marketplace; seller must renew</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item active">💳 <span>Subscription <span style="background:#FEE2E2;color:#991B1B;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px;">⚠ Expired</span></span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 16px 0;">Subscription</h1>
+
+      <!-- Warning Banner -->
+      <div style="background:#FEF9C3;border:1px solid #F59E0B;border-left:4px solid #F59E0B;border-radius:10px;padding:14px 16px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px;" role="alert">
+        <span style="font-size:20px;flex-shrink:0;">⚠️</span>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#92400E;">Subscription Expired</div>
+          <div style="font-size:13px;color:#92400E;margin-top:2px;">Your products are hidden from buyers. Renew your subscription to reactivate your store.</div>
+        </div>
+      </div>
+
+      <!-- Expired Subscription Card -->
+      <div style="border:2px solid #F87171;border-radius:16px;padding:24px;background:white;max-width:520px;margin-bottom:24px;">
+        <div>
+          <span class="badge badge-red" style="margin-bottom:12px;font-size:12px;padding:4px 10px;">❌ Expired</span>
+          <h3 style="font-size:20px;font-weight:700;color:#111827;margin:8px 0 4px 0;">ShopNest Seller Plan</h3>
+          <div style="font-size:28px;font-weight:800;color:#374151;margin:4px 0 2px 0;">₹1,999 <span style="font-size:16px;font-weight:400;color:#6B7280;">/ month</span></div>
+          <div style="font-size:13px;color:#DC2626;margin-top:6px;font-weight:600;">Expired: 14 May 2026</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px;">Subscription lapsed — store deactivated</div>
+        </div>
+        <div style="margin-top:20px;">
+          <button class="btn-primary" style="width:100%;font-size:15px;padding:12px 24px;" aria-label="Renew subscription for 1999 rupees per month">Renew for ₹1,999/month</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 · Cancellation Confirm Modal -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s3">
+  <div class="state-banner">STATE 3 · Cancellation Confirm Modal &nbsp;|&nbsp; Trigger: Seller clicks "Cancel Subscription" in State 1 &nbsp;|&nbsp; Modal overlays State 1; cancellation requires confirmation</div>
+
+  <div style="position:relative;max-width:1440px;overflow:hidden;">
+    <!-- State 1 Background (dimmed) -->
+    <div style="filter:blur(2px);pointer-events:none;opacity:0.6;">
+      <div class="seller-header">
+        <span style="color:#F97316;font-size:20px;">🛒</span>
+        <span>ShopNest Seller Centre</span>
+        <div style="flex:1;"></div>
+        <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+        <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+      </div>
+      <div class="seller-layout">
+        <div class="seller-sidebar">
+          <div class="nav-item">📊 <span>Dashboard</span></div>
+          <div class="nav-item">📦 <span>Products</span></div>
+          <div class="nav-item">📋 <span>Orders</span></div>
+          <div class="nav-item">💰 <span>Payouts</span></div>
+          <div class="nav-item active">💳 <span>Subscription</span></div>
+          <div class="nav-item">⚙️ <span>Settings</span></div>
+        </div>
+        <div class="seller-main">
+          <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Subscription</h1>
+          <div style="border:2px solid #22C55E;border-radius:16px;padding:24px;background:white;max-width:520px;">
+            <span class="badge badge-green" style="font-size:12px;padding:4px 10px;">● Active</span>
+            <h3 style="font-size:20px;font-weight:700;color:#111827;margin:12px 0 4px 0;">ShopNest Seller Plan</h3>
+            <div style="font-size:28px;font-weight:800;color:#111827;margin:4px 0 2px 0;">₹1,999 <span style="font-size:16px;font-weight:400;color:#6B7280;">/ month</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;min-height:400px;">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title" style="max-width:440px;width:440px;">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:56px;height:56px;background:#FEE2E2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;">⚠️</div>
+          <h2 id="cancel-modal-title" style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">Cancel Subscription?</h2>
+          <p style="font-size:14px;color:#6B7280;margin:0;line-height:1.6;">
+            Your store will be deactivated at the end of your current billing period on <strong style="color:#374151;">14 June 2026</strong>. You can renew at any time.
+          </p>
+          <div class="ann-block" style="text-align:left;margin-top:12px;">
+            <span class="ann">4</span> Modal: focus trapped (WCAG 2.1.2); Escape key closes and returns focus to "Cancel Subscription" button (WCAG 2.1.1)
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button class="btn-primary" style="width:100%;font-size:15px;padding:12px 24px;" aria-label="Keep subscription — close this dialog">Keep Subscription</button>
+          <button class="btn-danger" style="width:100%;font-size:14px;" aria-label="Confirm subscription cancellation — takes effect 14 June 2026">Yes, Cancel Subscription</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Annotation below -->
+  <div style="padding:16px 40px;background:white;border-bottom:2px solid #E5E7EB;max-width:1440px;">
+    <div class="ann-block">
+      <span class="ann">4</span> Modal: focus trapped to dialog element (WCAG 2.1.2). Escape key and "Keep Subscription" both close modal and restore focus to the "Cancel Subscription" button (WCAG 2.1.1). Role="dialog" + aria-modal="true" + aria-labelledby wired to modal h2 (4.1.2).
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 · Cancelled -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s4">
+  <div class="state-banner">STATE 4 · Cancelled &nbsp;|&nbsp; Trigger: Subscription.status = CANCELLED (billing period ended) &nbsp;|&nbsp; Store deactivated; seller can reactivate</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item active">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Subscription</h1>
+
+      <!-- Cancelled Card -->
+      <div style="border:2px solid #D1D5DB;border-radius:16px;padding:24px;background:white;max-width:520px;margin-bottom:24px;">
+        <span class="badge badge-gray" style="margin-bottom:12px;font-size:12px;padding:4px 10px;">Cancelled</span>
+        <h3 style="font-size:20px;font-weight:700;color:#374151;margin:8px 0 4px 0;">ShopNest Seller Plan</h3>
+        <div style="font-size:14px;color:#6B7280;margin-top:8px;line-height:1.6;">
+          <div>Your subscription ended <strong style="color:#374151;">14 June 2026</strong>.</div>
+          <div style="margin-top:4px;">Your products are now hidden from buyers.</div>
+        </div>
+        <div style="margin-top:20px;">
+          <button class="btn-primary" style="width:100%;font-size:15px;padding:12px 24px;" aria-label="Reactivate subscription for 1999 rupees per month">Reactivate for ₹1,999/month</button>
+        </div>
+      </div>
+
+      <!-- Billing History for Cancelled -->
+      <h2 style="font-size:18px;font-weight:700;color:#111827;margin:0 0 16px 0;">Billing History</h2>
+
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;max-width:800px;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Status</th>
+              <th scope="col">Invoice</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#374151;font-weight:500;">14 May 2026</td>
+              <td style="font-weight:600;">₹1,999.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download GST invoice PDF for May 2026">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td style="color:#374151;font-weight:500;">14 Apr 2026</td>
+              <td style="font-weight:600;">₹1,999.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download GST invoice PDF for Apr 2026">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td style="color:#374151;font-weight:500;">14 Mar 2026</td>
+              <td style="font-weight:600;">₹1,999.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download GST invoice PDF for Mar 2026">Download PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-size:13px;font-weight:700;color:#F97316;margin-bottom:16px;">SCR-016 — SELLER SUBSCRIPTION MANAGEMENT · SPECIFICATION</div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">STATES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">USER STORIES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">API ENDPOINTS</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">WCAG</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="vertical-align:top;">
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          S1 · Active Subscription<br/>
+          S2 · Expired Subscription<br/>
+          S3 · Cancellation Confirm Modal<br/>
+          S4 · Cancelled
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          US-036 · Manage seller subscription
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          GET /api/v1/seller/subscription/<br/>
+          POST /api/v1/payments/subscriptions/cancel/
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          Modal focus trap (2.1.2)<br/>
+          Escape key closes modal (2.1.1)<br/>
+          Cancel confirm role="dialog" + aria-modal (4.1.2)<br/>
+          Status card semantic h3 heading (1.3.1)<br/>
+          Expired banner role="alert" (4.1.3)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid #334155;font-size:11px;color:#64748B;">
+    ShopNest · Phase 5 UX Design · Generated 2026-05-15 · Screen SCR-016 · Route /seller/subscription · CSR · Seller Sidebar Shell
+  </div>
+</div>
+
+</body>
+</html>

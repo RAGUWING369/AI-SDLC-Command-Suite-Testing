@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-018 — Admin Login · ShopNest UX Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 10px 12px; font-size: 14px; width: 100%; box-sizing: border-box; outline: none; }
+    .form-field:focus { border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    /* Full-height dark login page simulation */
+    .login-page { background: #1E293B; min-height: 480px; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 40px; }
+    .login-card { background: white; border-radius: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.4); padding: 40px 36px; width: 100%; max-width: 380px; }
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.2; }
+      40% { opacity: 1; }
+    }
+    .dot-anim span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #9CA3AF; margin: 0 2px; animation: dotPulse 1.4s infinite; }
+    .dot-anim span:nth-child(2) { animation-delay: 0.2s; }
+    .dot-anim span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes progressBar { 0% { width: 0%; } 70% { width: 80%; } 100% { width: 100%; } }
+    .progress-bar { height: 4px; background: #3B82F6; border-radius: 2px; animation: progressBar 2s ease-in-out forwards; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN HEADER
+════════════════════════════════════════════════════════════════ -->
+<div style="background:#1E3A5F; color:white; padding:16px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div>
+    <div style="font-size:11px; font-weight:600; color:#93C5FD; text-transform:uppercase; letter-spacing:0.08em;">ShopNest UX Wireframe · Phase 5</div>
+    <div style="font-size:20px; font-weight:800; margin-top:2px;">SCR-018 — Admin Login</div>
+    <div style="font-size:12px; color:#CBD5E1; margin-top:2px;">Route: /admin/login · CSR · Pre-auth (no shell) · 4 States</div>
+  </div>
+  <div style="font-size:12px; color:#94A3B8; text-align:right;">
+    <div>Phase 5 — UX Design</div>
+    <div style="margin-top:2px;">2026-05-15</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div style="font-size:12px; font-weight:700; color:#1E40AF; margin-bottom:8px;">TABLE OF CONTENTS</div>
+  <div style="display:flex; gap:32px; flex-wrap:wrap;">
+    <a href="#s1" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 1 — Login Form</a>
+    <a href="#s2" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 2 — Submitting</a>
+    <a href="#s3" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 3 — Login Error</a>
+    <a href="#s4" style="font-size:13px; color:#1D4ED8; text-decoration:none;">State 4 — Success → Dashboard</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 1 — Login Form
+════════════════════════════════════════════════════════════════ -->
+<div id="s1">
+  <div class="state-banner">STATE 1 · Login Form · Trigger: User navigates to /admin/login (unauthenticated)</div>
+  <div class="state-section" style="background:#F9FAFB;">
+
+    <div class="login-page">
+      <div style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:380px;">
+
+        <!-- Card -->
+        <div class="login-card">
+          <!-- Logo -->
+          <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:26px; font-weight:800; color:#1D4ED8; letter-spacing:-0.5px;">
+              Shop<span style="color:#F97316;">Nest</span>
+            </div>
+            <!-- Admin badge -->
+            <div style="display:inline-block; background:#F3F4F6; color:#374151; font-size:11px; font-weight:600; padding:3px 12px; border-radius:999px; margin-top:8px;">
+              Admin Portal
+            </div>
+          </div>
+
+          <h2 style="font-size:20px; font-weight:700; color:#111827; text-align:center; margin:0 0 24px 0;">Sign In</h2>
+
+          <!-- Email field -->
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+              Email Address <span style="color:#EF4444;">*</span>
+              <span class="ann">1</span>
+            </label>
+            <input type="email" class="form-field" value="admin@shopnest.in" autofocus aria-label="Email address" />
+          </div>
+
+          <!-- Password field -->
+          <div style="margin-bottom:24px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+              Password <span style="color:#EF4444;">*</span>
+              <span class="ann">2</span>
+            </label>
+            <div style="position:relative;">
+              <input type="password" class="form-field" value="••••••••••" style="padding-right:44px;" aria-label="Password" />
+              <button style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6B7280;" aria-label="Show password">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- CTA button -->
+          <button class="btn-primary" style="width:100%; padding:12px; font-size:15px;" aria-label="Sign in to admin portal">
+            Sign In
+          </button>
+        </div>
+
+        <!-- Below card text -->
+        <div style="margin-top:20px; font-size:12px; color:#64748B; text-align:center;">
+          <span class="ann" style="margin-right:4px;">3</span> ShopNest Internal Use Only
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div style="margin-top:24px; max-width:600px;">
+      <div class="ann-block"><span class="ann">1</span> Admin accounts created via Django <code>createsuperuser</code> management command — no self-registration UI for admin.</div>
+      <div class="ann-block" style="margin-top:8px;"><span class="ann">2</span> RS256 JWT same mechanism as seller/buyer auth; admin has <code>role=ADMIN</code> in JWT claims; access token 24h lifetime.</div>
+      <div class="ann-block" style="margin-top:8px;"><span class="ann">3</span> "ShopNest Internal Use Only" — intentional; discourages URL sharing; admin panel is not publicly advertised or linked from the storefront.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 2 — Submitting
+════════════════════════════════════════════════════════════════ -->
+<div id="s2">
+  <div class="state-banner">STATE 2 · Submitting · Trigger: User clicks "Sign In" — POST /api/v1/auth/admin/login/ in-flight (aria-busy="true")</div>
+  <div class="state-section" style="background:#F9FAFB;">
+
+    <div class="login-page">
+      <div style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:380px;">
+
+        <div class="login-card">
+          <!-- Logo -->
+          <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:26px; font-weight:800; color:#1D4ED8; letter-spacing:-0.5px;">
+              Shop<span style="color:#F97316;">Nest</span>
+            </div>
+            <div style="display:inline-block; background:#F3F4F6; color:#374151; font-size:11px; font-weight:600; padding:3px 12px; border-radius:999px; margin-top:8px;">
+              Admin Portal
+            </div>
+          </div>
+
+          <h2 style="font-size:20px; font-weight:700; color:#111827; text-align:center; margin:0 0 24px 0;">Sign In</h2>
+
+          <!-- Email field -->
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Email Address <span style="color:#EF4444;">*</span></label>
+            <input type="email" class="form-field" value="admin@shopnest.in" disabled style="background:#F9FAFB; color:#9CA3AF;" />
+          </div>
+
+          <!-- Password field -->
+          <div style="margin-bottom:24px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Password <span style="color:#EF4444;">*</span></label>
+            <input type="password" class="form-field" value="••••••••••" disabled style="background:#F9FAFB; color:#9CA3AF;" />
+          </div>
+
+          <!-- Submitting button — disabled gray -->
+          <button disabled aria-busy="true" style="width:100%; padding:12px; font-size:15px; background:#E5E7EB; color:#9CA3AF; border:none; border-radius:12px; font-weight:700; cursor:not-allowed; display:flex; align-items:center; justify-content:center; gap:4px;">
+            <span class="dot-anim"><span></span><span></span><span></span></span>
+          </button>
+        </div>
+
+        <div style="margin-top:20px; font-size:12px; color:#64748B; text-align:center;">ShopNest Internal Use Only</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 3 — Login Error
+════════════════════════════════════════════════════════════════ -->
+<div id="s3">
+  <div class="state-banner">STATE 3 · Login Error · Trigger: POST /api/v1/auth/admin/login/ returns 401 Unauthorized</div>
+  <div class="state-section" style="background:#F9FAFB;">
+
+    <div class="login-page">
+      <div style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:380px;">
+
+        <div class="login-card">
+          <!-- Logo -->
+          <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:26px; font-weight:800; color:#1D4ED8; letter-spacing:-0.5px;">
+              Shop<span style="color:#F97316;">Nest</span>
+            </div>
+            <div style="display:inline-block; background:#F3F4F6; color:#374151; font-size:11px; font-weight:600; padding:3px 12px; border-radius:999px; margin-top:8px;">
+              Admin Portal
+            </div>
+          </div>
+
+          <h2 style="font-size:20px; font-weight:700; color:#111827; text-align:center; margin:0 0 20px 0;">Sign In</h2>
+
+          <!-- Error banner -->
+          <div role="alert" aria-live="assertive" style="background:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:12px 14px; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:16px;">❌</span>
+            <span style="font-size:13px; font-weight:600; color:#DC2626;">Invalid email or password.</span>
+            <span class="ann" style="margin-left:auto;">4</span>
+          </div>
+
+          <!-- Email field -->
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Email Address <span style="color:#EF4444;">*</span></label>
+            <input type="email" class="form-field" value="admin@shopnest.in" style="border-color:#FCA5A5;" autofocus aria-label="Email address" />
+          </div>
+
+          <!-- Password field -->
+          <div style="margin-bottom:24px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Password <span style="color:#EF4444;">*</span></label>
+            <div style="position:relative;">
+              <input type="password" class="form-field" value="" style="border-color:#FCA5A5; padding-right:44px;" placeholder="Enter your password" aria-label="Password" />
+              <button style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6B7280;" aria-label="Show password">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="width:100%; padding:12px; font-size:15px;">Sign In</button>
+        </div>
+
+        <div style="margin-top:20px; font-size:12px; color:#64748B; text-align:center;">ShopNest Internal Use Only</div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div style="margin-top:24px; max-width:600px;">
+      <div class="ann-block"><span class="ann">4</span> Error message is always generic — "Invalid email or password." — never reveals which field is wrong. Prevents user enumeration attacks (OWASP A07:2021). Password field cleared on error; email field retained for UX convenience.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATE 4 — Success → Dashboard Redirect
+════════════════════════════════════════════════════════════════ -->
+<div id="s4">
+  <div class="state-banner">STATE 4 · Success → Dashboard · Trigger: POST /api/v1/auth/admin/login/ returns 200 with access + refresh tokens; redirecting to /admin/dashboard</div>
+  <div class="state-section" style="background:#F9FAFB;">
+
+    <div class="login-page">
+      <div style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:380px;">
+
+        <div class="login-card" style="text-align:center;">
+          <!-- Logo -->
+          <div style="margin-bottom:24px;">
+            <div style="font-size:26px; font-weight:800; color:#1D4ED8; letter-spacing:-0.5px;">
+              Shop<span style="color:#F97316;">Nest</span>
+            </div>
+            <div style="display:inline-block; background:#F3F4F6; color:#374151; font-size:11px; font-weight:600; padding:3px 12px; border-radius:999px; margin-top:8px;">
+              Admin Portal
+            </div>
+          </div>
+
+          <!-- Success message -->
+          <div role="status" aria-label="Redirecting to admin dashboard" style="margin-bottom:24px;">
+            <div style="font-size:36px; margin-bottom:8px;">✅</div>
+            <div style="font-size:18px; font-weight:700; color:#111827;">Signing in...</div>
+            <div style="font-size:13px; color:#6B7280; margin-top:6px;">Redirecting to Admin Dashboard</div>
+          </div>
+
+          <!-- Shimmer progress bar -->
+          <div style="background:#E5E7EB; border-radius:4px; overflow:hidden; height:4px;">
+            <div class="progress-bar"></div>
+          </div>
+          <div style="font-size:11px; color:#9CA3AF; margin-top:8px;">Please wait...</div>
+        </div>
+
+        <div style="margin-top:20px; font-size:12px; color:#64748B; text-align:center;">ShopNest Internal Use Only</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SPEC FOOTER
+════════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-size:14px; font-weight:700; color:#F1F5F9; margin-bottom:16px;">SCR-018 — Admin Login · Specification</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 12px; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">States</strong><br/>4 (Form, Submitting, Error, Success)</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">User Stories</strong><br/>— (admin internal, not buyer/seller facing)</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">API Endpoint</strong><br/>POST /api/v1/auth/admin/login/</td>
+        <td style="padding:10px 12px; color:#CBD5E1; vertical-align:top;"><strong style="color:#F1F5F9;">WCAG</strong><br/>Error announced role="alert" aria-live="assertive" (4.1.3); password show/hide aria-label (1.3.5); focus on email field on load (2.4.3); progress role="status" (4.1.3)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px; font-size:11px; color:#475569;">ShopNest · Phase 5 UX Design · Generated 2026-05-15 · Admin screens — not public-facing</div>
+</div>
+
+</body>
+</html>

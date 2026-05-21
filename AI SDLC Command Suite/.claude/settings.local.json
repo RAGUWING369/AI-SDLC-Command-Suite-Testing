@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Test-Path \"C:\\\\EdvenSoft-Projects\\\\AI SDLC Command Suite\\\\docs\\\\visuals\\\\ux\\\\SCR-002-cart-checkout.html\")"
+    ]
+  }
+}

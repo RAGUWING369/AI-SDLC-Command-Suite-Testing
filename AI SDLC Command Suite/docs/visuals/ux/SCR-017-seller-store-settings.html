@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-017 — Seller Store Settings · ShopNest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; background: white; }
+    .form-field:focus { outline: 2px solid #F97316; border-color: #F97316; }
+    .seller-layout { display: flex; min-height: calc(100vh - 56px); }
+    .seller-sidebar { width: 240px; flex-shrink: 0; background: white; border-right: 1px solid #E5E7EB; padding: 16px; }
+    .seller-main { flex: 1; padding: 32px 40px; background: #F9FAFB; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #6B7280; cursor: pointer; margin-bottom: 2px; }
+    .nav-item.active { background: #EFF6FF; color: #1D4ED8; font-weight: 600; }
+    .seller-header { background: white; border-bottom: 1px solid #E5E7EB; height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px; font-weight: 600; color: #111827; }
+    .section-title { font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 16px 0; }
+    .field-label { font-size: 13px; font-weight: 600; color: #374151; display: block; margin-bottom: 6px; }
+    .field-hint { font-size: 11px; color: #9CA3AF; margin-top: 4px; }
+    .form-section { background: white; border-radius: 12px; border: 1px solid #E5E7EB; padding: 24px; margin-bottom: 24px; max-width: 680px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE HEADER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div style="background:#1E293B;padding:16px 40px;">
+  <span style="color:#94A3B8;font-size:12px;font-weight:700;letter-spacing:0.08em;">SHOPNEST · WIREFRAME</span>
+  <span style="color:#F97316;font-size:12px;font-weight:700;margin-left:12px;">SCR-017 — Seller Store Settings</span>
+  <span style="color:#64748B;font-size:12px;margin-left:12px;">Route: /seller/settings · CSR</span>
+</div>
+
+<div class="toc">
+  <p style="font-size:12px;font-weight:700;color:#1E40AF;margin:0 0 8px 0;">TABLE OF CONTENTS — 4 States</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+    <a href="#s1" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S1 · Settings Form Default</a>
+    <a href="#s2" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S2 · Save Loading</a>
+    <a href="#s3" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S3 · Save Success</a>
+    <a href="#s4" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S4 · Save Error</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 · Settings Form Default -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s1">
+  <div class="state-banner">STATE 1 · Settings Form Default &nbsp;|&nbsp; Trigger: Seller navigates to /seller/settings &nbsp;|&nbsp; API: GET /api/v1/seller/store/ + GET /api/v1/seller/payout-details/ → 200 OK</div>
+
+  <!-- Header -->
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <!-- Sidebar -->
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item active">⚙️ <span>Settings</span></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Store Settings</h1>
+
+      <!-- Section 1 — Store Information -->
+      <div class="form-section">
+        <h2 class="section-title">Store Information <span class="ann">2</span></h2>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="field-label" for="s1-store-name">Store Name *</label>
+            <input type="text" id="s1-store-name" class="form-field" value="Priya's Boutique" />
+          </div>
+          <div>
+            <label class="field-label" for="s1-city">City *</label>
+            <input type="text" id="s1-city" class="form-field" value="Bangalore" />
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label class="field-label" for="s1-description">Description <span style="font-weight:400;color:#9CA3AF;">(optional)</span></label>
+          <textarea id="s1-description" class="form-field" rows="3" style="resize:vertical;">Priya's Boutique is your go-to destination for handcrafted Indian ethnic wear. We specialise in kurtis, sarees, and fusion wear for modern women.</textarea>
+        </div>
+
+        <hr style="border:none;border-top:1px solid #F3F4F6;margin:0 0 20px 0;" />
+
+        <!-- Logo Row -->
+        <div style="margin-bottom:16px;">
+          <label class="field-label">Store Logo <span class="ann">3</span></label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#1D4ED8;flex-shrink:0;border:2px solid #BFDBFE;">PB</div>
+            <div>
+              <button class="btn-secondary" style="padding:7px 16px;font-size:13px;">Change Logo</button>
+              <div class="field-hint" style="margin-top:6px;">Square image recommended · Max 2 MB · PNG or JPG</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner Row -->
+        <div>
+          <label class="field-label">Store Banner</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:160px;height:48px;background:#F3F4F6;border-radius:8px;border:1px dashed #D1D5DB;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:11px;color:#9CA3AF;">Banner preview</span>
+            </div>
+            <div>
+              <button class="btn-secondary" style="padding:7px 16px;font-size:13px;">Change Banner</button>
+              <div class="field-hint" style="margin-top:6px;">Recommended: 1200×300px · Max 5 MB · PNG or JPG</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 — Payout Details -->
+      <div class="form-section">
+        <h2 class="section-title">Payout Details</h2>
+
+        <!-- Security Note -->
+        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#1E40AF;display:flex;align-items:center;gap:8px;">
+          🔒 <span>Your bank account details are encrypted and stored securely.</span>
+        </div>
+
+        <!-- Account Number (masked) -->
+        <div style="margin-bottom:16px;">
+          <label class="field-label" id="acct-label">Account Number * <span class="ann">1</span></label>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:8px 14px;font-family:monospace;font-size:14px;color:#374151;flex:1;letter-spacing:0.05em;" aria-labelledby="acct-label" aria-label="Bank account ending in 4321">
+              ●●●●●●●● 4321
+            </div>
+            <a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;">Edit</a>
+          </div>
+          <div class="field-hint">Last 4 digits shown — full number encrypted at rest (AES-256-GCM)</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="field-label" for="s1-ifsc">IFSC Code * <span class="ann">4</span></label>
+            <input type="text" id="s1-ifsc" class="form-field" value="HDFC0001234" maxlength="11"
+              aria-describedby="ifsc-hint" />
+            <div id="ifsc-hint" class="field-hint">Format: 4 letters + 0 + 6 alphanumeric (e.g. HDFC0001234)</div>
+          </div>
+          <div>
+            <label class="field-label" for="s1-account-holder">Account Holder Name *</label>
+            <input type="text" id="s1-account-holder" class="form-field" value="Priya Sharma" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Save CTA -->
+      <div style="max-width:680px;">
+        <button class="btn-primary" style="width:100%;font-size:15px;padding:14px 24px;" aria-label="Save all store settings changes">Save Changes</button>
+      </div>
+
+      <!-- Annotation Blocks -->
+      <div style="max-width:680px;margin-top:20px;">
+        <div class="ann-block">
+          <span class="ann">1</span> Bank account number stored AES-256-GCM encrypted (SECURITY-ARCHITECTURE.md); display shows only last 4 digits; clicking "Edit" reveals input field temporarily for editing
+        </div>
+        <div class="ann-block" style="margin-top:6px;">
+          <span class="ann">2</span> Store name and city changes do NOT trigger product re-review — only product name/description changes require re-review (FR-PRODUCT-007/008)
+        </div>
+        <div class="ann-block" style="margin-top:6px;">
+          <span class="ann">3</span> Logo/banner changes: upload via S3 presigned URL (same flow as SCR-011); image replaced on CloudFront after upload. Images served via CloudFront CDN, never from Django directly
+        </div>
+        <div class="ann-block" style="margin-top:6px;">
+          <span class="ann">4</span> IFSC Code: validated against pattern [A-Z]{'{'4}0[A-Z0-9]{'{'6} — exactly 11 chars; inline error shown if format invalid on blur
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 · Save Loading -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s2">
+  <div class="state-banner">STATE 2 · Save Loading &nbsp;|&nbsp; Trigger: Seller clicks "Save Changes" — PATCH request in-flight &nbsp;|&nbsp; Button disabled; spinner shown; aria-busy="true"</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item active">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Store Settings</h1>
+
+      <!-- Store Information (same content, form fields retain values) -->
+      <div class="form-section">
+        <h2 class="section-title">Store Information</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="field-label">Store Name *</label>
+            <input type="text" class="form-field" value="Priya's Boutique" disabled style="background:#F9FAFB;" />
+          </div>
+          <div>
+            <label class="field-label">City *</label>
+            <input type="text" class="form-field" value="Bangalore" disabled style="background:#F9FAFB;" />
+          </div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <label class="field-label">Description</label>
+          <textarea class="form-field" rows="3" disabled style="background:#F9FAFB;">Priya's Boutique is your go-to destination for handcrafted Indian ethnic wear. We specialise in kurtis, sarees, and fusion wear for modern women.</textarea>
+        </div>
+        <hr style="border:none;border-top:1px solid #F3F4F6;margin:0 0 20px 0;" />
+        <div style="margin-bottom:16px;">
+          <label class="field-label">Store Logo</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#1D4ED8;flex-shrink:0;border:2px solid #BFDBFE;">PB</div>
+            <button class="btn-secondary" style="padding:7px 16px;font-size:13px;opacity:0.5;" disabled>Change Logo</button>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Store Banner</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:160px;height:48px;background:#F3F4F6;border-radius:8px;border:1px dashed #D1D5DB;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:11px;color:#9CA3AF;">Banner preview</span>
+            </div>
+            <button class="btn-secondary" style="padding:7px 16px;font-size:13px;opacity:0.5;" disabled>Change Banner</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payout Details -->
+      <div class="form-section">
+        <h2 class="section-title">Payout Details</h2>
+        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#1E40AF;display:flex;align-items:center;gap:8px;">
+          🔒 <span>Your bank account details are encrypted and stored securely.</span>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label class="field-label">Account Number *</label>
+          <div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:8px 14px;font-family:monospace;font-size:14px;color:#374151;letter-spacing:0.05em;">
+            ●●●●●●●● 4321
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label class="field-label">IFSC Code *</label>
+            <input type="text" class="form-field" value="HDFC0001234" disabled style="background:#F9FAFB;" />
+          </div>
+          <div>
+            <label class="field-label">Account Holder Name *</label>
+            <input type="text" class="form-field" value="Priya Sharma" disabled style="background:#F9FAFB;" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Save Button — Loading State -->
+      <div style="max-width:680px;">
+        <button class="btn-primary" style="width:100%;font-size:15px;padding:14px 24px;opacity:0.7;cursor:not-allowed;display:flex;align-items:center;justify-content:center;gap:10px;" disabled aria-busy="true" aria-label="Saving store settings">
+          <span style="display:inline-flex;gap:3px;align-items:center;">
+            <span style="width:6px;height:6px;background:white;border-radius:50%;animation:pulse 0.8s infinite 0s;"></span>
+            <span style="width:6px;height:6px;background:white;border-radius:50%;animation:pulse 0.8s infinite 0.2s;"></span>
+            <span style="width:6px;height:6px;background:white;border-radius:50%;animation:pulse 0.8s infinite 0.4s;"></span>
+          </span>
+          Saving...
+        </button>
+      </div>
+      <style>@keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }</style>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 · Save Success -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s3">
+  <div class="state-banner">STATE 3 · Save Success &nbsp;|&nbsp; Trigger: PATCH /api/v1/seller/store/ + PATCH /api/v1/seller/payout-details/ → 200 OK &nbsp;|&nbsp; Success banner auto-dismisses after 4s</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item active">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <!-- Success Banner -->
+      <div style="background:#F0FDF4;border:1px solid #86EFAC;border-left:4px solid #22C55E;border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;max-width:680px;" role="status">
+        <span style="font-size:16px;">✅</span>
+        <div>
+          <span style="font-size:14px;font-weight:600;color:#15803D;">Settings saved successfully.</span>
+          <span style="font-size:12px;color:#16A34A;margin-left:8px;">(Auto-dismisses in 4 seconds)</span>
+        </div>
+      </div>
+
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Store Settings</h1>
+
+      <!-- Store Information -->
+      <div class="form-section">
+        <h2 class="section-title">Store Information</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="field-label" for="s3-store-name">Store Name *</label>
+            <input type="text" id="s3-store-name" class="form-field" value="Priya's Boutique" />
+          </div>
+          <div>
+            <label class="field-label" for="s3-city">City *</label>
+            <input type="text" id="s3-city" class="form-field" value="Bangalore" />
+          </div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <label class="field-label" for="s3-desc">Description</label>
+          <textarea id="s3-desc" class="form-field" rows="3" style="resize:vertical;">Priya's Boutique is your go-to destination for handcrafted Indian ethnic wear. We specialise in kurtis, sarees, and fusion wear for modern women.</textarea>
+        </div>
+        <hr style="border:none;border-top:1px solid #F3F4F6;margin:0 0 20px 0;" />
+        <div style="margin-bottom:16px;">
+          <label class="field-label">Store Logo</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#1D4ED8;flex-shrink:0;border:2px solid #22C55E;">PB</div>
+            <button class="btn-secondary" style="padding:7px 16px;font-size:13px;">Change Logo</button>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Store Banner</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:160px;height:48px;background:#F3F4F6;border-radius:8px;border:1px dashed #D1D5DB;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:11px;color:#9CA3AF;">Banner preview</span>
+            </div>
+            <button class="btn-secondary" style="padding:7px 16px;font-size:13px;">Change Banner</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payout Details -->
+      <div class="form-section">
+        <h2 class="section-title">Payout Details</h2>
+        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#1E40AF;display:flex;align-items:center;gap:8px;">
+          🔒 <span>Your bank account details are encrypted and stored securely.</span>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label class="field-label" id="acct-label-s3">Account Number *</label>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:8px 14px;font-family:monospace;font-size:14px;color:#374151;flex:1;letter-spacing:0.05em;" aria-labelledby="acct-label-s3" aria-label="Bank account ending in 4321">
+              ●●●●●●●● 4321
+            </div>
+            <a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;">Edit</a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label class="field-label" for="s3-ifsc">IFSC Code *</label>
+            <input type="text" id="s3-ifsc" class="form-field" value="HDFC0001234" />
+          </div>
+          <div>
+            <label class="field-label" for="s3-holder">Account Holder Name *</label>
+            <input type="text" id="s3-holder" class="form-field" value="Priya Sharma" />
+          </div>
+        </div>
+      </div>
+
+      <div style="max-width:680px;">
+        <button class="btn-primary" style="width:100%;font-size:15px;padding:14px 24px;">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 · Save Error -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s4">
+  <div class="state-banner">STATE 4 · Save Error &nbsp;|&nbsp; Trigger: PATCH returns 500 / network error &nbsp;|&nbsp; Error banner shown; Save button re-enabled; user can retry</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item active">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <!-- Error Banner -->
+      <div style="background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid #DC2626;border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;max-width:680px;" role="alert">
+        <span style="font-size:16px;">❌</span>
+        <div>
+          <span style="font-size:14px;font-weight:600;color:#DC2626;">Unable to save changes. Please try again.</span>
+          <div style="font-size:12px;color:#B91C1C;margin-top:2px;">If the problem persists, contact support at help@shopnest.in</div>
+        </div>
+      </div>
+
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Store Settings</h1>
+
+      <!-- Store Information -->
+      <div class="form-section">
+        <h2 class="section-title">Store Information</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label class="field-label" for="s4-store-name">Store Name *</label>
+            <input type="text" id="s4-store-name" class="form-field" value="Priya's Boutique" />
+          </div>
+          <div>
+            <label class="field-label" for="s4-city">City *</label>
+            <input type="text" id="s4-city" class="form-field" value="Bangalore" />
+          </div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <label class="field-label" for="s4-desc">Description</label>
+          <textarea id="s4-desc" class="form-field" rows="3" style="resize:vertical;">Priya's Boutique is your go-to destination for handcrafted Indian ethnic wear. We specialise in kurtis, sarees, and fusion wear for modern women.</textarea>
+        </div>
+        <hr style="border:none;border-top:1px solid #F3F4F6;margin:0 0 20px 0;" />
+        <div style="margin-bottom:16px;">
+          <label class="field-label">Store Logo</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#1D4ED8;flex-shrink:0;border:2px solid #BFDBFE;">PB</div>
+            <button class="btn-secondary" style="padding:7px 16px;font-size:13px;">Change Logo</button>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Store Banner</label>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:160px;height:48px;background:#F3F4F6;border-radius:8px;border:1px dashed #D1D5DB;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:11px;color:#9CA3AF;">Banner preview</span>
+            </div>
+            <button class="btn-secondary" style="padding:7px 16px;font-size:13px;">Change Banner</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payout Details -->
+      <div class="form-section">
+        <h2 class="section-title">Payout Details</h2>
+        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#1E40AF;display:flex;align-items:center;gap:8px;">
+          🔒 <span>Your bank account details are encrypted and stored securely.</span>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label class="field-label" id="acct-label-s4">Account Number *</label>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:8px 14px;font-family:monospace;font-size:14px;color:#374151;flex:1;letter-spacing:0.05em;" aria-labelledby="acct-label-s4" aria-label="Bank account ending in 4321">
+              ●●●●●●●● 4321
+            </div>
+            <a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;">Edit</a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label class="field-label" for="s4-ifsc">IFSC Code *</label>
+            <input type="text" id="s4-ifsc" class="form-field" value="HDFC0001234" aria-describedby="s4-ifsc-hint" />
+            <div id="s4-ifsc-hint" class="field-hint">Format: 4 letters + 0 + 6 alphanumeric (e.g. HDFC0001234)</div>
+          </div>
+          <div>
+            <label class="field-label" for="s4-holder">Account Holder Name *</label>
+            <input type="text" id="s4-holder" class="form-field" value="Priya Sharma" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Save Button — Re-enabled -->
+      <div style="max-width:680px;">
+        <button class="btn-primary" style="width:100%;font-size:15px;padding:14px 24px;" aria-label="Retry saving store settings">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-size:13px;font-weight:700;color:#F97316;margin-bottom:16px;">SCR-017 — SELLER STORE SETTINGS · SPECIFICATION</div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">STATES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">USER STORIES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">API ENDPOINTS</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">WCAG</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="vertical-align:top;">
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          S1 · Settings Form Default<br/>
+          S2 · Save Loading<br/>
+          S3 · Save Success<br/>
+          S4 · Save Error
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          US-031 · Manage store settings and payout details
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          GET /api/v1/seller/store/<br/>
+          PATCH /api/v1/seller/store/<br/>
+          PATCH /api/v1/seller/payout-details/
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          Masked account aria-label="Bank account ending in 4321" (1.3.1)<br/>
+          Save success role="status" (4.1.3)<br/>
+          Save error role="alert" (4.1.3)<br/>
+          IFSC hint via aria-describedby (3.3.2)<br/>
+          Loading button aria-busy="true" (4.1.3)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid #334155;font-size:11px;color:#64748B;">
+    ShopNest · Phase 5 UX Design · Generated 2026-05-15 · Screen SCR-017 · Route /seller/settings · CSR · Seller Sidebar Shell
+  </div>
+</div>
+
+</body>
+</html>

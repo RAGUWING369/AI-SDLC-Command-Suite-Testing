@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-015 — Seller Payouts · ShopNest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; max-width: 1440px; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    .seller-layout { display: flex; min-height: calc(100vh - 56px); }
+    .seller-sidebar { width: 240px; flex-shrink: 0; background: white; border-right: 1px solid #E5E7EB; padding: 16px; }
+    .seller-main { flex: 1; padding: 32px 40px; background: #F9FAFB; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #6B7280; cursor: pointer; margin-bottom: 2px; }
+    .nav-item.active { background: #EFF6FF; color: #1D4ED8; font-weight: 600; }
+    .seller-header { background: white; border-bottom: 1px solid #E5E7EB; height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px; font-weight: 600; color: #111827; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .data-table th { background: #F9FAFB; color: #6B7280; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid #F3F4F6; color: #111827; }
+    .data-table tr:hover td { background: #F9FAFB; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-amber { background: #FEF9C3; color: #92400E; }
+    .badge-blue { background: #DBEAFE; color: #1E40AF; }
+    .badge-gray { background: #F3F4F6; color: #6B7280; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE HEADER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div style="background:#1E293B;padding:16px 40px;">
+  <span style="color:#94A3B8;font-size:12px;font-weight:700;letter-spacing:0.08em;">SHOPNEST · WIREFRAME</span>
+  <span style="color:#F97316;font-size:12px;font-weight:700;margin-left:12px;">SCR-015 — Seller Payouts</span>
+  <span style="color:#64748B;font-size:12px;margin-left:12px;">Route: /seller/payouts · CSR</span>
+</div>
+
+<div class="toc">
+  <p style="font-size:12px;font-weight:700;color:#1E40AF;margin:0 0 8px 0;">TABLE OF CONTENTS — 4 States</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+    <a href="#s1" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S1 · Payout History</a>
+    <a href="#s2" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S2 · Loading Skeleton</a>
+    <a href="#s3" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S3 · Empty (No Payouts)</a>
+    <a href="#s4" style="font-size:12px;color:#1D4ED8;text-decoration:none;background:#DBEAFE;padding:3px 10px;border-radius:4px;">S4 · Payout Detail Expanded</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 · Payout History -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s1">
+  <div class="state-banner">STATE 1 · Payout History &nbsp;|&nbsp; Trigger: Seller navigates to /seller/payouts, payouts exist &nbsp;|&nbsp; API: GET /api/v1/seller/payouts/ → 200 OK</div>
+
+  <!-- Header -->
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <!-- Sidebar -->
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item active">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Payouts</h1>
+
+      <!-- Summary Info Box -->
+      <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:20px 24px;margin-bottom:32px;" aria-describedby="payout-summary">
+        <div id="payout-summary" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#1E40AF;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Next Payout <span class="ann">2</span></div>
+            <div style="font-size:20px;font-weight:700;color:#111827;">Monday, 19 May 2026</div>
+            <div style="font-size:12px;color:#6B7280;margin-top:2px;">09:00 AM IST · Weekly settlement cycle</div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#1E40AF;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Pending Amount <span class="ann">3</span></div>
+            <div style="font-size:20px;font-weight:700;color:#111827;">₹8,500.00</div>
+            <div style="font-size:12px;color:#6B7280;margin-top:2px;">From delivered orders not yet settled</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotation Blocks for Summary -->
+      <div style="margin-bottom:24px;">
+        <div class="ann-block">
+          <span class="ann">2</span> Next payout date = next Monday; Celery Beat weekly schedule (OQ-002 — Monday 09:00 IST pending final confirmation)
+        </div>
+        <div class="ann-block" style="margin-top:6px;">
+          <span class="ann">3</span> Pending amount = sum of gross_amount_paise for delivered orders not yet in a payout cycle ÷ 100 (all monetary values stored as integer paise per CLAUDE.md 2026-05-05)
+        </div>
+      </div>
+
+      <!-- Payout History Table -->
+      <h2 style="font-size:18px;font-weight:700;color:#111827;margin:0 0 16px 0;">Payout History</h2>
+
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Gross <span class="ann">1</span></th>
+              <th scope="col">Gateway Fee</th>
+              <th scope="col">Net Paid</th>
+              <th scope="col">Status</th>
+              <th scope="col">Invoice <span class="ann">4</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#374151;font-weight:500;">12 May 2026</td>
+              <td style="font-weight:600;">₹24,500.00</td>
+              <td style="color:#6B7280;">₹490.00</td>
+              <td style="font-weight:700;color:#15803D;">₹24,010.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download invoice PDF for payout dated 12 May 2026">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td style="color:#374151;font-weight:500;">5 May 2026</td>
+              <td style="font-weight:600;">₹18,200.00</td>
+              <td style="color:#6B7280;">₹364.00</td>
+              <td style="font-weight:700;color:#15803D;">₹17,836.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download invoice PDF for payout dated 5 May 2026">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td style="color:#374151;font-weight:500;">28 Apr 2026</td>
+              <td style="font-weight:600;">₹9,100.00</td>
+              <td style="color:#6B7280;">₹182.00</td>
+              <td style="font-weight:700;color:#15803D;">₹8,918.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download invoice PDF for payout dated 28 Apr 2026">Download PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Annotation Blocks for Table -->
+      <div style="margin-top:16px;">
+        <div class="ann-block">
+          <span class="ann">1</span> Gateway fee = Razorpay processing fee (~2% of gross); ShopNest absorbs this cost — shown transparently to seller. Zero-commission model: sellers receive order amount net of gateway fee only (CLAUDE.md: zero-commission decision 2026-05-05)
+        </div>
+        <div class="ann-block" style="margin-top:6px;">
+          <span class="ann">4</span> Invoice PDF generated by WeasyPrint (GST-compliant); stored in AWS S3; downloaded via CloudFront signed URL. 7-year retention per REQUIREMENTS.md §5.1
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 · Loading Skeleton -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s2">
+  <div class="state-banner">STATE 2 · Loading Skeleton &nbsp;|&nbsp; Trigger: Page mount — GET /api/v1/seller/payouts/ in-flight &nbsp;|&nbsp; Replace with S1 or S3 on resolve</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item active">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <div class="skeleton" style="height:32px;width:100px;margin-bottom:24px;"></div>
+
+      <!-- Summary box skeleton -->
+      <div style="background:#F3F4F6;border-radius:12px;padding:20px 24px;margin-bottom:32px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          <div>
+            <div class="skeleton" style="height:12px;width:100px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:24px;width:220px;margin-bottom:6px;"></div>
+            <div class="skeleton" style="height:12px;width:160px;"></div>
+          </div>
+          <div>
+            <div class="skeleton" style="height:12px;width:120px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:24px;width:140px;margin-bottom:6px;"></div>
+            <div class="skeleton" style="height:12px;width:200px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skeleton" style="height:24px;width:140px;margin-bottom:16px;"></div>
+
+      <!-- Table skeleton -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <div style="background:#F9FAFB;padding:12px 16px;border-bottom:1px solid #E5E7EB;">
+          <div style="display:flex;gap:24px;">
+            <div class="skeleton" style="height:12px;width:60px;"></div>
+            <div class="skeleton" style="height:12px;width:60px;"></div>
+            <div class="skeleton" style="height:12px;width:80px;"></div>
+            <div class="skeleton" style="height:12px;width:60px;"></div>
+            <div class="skeleton" style="height:12px;width:50px;"></div>
+            <div class="skeleton" style="height:12px;width:70px;"></div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid #F3F4F6;display:flex;gap:40px;align-items:center;">
+          <div class="skeleton" style="height:16px;width:90px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:16px;width:70px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:22px;width:60px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:16px;width:90px;"></div>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid #F3F4F6;display:flex;gap:40px;align-items:center;">
+          <div class="skeleton" style="height:16px;width:90px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:16px;width:70px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:22px;width:60px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:16px;width:90px;"></div>
+        </div>
+        <div style="padding:14px 16px;display:flex;gap:40px;align-items:center;">
+          <div class="skeleton" style="height:16px;width:90px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:16px;width:70px;"></div>
+          <div class="skeleton" style="height:16px;width:80px;"></div>
+          <div class="skeleton" style="height:22px;width:60px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:16px;width:90px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 · Empty (No Payouts) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s3">
+  <div class="state-banner">STATE 3 · Empty — No Payouts &nbsp;|&nbsp; Trigger: GET /api/v1/seller/payouts/ → 200 OK, results: [] &nbsp;|&nbsp; No delivered orders yet</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item active">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Payouts</h1>
+
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:420px;text-align:center;">
+        <div style="font-size:56px;margin-bottom:16px;">💰</div>
+        <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 8px 0;">No payouts yet</h2>
+        <p style="font-size:14px;color:#6B7280;max-width:380px;margin:0 0 8px 0;">Your first payout will be processed after your first delivered order.</p>
+        <p style="font-size:13px;color:#9CA3AF;margin:0;">Payouts are processed every Monday.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 · Payout Detail (Row Expanded) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="s4">
+  <div class="state-banner">STATE 4 · Payout Detail — Row Expanded &nbsp;|&nbsp; Trigger: Seller clicks row for 12 May 2026 payout &nbsp;|&nbsp; API: GET /api/v1/seller/payouts/{id}/ → 200 OK</div>
+
+  <div class="seller-header" style="max-width:1440px;">
+    <span style="color:#F97316;font-size:20px;">🛒</span>
+    <span>ShopNest Seller Centre</span>
+    <div style="flex:1;"></div>
+    <span style="font-size:13px;color:#6B7280;font-weight:400;">Priya's Boutique</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D4ED8;">PB</div>
+  </div>
+
+  <div class="seller-layout" style="max-width:1440px;">
+    <div class="seller-sidebar">
+      <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.08em;padding:8px 12px;margin-bottom:4px;">Menu</div>
+      <div class="nav-item">📊 <span>Dashboard</span></div>
+      <div class="nav-item">📦 <span>Products</span></div>
+      <div class="nav-item">📋 <span>Orders</span></div>
+      <div class="nav-item active">💰 <span>Payouts</span></div>
+      <div class="nav-item">💳 <span>Subscription</span></div>
+      <div class="nav-item">⚙️ <span>Settings</span></div>
+    </div>
+
+    <div class="seller-main">
+      <h1 style="font-size:24px;font-weight:700;color:#111827;margin:0 0 24px 0;">Payouts</h1>
+
+      <!-- Summary Info Box -->
+      <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:20px 24px;margin-bottom:32px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#1E40AF;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Next Payout</div>
+            <div style="font-size:20px;font-weight:700;color:#111827;">Monday, 19 May 2026</div>
+            <div style="font-size:12px;color:#6B7280;margin-top:2px;">09:00 AM IST · Weekly settlement cycle</div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#1E40AF;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Pending Amount</div>
+            <div style="font-size:20px;font-weight:700;color:#111827;">₹8,500.00</div>
+            <div style="font-size:12px;color:#6B7280;margin-top:2px;">From delivered orders not yet settled</div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="font-size:18px;font-weight:700;color:#111827;margin:0 0 16px 0;">Payout History</h2>
+
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden;">
+        <table class="data-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Gross</th>
+              <th scope="col">Gateway Fee</th>
+              <th scope="col">Net Paid</th>
+              <th scope="col">Status</th>
+              <th scope="col">Invoice</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Expanded row -->
+            <tr style="background:#EFF6FF;cursor:pointer;">
+              <td style="color:#374151;font-weight:500;">12 May 2026 ▲</td>
+              <td style="font-weight:600;">₹24,500.00</td>
+              <td style="color:#6B7280;">₹490.00</td>
+              <td style="font-weight:700;color:#15803D;">₹24,010.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download invoice PDF for payout PAY-001">Download PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Expanded Detail Card -->
+        <div style="background:#F9FAFB;padding:24px;border-top:2px solid #BFDBFE;" aria-live="polite">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 4px 0;">Payout #PAY-001 · 12 May 2026</h3>
+              <div style="font-size:13px;color:#6B7280;">Bank: HDFC Bank &nbsp;·&nbsp; Account: <span style="font-family:monospace;">●●●●●●●●●● 4321</span> &nbsp;·&nbsp; UTR: <span style="font-family:monospace;color:#374151;font-weight:600;">UTR123456789</span></div>
+            </div>
+            <a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:4px;" title="Download full invoice PDF for payout PAY-001">📄 Download Invoice PDF</a>
+          </div>
+
+          <!-- Sub-order breakdown -->
+          <h4 style="font-size:12px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 8px 0;">Order Breakdown</h4>
+          <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;overflow:hidden;">
+            <table class="data-table" role="table">
+              <thead>
+                <tr>
+                  <th scope="col">Order</th>
+                  <th scope="col">Gross Amount</th>
+                  <th scope="col">Gateway Fee Share</th>
+                  <th scope="col">Net Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#1D4ED8;font-weight:500;">#SN-001100</td>
+                  <td style="font-weight:600;">₹12,000.00</td>
+                  <td style="color:#6B7280;">₹240.00</td>
+                  <td style="font-weight:700;color:#15803D;">₹11,760.00</td>
+                </tr>
+                <tr>
+                  <td style="color:#1D4ED8;font-weight:500;">#SN-001082</td>
+                  <td style="font-weight:600;">₹8,500.00</td>
+                  <td style="color:#6B7280;">₹170.00</td>
+                  <td style="font-weight:700;color:#15803D;">₹8,330.00</td>
+                </tr>
+                <tr>
+                  <td style="color:#1D4ED8;font-weight:500;">#SN-001071</td>
+                  <td style="font-weight:600;">₹4,000.00</td>
+                  <td style="color:#6B7280;">₹80.00</td>
+                  <td style="font-weight:700;color:#15803D;">₹3,920.00</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr style="background:#F9FAFB;border-top:2px solid #E5E7EB;">
+                  <td style="font-weight:700;color:#111827;font-size:13px;">TOTAL</td>
+                  <td style="font-weight:700;color:#111827;">₹24,500.00</td>
+                  <td style="font-weight:600;color:#6B7280;">₹490.00</td>
+                  <td style="font-weight:700;color:#15803D;font-size:15px;">₹24,010.00</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Remaining Rows -->
+        <table class="data-table" role="table" style="border-top:1px solid #E5E7EB;">
+          <tbody>
+            <tr>
+              <td style="color:#374151;font-weight:500;">5 May 2026</td>
+              <td style="font-weight:600;">₹18,200.00</td>
+              <td style="color:#6B7280;">₹364.00</td>
+              <td style="font-weight:700;color:#15803D;">₹17,836.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download invoice PDF for payout dated 5 May 2026">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td style="color:#374151;font-weight:500;">28 Apr 2026</td>
+              <td style="font-weight:600;">₹9,100.00</td>
+              <td style="color:#6B7280;">₹182.00</td>
+              <td style="font-weight:700;color:#15803D;">₹8,918.00</td>
+              <td><span class="badge badge-green">✅ Paid</span></td>
+              <td><a href="#" style="color:#1D4ED8;font-size:13px;font-weight:600;text-decoration:none;" title="Download invoice PDF for payout dated 28 Apr 2026">Download PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-size:13px;font-weight:700;color:#F97316;margin-bottom:16px;">SCR-015 — SELLER PAYOUTS · SPECIFICATION</div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">STATES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">USER STORIES</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">API ENDPOINTS</th>
+        <th style="text-align:left;padding:8px 12px;color:#94A3B8;width:25%;">WCAG</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="vertical-align:top;">
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          S1 · Payout History<br/>
+          S2 · Loading Skeleton<br/>
+          S3 · Empty (No Payouts)<br/>
+          S4 · Payout Detail Expanded
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          US-032 · View payout history and balance
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          GET /api/v1/seller/payouts/<br/>
+          GET /api/v1/seller/payouts/{id}/
+        </td>
+        <td style="padding:8px 12px;color:#CBD5E1;line-height:1.8;">
+          Table summary info aria-describedby (1.3.1)<br/>
+          "Download PDF" links title attr descriptive (2.4.6)<br/>
+          Payout detail aria-live="polite" on expand (4.1.3)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid #334155;font-size:11px;color:#64748B;">
+    ShopNest · Phase 5 UX Design · Generated 2026-05-15 · Screen SCR-015 · Route /seller/payouts · CSR · Seller Sidebar Shell
+  </div>
+</div>
+
+</body>
+</html>

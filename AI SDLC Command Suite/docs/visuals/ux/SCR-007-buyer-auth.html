@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SCR-007 — Buyer Login / Register · ShopNest UX Wireframe</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+  .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; margin-bottom: 0; }
+  .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; margin-bottom: 0; max-width: 1440px; }
+  .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; cursor: help; }
+  .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+  .skeleton { background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+  .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+  .buyer-nav { background: white; border-bottom: 1px solid #E5E7EB; padding: 0 40px; height: 64px; display: flex; align-items: center; gap: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .buyer-nav .logo { font-size: 20px; font-weight: 800; color: #1A56DB; white-space: nowrap; }
+  .buyer-nav .search-bar { flex: 1; border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 16px; font-size: 14px; background: #F9FAFB; }
+  .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; background: white; }
+  .form-field.error { border: 2px solid #DC2626; background: #FEF2F2; }
+  .form-field.valid { border: 1px solid #16A34A; background: #F0FDF4; }
+  .field-error { color: #DC2626; font-size: 12px; margin-top: 4px; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  PAGE HEADER                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="bg-white border-b border-gray-200 px-10 py-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-1 rounded mr-2">SCR-007</span>
+      <span class="text-lg font-bold text-gray-900">Buyer Login / Register</span>
+      <span class="text-sm text-gray-500 ml-3">Routes: /auth/login · /auth/register · CSR · Buyer shell</span>
+    </div>
+    <div class="text-xs text-gray-400">ShopNest · Phase 5 UX · 2026-05-15</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  TABLE OF CONTENTS                                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="toc">
+  <div class="text-sm font-bold text-blue-800 mb-2">States in this screen:</div>
+  <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-blue-700">
+    <a href="#state-1" class="hover:underline">1 · Login Tab (Default)</a>
+    <a href="#state-2" class="hover:underline">2 · Register Tab</a>
+    <a href="#state-3" class="hover:underline">3 · Login — Form Error</a>
+    <a href="#state-4" class="hover:underline">4 · Register — Form Errors</a>
+    <a href="#state-5" class="hover:underline">5 · Loading (Submitting)</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 1 — Login Tab (Default)                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-1">
+  <div class="state-banner">STATE 1 · Login Tab (Default) · Trigger: User navigates to /auth/login or clicks "Sign In"</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500 cursor-pointer hover:text-gray-700">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600 cursor-pointer">🛒 Cart (0)</span>
+      <button class="text-sm font-semibold text-blue-700 hover:underline">Sign In</button>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <!-- Auth Card -->
+      <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8" style="width: 480px;">
+
+        <!-- Tab Toggle -->
+        <div role="tablist" aria-label="Authentication options" class="flex border-b border-gray-200 mb-6">
+          <button role="tab" aria-selected="true" class="flex-1 py-3 text-sm font-700 font-bold text-blue-700 border-b-2 border-blue-600">
+            Login
+          </button>
+          <button role="tab" aria-selected="false" class="flex-1 py-3 text-sm font-medium text-gray-500 hover:text-gray-700">
+            Register
+          </button>
+        </div>
+        <span class="ann" title="Annotation 1">1</span>
+
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Welcome back</h2>
+        <p class="text-sm text-gray-500 mb-6">Sign in to your ShopNest account</p>
+
+        <!-- Form -->
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email address <span class="text-red-500">*</span></label>
+            <input type="email" class="form-field" placeholder="you@example.com" value="rahul.kumar@gmail.com" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" class="form-field" placeholder="Enter your password" value="••••••••" style="padding-right: 44px;" />
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg" aria-label="Show password">👁</button>
+            </div>
+            <span class="ann" title="Annotation 2">2</span>
+          </div>
+
+          <button class="btn-primary w-full mt-2" style="width: 100%;">Sign In</button>
+
+          <div class="text-center mt-2">
+            <a href="#" class="text-sm text-gray-400 hover:text-gray-600">
+              Forgot password?
+              <span class="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded ml-1">Post-MVP</span>
+            </a>
+            <span class="ann" title="Annotation 3">3</span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-3 my-5">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="text-xs text-gray-400">or</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <p class="text-sm text-center text-gray-500">
+          Don't have an account?
+          <a href="#state-2" class="text-blue-600 font-semibold hover:underline ml-1">Register</a>
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Annotation Block -->
+    <div class="mt-6 max-w-xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">① Tab toggle:</span> Uses <code>role="tablist"</code> / <code>role="tab"</code> / <code>aria-selected="true"</code> for WCAG 2.1 (4.1.2). Active tab has visible blue underline + bold weight for sighted users.</div>
+      <div class="ann-block"><span class="font-bold">② Password show/hide:</span> Toggle button has <code>aria-label="Show password"</code> / <code>"Hide password"</code> toggled dynamically (WCAG 1.3.5). Input type flips between "password" and "text".</div>
+      <div class="ann-block"><span class="font-bold">③ Forgot password:</span> Link is visible but links to post-MVP feature — shows toast notification "Feature coming soon" at click. Badge makes post-MVP status clear during stakeholder review.</div>
+      <div class="ann-block"><span class="font-bold">④ Post-login:</span> JWT stored in <code>httpOnly</code> cookie (XSS-safe). Redirect to previous page via <code>?next=</code> query param, or default to <code>/</code>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 2 — Register Tab                                -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-2">
+  <div class="state-banner">STATE 2 · Register Tab · Trigger: User clicks "Register" tab or "Register" link from State 1</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500 cursor-pointer hover:text-gray-700">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600 cursor-pointer">🛒 Cart (0)</span>
+      <button class="text-sm font-semibold text-blue-700 hover:underline">Sign In</button>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8" style="width: 480px;">
+
+        <!-- Tab Toggle — Register Active -->
+        <div role="tablist" aria-label="Authentication options" class="flex border-b border-gray-200 mb-6">
+          <button role="tab" aria-selected="false" class="flex-1 py-3 text-sm font-medium text-gray-500 hover:text-gray-700">
+            Login
+          </button>
+          <button role="tab" aria-selected="true" class="flex-1 py-3 text-sm font-bold text-blue-700 border-b-2 border-blue-600">
+            Register
+          </button>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Create your account</h2>
+        <p class="text-sm text-gray-500 mb-6">Join ShopNest and start shopping</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+            <input type="text" class="form-field valid" placeholder="Rahul Kumar" value="Rahul Kumar" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email address <span class="text-red-500">*</span></label>
+            <input type="email" class="form-field valid" placeholder="you@example.com" value="rahul.kumar@gmail.com" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" class="form-field" placeholder="Create a strong password" value="••••••••" style="padding-right: 44px;" />
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg" aria-label="Show password">👁</button>
+            </div>
+            <!-- Password Strength Bar — "Fair" strength (2/4 blocks orange) -->
+            <div class="flex gap-1 mt-2">
+              <div class="h-1.5 flex-1 rounded-full bg-orange-400"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-orange-400"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-gray-200"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-gray-200"></div>
+            </div>
+            <div class="text-xs text-orange-600 mt-1 font-medium">Fair — add numbers or symbols to strengthen</div>
+            <span class="ann" title="Annotation 5">5</span>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" class="form-field" placeholder="Re-enter your password" value="••••••••" style="padding-right: 44px;" />
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg" aria-label="Show confirm password">👁</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Phone
+              <span class="text-xs text-gray-400 font-normal ml-1">(optional)</span>
+            </label>
+            <div class="flex">
+              <span class="flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 rounded-l-lg text-sm text-gray-600 font-medium">+91</span>
+              <input type="tel" class="form-field rounded-l-none" style="border-radius: 0 8px 8px 0;" placeholder="9876543210" />
+            </div>
+            <span class="ann" title="Annotation 6">6</span>
+          </div>
+
+          <button class="btn-primary w-full mt-2" style="width: 100%;">Create Account</button>
+        </div>
+
+        <p class="text-sm text-center text-gray-500 mt-4">
+          Already have an account?
+          <a href="#state-1" class="text-blue-600 font-semibold hover:underline ml-1">Sign in</a>
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Annotation Block -->
+    <div class="mt-6 max-w-xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">⑤ Password strength bar:</span> Calculated entirely client-side using zxcvbn or equivalent heuristic (length, charset diversity). Zero API calls. Purely visual feedback — 4 coloured segments map to Weak / Fair / Good / Strong.</div>
+      <div class="ann-block"><span class="font-bold">⑥ Phone (optional):</span> Not required for buyer registration at MVP. Captured for future order SMS notifications (post-MVP). +91 country code prefix is locked (India-only platform per ADR-005 region decision).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 3 — Login — Form Error                          -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-3">
+  <div class="state-banner">STATE 3 · Login — Form Error · Trigger: API returns 401 (incorrect credentials) after sign-in attempt</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600">🛒 Cart (0)</span>
+      <button class="text-sm font-semibold text-blue-700">Sign In</button>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8" style="width: 480px;">
+
+        <div role="tablist" class="flex border-b border-gray-200 mb-6">
+          <button role="tab" aria-selected="true" class="flex-1 py-3 text-sm font-bold text-blue-700 border-b-2 border-blue-600">Login</button>
+          <button role="tab" aria-selected="false" class="flex-1 py-3 text-sm font-medium text-gray-500">Register</button>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Welcome back</h2>
+
+        <!-- Error Banner -->
+        <div role="alert" aria-live="assertive" class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-lg p-3 mb-5">
+          <span class="text-red-600 text-lg mt-0.5">❌</span>
+          <div>
+            <p class="text-sm font-semibold text-red-700">Incorrect email or password</p>
+            <p class="text-xs text-red-600 mt-0.5">Please check your credentials and try again.</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email address <span class="text-red-500">*</span></label>
+            <input type="email" class="form-field error" value="rahul.kumar@gmail.com" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" class="form-field error" value="••••••••" style="padding-right: 44px;" />
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" aria-label="Show password">👁</button>
+            </div>
+          </div>
+
+          <button class="btn-primary w-full mt-2" style="width: 100%;">Sign In</button>
+
+          <div class="text-center mt-2">
+            <a href="#" class="text-sm text-gray-400 hover:text-gray-600">Forgot password? <span class="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded ml-1">Post-MVP</span></a>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 my-5">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="text-xs text-gray-400">or</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <p class="text-sm text-center text-gray-500">Don't have an account? <a href="#state-2" class="text-blue-600 font-semibold hover:underline ml-1">Register</a></p>
+
+      </div>
+    </div>
+
+    <div class="mt-6 max-w-xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">Error banner:</span> Uses <code>role="alert"</code> and <code>aria-live="assertive"</code> so screen readers announce the error immediately (WCAG 4.1.3). Both email and password fields get <code>.error</code> class — no hint about which field is wrong (prevents credential enumeration).</div>
+      <div class="ann-block"><span class="font-bold">Rate limiting:</span> After 5 consecutive failures from the same IP/email, backend returns 429 — UI shows "Too many attempts. Please wait 15 minutes." variant of this error banner. Handled by AWS WAF rate rule.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 4 — Register — Form Errors                      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-4">
+  <div class="state-banner">STATE 4 · Register — Form Errors · Trigger: User submits register form with invalid data (client-side validation)</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600">🛒 Cart (0)</span>
+      <button class="text-sm font-semibold text-blue-700">Sign In</button>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8" style="width: 480px;">
+
+        <div role="tablist" class="flex border-b border-gray-200 mb-6">
+          <button role="tab" aria-selected="false" class="flex-1 py-3 text-sm font-medium text-gray-500">Login</button>
+          <button role="tab" aria-selected="true" class="flex-1 py-3 text-sm font-bold text-blue-700 border-b-2 border-blue-600">Register</button>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Create your account</h2>
+        <p class="text-sm text-gray-500 mb-5">Please correct the errors below</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+            <input type="text" class="form-field valid" value="Rahul Kumar" />
+          </div>
+
+          <!-- Email — Error -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email address <span class="text-red-500">*</span></label>
+            <input type="email" class="form-field error" value="rahul.kumar@" aria-describedby="email-error" aria-invalid="true" />
+            <p id="email-error" class="field-error">Please enter a valid email address</p>
+          </div>
+
+          <!-- Password — Weak strength -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" class="form-field error" value="••••" style="padding-right: 44px;" aria-describedby="pass-error" aria-invalid="true" />
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" aria-label="Show password">👁</button>
+            </div>
+            <!-- Strength bar — all red (Weak) -->
+            <div class="flex gap-1 mt-2">
+              <div class="h-1.5 flex-1 rounded-full bg-red-500"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-gray-200"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-gray-200"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-gray-200"></div>
+            </div>
+            <p id="pass-error" class="field-error">Password is too weak — minimum 8 characters</p>
+          </div>
+
+          <!-- Confirm Password — Error -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" class="form-field error" value="••••••••••" style="padding-right: 44px;" aria-describedby="confirm-error" aria-invalid="true" />
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" aria-label="Show confirm password">👁</button>
+            </div>
+            <p id="confirm-error" class="field-error">Passwords do not match</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone <span class="text-xs text-gray-400 font-normal ml-1">(optional)</span></label>
+            <div class="flex">
+              <span class="flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 rounded-l-lg text-sm text-gray-600 font-medium">+91</span>
+              <input type="tel" class="form-field rounded-l-none" style="border-radius: 0 8px 8px 0;" placeholder="9876543210" />
+            </div>
+          </div>
+
+          <!-- Disabled Submit -->
+          <button disabled class="w-full mt-2 rounded-xl py-2.5 text-sm font-bold bg-gray-200 text-gray-400 cursor-not-allowed border-none" aria-disabled="true">
+            Create Account
+          </button>
+          <p class="text-xs text-center text-gray-400 mt-1">Fix the errors above to continue</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mt-6 max-w-xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">Inline field errors:</span> Each error message is linked to its field via <code>aria-describedby</code> and field marked <code>aria-invalid="true"</code>. Error text announced by screen readers when field loses focus (WCAG 3.3.1).</div>
+      <div class="ann-block"><span class="font-bold">Disabled submit:</span> CTA uses <code>disabled</code> attribute + <code>cursor-not-allowed</code> styling. <code>aria-disabled="true"</code> ensures screen readers announce unavailability. Re-enables only when all required fields pass client-side validation.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  STATE 5 — Loading (Submitting)                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="state-5">
+  <div class="state-banner">STATE 5 · Loading (Submitting) · Trigger: User clicks "Sign In" — awaiting POST /api/v1/auth/login/ response</div>
+  <div class="state-section">
+
+    <!-- Buyer Nav -->
+    <div class="buyer-nav mb-0" style="margin-left: -40px; margin-right: -40px; padding: 0 40px;">
+      <span class="logo">ShopNest</span>
+      <span class="text-sm text-gray-500">Categories ▼</span>
+      <input type="text" class="search-bar" placeholder="Search for products, brands and more..." />
+      <span class="text-sm text-gray-600">🛒 Cart (0)</span>
+      <button class="text-sm font-semibold text-blue-700">Sign In</button>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8" style="width: 480px;">
+
+        <div role="tablist" class="flex border-b border-gray-200 mb-6">
+          <button role="tab" aria-selected="true" class="flex-1 py-3 text-sm font-bold text-blue-700 border-b-2 border-blue-600">Login</button>
+          <button role="tab" aria-selected="false" class="flex-1 py-3 text-sm font-medium text-gray-500">Register</button>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Welcome back</h2>
+        <p class="text-sm text-gray-500 mb-6">Sign in to your ShopNest account</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email address <span class="text-red-500">*</span></label>
+            <input type="email" class="form-field" value="rahul.kumar@gmail.com" disabled />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" class="form-field" value="••••••••" disabled style="padding-right: 44px;" />
+              <button disabled class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-lg cursor-not-allowed" aria-label="Show password">👁</button>
+            </div>
+          </div>
+
+          <!-- Loading Button with spinner -->
+          <div role="status" aria-label="Signing in..." aria-live="polite">
+            <button disabled class="w-full mt-2 rounded-xl py-2.5 text-sm font-bold bg-orange-400 text-white cursor-not-allowed border-none flex items-center justify-center gap-3" style="width: 100%;">
+              <!-- 3-dot shimmer -->
+              <span class="flex gap-1">
+                <span class="w-2 h-2 bg-white rounded-full" style="animation: bounce 1.2s 0s infinite; opacity: 0.9;"></span>
+                <span class="w-2 h-2 bg-white rounded-full" style="animation: bounce 1.2s 0.2s infinite; opacity: 0.7;"></span>
+                <span class="w-2 h-2 bg-white rounded-full" style="animation: bounce 1.2s 0.4s infinite; opacity: 0.5;"></span>
+              </span>
+              Signing in...
+            </button>
+          </div>
+
+          <div class="text-center mt-2">
+            <span class="text-sm text-gray-300">Forgot password? <span class="text-xs bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded ml-1">Post-MVP</span></span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 my-5">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="text-xs text-gray-400">or</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <p class="text-sm text-center text-gray-400">Don't have an account? <span class="text-gray-300 font-semibold ml-1">Register</span></p>
+      </div>
+    </div>
+
+    <div class="mt-6 max-w-xl mx-auto space-y-2">
+      <div class="ann-block"><span class="font-bold">Loading state:</span> All form inputs and the submit button are disabled during the request to prevent duplicate submissions. <code>role="status"</code> + <code>aria-live="polite"</code> on the button wrapper announces "Signing in..." to screen readers (WCAG 4.1.3).</div>
+      <div class="ann-block"><span class="font-bold">Timeout handling:</span> If POST /api/v1/auth/login/ does not respond within 10s, the loading state exits and State 3 (error banner) is shown with message "Request timed out — please try again."</div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SPEC FOOTER                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div class="text-base font-bold text-white mb-4">SCR-007 — Spec Summary</div>
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="border-bottom: 1px solid #334155;">
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">States</th>
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">User Stories</th>
+        <th style="text-align: left; padding: 8px 16px 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">API Calls</th>
+        <th style="text-align: left; padding: 8px 0; font-size: 12px; color: #94A3B8; font-weight: 600; width: 25%;">WCAG Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          5 states total<br/>
+          <span style="color: #94A3B8; font-size: 11px;">1 · Login Default<br/>2 · Register<br/>3 · Login Error<br/>4 · Register Errors<br/>5 · Loading</span>
+        </td>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          US-025 — Buyer Login<br/>US-026 — Buyer Registration<br/><span style="color: #94A3B8; font-size: 11px;">From REQUIREMENTS.md §3.2</span>
+        </td>
+        <td style="padding: 10px 16px 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          <code style="background: #0F172A; padding: 2px 6px; border-radius: 4px; font-size: 11px;">POST /api/v1/auth/login/</code><br/>
+          <code style="background: #0F172A; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-top: 4px; display: inline-block;">POST /api/v1/auth/register/</code><br/>
+          <span style="color: #94A3B8; font-size: 11px;">JWT stored in httpOnly cookie · RS256 · 24h access / 30d refresh</span>
+        </td>
+        <td style="padding: 10px 0; font-size: 13px; color: #E2E8F0; vertical-align: top;">
+          Tab roles (4.1.2)<br/>Password show/hide (1.3.5)<br/>Error via aria-live (4.1.3)<br/>aria-invalid on fields (3.3.1)<br/>Focus ring all elements (2.4.7)<br/>Disabled state aria-disabled (4.1.2)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="mt-6 text-xs text-gray-500 border-t border-gray-700 pt-4">
+    ShopNest · Phase 5 UX Design · SCR-007 Buyer Login/Register · Generated 2026-05-15 · Review with Product Owner before Phase 6
+  </div>
+</div>
+
+</body>
+</html>

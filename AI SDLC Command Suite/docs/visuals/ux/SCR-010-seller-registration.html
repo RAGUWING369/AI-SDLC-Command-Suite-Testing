@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-010 — Seller Registration · ShopNest UX Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    .form-field.error { border: 2px solid #DC2626; background: #FEF2F2; }
+    .field-error { color: #DC2626; font-size: 12px; margin-top: 4px; }
+    .strength-bar { height: 4px; border-radius: 2px; flex: 1; }
+  </style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div style="background:#1A56DB; padding:12px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div style="color:white; font-weight:800; font-size:18px; letter-spacing:-0.5px;">ShopNest <span style="font-weight:400; font-size:13px; opacity:0.75;">· UX Wireframe</span></div>
+  <div style="color:#BFDBFE; font-size:12px;">SCR-010 — Seller Registration · /seller/register · CSR · Pre-Auth</div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div style="font-weight:700; font-size:13px; color:#1E40AF; margin-bottom:8px;">SCR-010 States — Quick Navigation</div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:13px;">
+    <a href="#state-1" style="color:#1A56DB;">1 · Registration Form</a> ·
+    <a href="#state-2" style="color:#1A56DB;">2 · Loading (Submitting)</a> ·
+    <a href="#state-3" style="color:#1A56DB;">3 · Validation Errors</a> ·
+    <a href="#state-4" style="color:#1A56DB;">4 · Submission Success</a> ·
+    <a href="#state-5" style="color:#1A56DB;">5 · Email Already Registered</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 — Registration Form -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-1" class="state-section">
+  <div class="state-banner">STATE 1 · Registration Form · Trigger: User navigates to /seller/register</div>
+
+  <!-- Pre-auth centered layout -->
+  <div style="min-height:700px; background:#F9FAFB; display:flex; flex-direction:column; align-items:center; padding-top:48px; padding-bottom:48px; margin-top:24px; border-radius:12px;">
+
+    <!-- Logo -->
+    <div style="font-weight:800; font-size:24px; color:#1A56DB; margin-bottom:4px; letter-spacing:-1px;">ShopNest</div>
+    <div style="font-size:14px; color:#6B7280; margin-bottom:32px;">Sell on ShopNest</div>
+
+    <!-- Card -->
+    <div style="background:white; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.08); padding:32px; width:100%; max-width:480px;">
+      <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 24px 0;">Register as a Seller</h2>
+
+      <div style="display:grid; gap:16px;">
+        <!-- Full Name -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;" for="fullname">Full Name <span style="color:#DC2626;">*</span></label>
+          <input id="fullname" class="form-field" type="text" placeholder="Priya Sharma" value="Priya Sharma" />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;" for="email">Email Address <span style="color:#DC2626;">*</span></label>
+          <input id="email" class="form-field" type="email" placeholder="priya@example.com" value="priya@example.com" />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;" for="password">
+            Password <span style="color:#DC2626;">*</span>
+            <span class="ann">2</span>
+          </label>
+          <input id="password" class="form-field" type="password" placeholder="Min. 8 characters + 1 number" value="Priya@12" />
+          <!-- Strength indicator -->
+          <div style="display:flex; gap:4px; margin-top:8px; align-items:center;">
+            <div class="strength-bar" style="background:#F97316;"></div>
+            <div class="strength-bar" style="background:#F97316;"></div>
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <span style="font-size:11px; color:#D97706; font-weight:600; margin-left:6px;">Fair</span>
+          </div>
+        </div>
+
+        <!-- Business Name -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;" for="bizname">Business Name <span style="color:#DC2626;">*</span></label>
+          <input id="bizname" class="form-field" type="text" placeholder="e.g. Priya's Boutique" value="Priya's Boutique" />
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;" for="phone">
+            Phone Number <span style="color:#DC2626;">*</span>
+            <span class="ann">4</span>
+          </label>
+          <div style="display:flex; align-items:center; gap:0; border:1px solid #D1D5DB; border-radius:8px; overflow:hidden;">
+            <span style="background:#F3F4F6; padding:8px 12px; font-size:14px; color:#374151; font-weight:500; border-right:1px solid #D1D5DB; white-space:nowrap;">+91</span>
+            <input id="phone" style="border:none; outline:none; padding:8px 12px; font-size:14px; flex:1;" type="tel" inputmode="numeric" placeholder="9876543210" value="9876543210" />
+          </div>
+        </div>
+
+        <!-- City -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;" for="city">City <span style="color:#DC2626;">*</span></label>
+          <input id="city" class="form-field" type="text" placeholder="e.g. Mumbai" value="Mumbai" />
+        </div>
+
+        <!-- GSTIN -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;" for="gstin">
+            GSTIN (Optional)
+            <span class="ann">1</span>
+          </label>
+          <input id="gstin" class="form-field" type="text" placeholder="e.g. 27AAAAA0000A1Z5" maxlength="15" />
+          <div style="font-size:11px; color:#6B7280; margin-top:4px;">15-character alphanumeric · Leave blank if not registered</div>
+        </div>
+
+        <!-- CTA -->
+        <button class="btn-primary" style="width:100%; padding:12px; font-size:15px; margin-top:8px;">
+          Create Seller Account
+        </button>
+
+        <div style="text-align:center; font-size:13px; color:#6B7280;">
+          Already selling? <a href="#" style="color:#1A56DB; font-weight:600; text-decoration:none;">Sign in →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotation block -->
+    <div style="max-width:480px; width:100%; margin-top:16px;">
+      <div class="ann-block">
+        <strong><span class="ann">1</span></strong> GSTIN optional at registration — self-declaration MVP; format validated client-side (15-char alphanumeric) if provided<br/>
+        <strong><span class="ann">2</span></strong> Password strength calculated client-side; min 8 chars + 1 number required for account creation<br/>
+        <strong><span class="ann">3</span></strong> On submit: account created with <code>status=PENDING_REVIEW</code> (FR-SELLER-001); no dashboard access until Admin approves<br/>
+        <strong><span class="ann">4</span></strong> +91 prefix static, 10-digit input, <code>inputmode="numeric"</code> for mobile keyboards (WCAG 1.3.5)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 — Loading (Submitting) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-2" class="state-section" style="background:#F9FAFB;">
+  <div class="state-banner">STATE 2 · Loading — Submitting · Trigger: User clicks "Create Seller Account" — awaiting API response</div>
+
+  <div style="display:flex; flex-direction:column; align-items:center; padding-top:48px; padding-bottom:48px; margin-top:24px;">
+    <div style="font-weight:800; font-size:24px; color:#1A56DB; margin-bottom:4px;">ShopNest</div>
+    <div style="font-size:14px; color:#6B7280; margin-bottom:32px;">Sell on ShopNest</div>
+
+    <div style="background:white; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.08); padding:32px; width:100%; max-width:480px;">
+      <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 24px 0;">Register as a Seller</h2>
+      <div style="display:grid; gap:16px;">
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Full Name <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Priya Sharma" disabled style="background:#F9FAFB; color:#9CA3AF;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Email Address <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="email" value="priya@example.com" disabled style="background:#F9FAFB; color:#9CA3AF;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Password <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="password" value="Priya@12" disabled style="background:#F9FAFB; color:#9CA3AF;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Business Name <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Priya's Boutique" disabled style="background:#F9FAFB; color:#9CA3AF;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Phone Number <span style="color:#DC2626;">*</span></label>
+          <div style="display:flex; border:1px solid #E5E7EB; border-radius:8px; overflow:hidden; background:#F9FAFB;">
+            <span style="background:#F3F4F6; padding:8px 12px; font-size:14px; color:#9CA3AF; border-right:1px solid #E5E7EB;">+91</span>
+            <input style="border:none; outline:none; padding:8px 12px; font-size:14px; flex:1; background:#F9FAFB; color:#9CA3AF;" type="tel" value="9876543210" disabled />
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">City <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Mumbai" disabled style="background:#F9FAFB; color:#9CA3AF;" />
+        </div>
+        <!-- Loading CTA -->
+        <button disabled aria-busy="true" style="width:100%; padding:12px; font-size:15px; border:none; border-radius:12px; background:#E5E7EB; color:#9CA3AF; font-weight:700; cursor:not-allowed; letter-spacing:4px;">
+          · · ·
+        </button>
+        <div style="text-align:center; font-size:13px; color:#6B7280;">
+          Already selling? <span style="color:#9CA3AF;">Sign in →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 — Form Validation Errors -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-3" class="state-section">
+  <div class="state-banner">STATE 3 · Form Validation Errors · Trigger: Submit with invalid/missing fields — API or client-side returns validation errors</div>
+
+  <div style="display:flex; flex-direction:column; align-items:center; padding-top:48px; padding-bottom:48px; margin-top:24px; background:#F9FAFB; border-radius:12px;">
+    <div style="font-weight:800; font-size:24px; color:#1A56DB; margin-bottom:4px;">ShopNest</div>
+    <div style="font-size:14px; color:#6B7280; margin-bottom:32px;">Sell on ShopNest</div>
+
+    <div style="background:white; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.08); padding:32px; width:100%; max-width:480px;">
+      <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 16px 0;">Register as a Seller</h2>
+
+      <!-- Error summary -->
+      <div role="alert" style="background:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:12px 16px; margin-bottom:20px;">
+        <div style="font-weight:700; font-size:13px; color:#DC2626; margin-bottom:6px;">⚠ Please fix the errors below before continuing</div>
+        <ul style="margin:0; padding-left:16px; font-size:12px; color:#B91C1C; line-height:1.8;">
+          <li>Email address already registered</li>
+          <li>Password is too short (minimum 8 characters)</li>
+          <li>Business name is required</li>
+        </ul>
+      </div>
+
+      <div style="display:grid; gap:16px;">
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Full Name <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Priya Sharma" />
+        </div>
+
+        <!-- Email error -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Email Address <span style="color:#DC2626;">*</span></label>
+          <input class="form-field error" type="email" value="priya@example.com" aria-describedby="email-err" aria-invalid="true" />
+          <div id="email-err" class="field-error">Email address already registered</div>
+        </div>
+
+        <!-- Password error -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Password <span style="color:#DC2626;">*</span></label>
+          <input class="form-field error" type="password" value="abc" aria-describedby="pw-err" aria-invalid="true" />
+          <div style="display:flex; gap:4px; margin-top:8px; align-items:center;">
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <span style="font-size:11px; color:#DC2626; font-weight:600; margin-left:6px;" id="pw-err">Too short</span>
+          </div>
+        </div>
+
+        <!-- Business name error -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Business Name <span style="color:#DC2626;">*</span></label>
+          <input class="form-field error" type="text" value="" placeholder="e.g. Priya's Boutique" aria-describedby="biz-err" aria-invalid="true" />
+          <div id="biz-err" class="field-error">Business name is required</div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Phone Number <span style="color:#DC2626;">*</span></label>
+          <div style="display:flex; border:1px solid #D1D5DB; border-radius:8px; overflow:hidden;">
+            <span style="background:#F3F4F6; padding:8px 12px; font-size:14px; color:#374151; border-right:1px solid #D1D5DB;">+91</span>
+            <input style="border:none; outline:none; padding:8px 12px; font-size:14px; flex:1;" type="tel" value="9876543210" />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">City <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Mumbai" />
+        </div>
+
+        <button class="btn-primary" style="width:100%; padding:12px; font-size:15px; margin-top:8px;">Create Seller Account</button>
+        <div style="text-align:center; font-size:13px; color:#6B7280;">
+          Already selling? <a href="#" style="color:#1A56DB; font-weight:600; text-decoration:none;">Sign in →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 — Submission Success -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-4" class="state-section" style="background:#F9FAFB;">
+  <div class="state-banner">STATE 4 · Submission Success · Trigger: API returns 201 Created → account created with status=PENDING_REVIEW</div>
+
+  <div style="display:flex; flex-direction:column; align-items:center; padding-top:48px; padding-bottom:48px; margin-top:24px;">
+    <div style="font-weight:800; font-size:24px; color:#1A56DB; margin-bottom:4px;">ShopNest</div>
+    <div style="font-size:14px; color:#6B7280; margin-bottom:32px;">Sell on ShopNest</div>
+
+    <div style="background:white; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.08); padding:48px 32px; width:100%; max-width:480px; text-align:center;">
+      <div style="font-size:64px; margin-bottom:16px;">✅</div>
+      <h2 style="font-size:22px; font-weight:700; color:#15803D; margin:0 0 12px 0;">Registration Submitted!</h2>
+      <p style="color:#4B5563; font-size:15px; margin:0 0 16px 0;">Your seller account is under review.</p>
+      <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:12px 16px; margin-bottom:8px;">
+        <div style="font-size:13px; color:#166534; font-weight:600;">priya@example.com</div>
+      </div>
+      <p style="color:#6B7280; font-size:13px; margin:0 0 32px 0;">This usually takes 1–2 business days. We'll email you once your account is approved.</p>
+      <button class="btn-primary" style="width:100%; padding:12px; font-size:15px;" onclick="window.location='/seller/setup'">
+        Continue to Store Setup →
+      </button>
+      <div style="margin-top:16px; font-size:12px; color:#9CA3AF;">You can complete setup now — listing products requires Admin approval.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 5 — Email Already Registered -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-5" class="state-section">
+  <div class="state-banner">STATE 5 · Email Already Registered · Trigger: API returns 409 Conflict — email already exists in system</div>
+
+  <div style="display:flex; flex-direction:column; align-items:center; padding-top:48px; padding-bottom:48px; margin-top:24px; background:#F9FAFB; border-radius:12px;">
+    <div style="font-weight:800; font-size:24px; color:#1A56DB; margin-bottom:4px;">ShopNest</div>
+    <div style="font-size:14px; color:#6B7280; margin-bottom:32px;">Sell on ShopNest</div>
+
+    <div style="background:white; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.08); padding:32px; width:100%; max-width:480px;">
+      <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 24px 0;">Register as a Seller</h2>
+
+      <div style="display:grid; gap:16px;">
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Full Name <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Priya Sharma" />
+        </div>
+
+        <!-- Only email has error -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Email Address <span style="color:#DC2626;">*</span></label>
+          <input class="form-field error" type="email" value="priya@example.com" aria-describedby="email-dup-err" aria-invalid="true" />
+          <div id="email-dup-err" class="field-error">
+            An account with this email already exists.
+            <a href="#" style="color:#1A56DB; font-weight:600; text-decoration:underline;">Sign in instead?</a>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Password <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="password" value="Priya@12" />
+          <div style="display:flex; gap:4px; margin-top:8px; align-items:center;">
+            <div class="strength-bar" style="background:#F97316;"></div>
+            <div class="strength-bar" style="background:#F97316;"></div>
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <div class="strength-bar" style="background:#E5E7EB;"></div>
+            <span style="font-size:11px; color:#D97706; font-weight:600; margin-left:6px;">Fair</span>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Business Name <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Priya's Boutique" />
+        </div>
+
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Phone Number <span style="color:#DC2626;">*</span></label>
+          <div style="display:flex; border:1px solid #D1D5DB; border-radius:8px; overflow:hidden;">
+            <span style="background:#F3F4F6; padding:8px 12px; font-size:14px; color:#374151; border-right:1px solid #D1D5DB;">+91</span>
+            <input style="border:none; outline:none; padding:8px 12px; font-size:14px; flex:1;" type="tel" value="9876543210" />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">City <span style="color:#DC2626;">*</span></label>
+          <input class="form-field" type="text" value="Mumbai" />
+        </div>
+
+        <button class="btn-primary" style="width:100%; padding:12px; font-size:15px; margin-top:8px;">Create Seller Account</button>
+        <div style="text-align:center; font-size:13px; color:#6B7280;">
+          Already selling? <a href="#" style="color:#1A56DB; font-weight:600; text-decoration:none;">Sign in →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-weight:700; font-size:16px; margin-bottom:20px; color:white;">SCR-010 — Seller Registration · Specification</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Screen ID</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">SCR-010</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">States</td>
+        <td style="padding:8px 0; color:#F1F5F9;">5</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Route</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">/seller/register</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">User Stories</td>
+        <td style="padding:8px 0; color:#F1F5F9;">US-001</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Rendering</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">CSR · Pre-Auth · No Shell</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">API Endpoint</td>
+        <td style="padding:8px 0; color:#F1F5F9;">POST /api/v1/sellers/register/</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1; vertical-align:top;">WCAG</td>
+        <td style="padding:8px 0; color:#F1F5F9;" colspan="3">Form labels associated via for/id (1.3.1) · Errors linked via aria-describedby (3.3.1) · Strength indicator has aria-label (1.3.3) · inputmode="numeric" on phone (1.3.5) · Error summary role="alert" (4.1.3)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:24px; font-size:11px; color:#64748B;">Generated: 2026-05-15 · ShopNest Phase 5 UX Design · SCR-010</div>
+</div>
+
+</body>
+</html>

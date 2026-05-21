@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-011 — Store Setup Wizard · ShopNest UX Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .form-field { border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    .upload-zone { border: 2px dashed #D1D5DB; border-radius: 12px; padding: 32px 24px; text-align: center; cursor: pointer; background: #FAFAFA; transition: border-color 0.2s; }
+    .upload-zone:hover { border-color: #1A56DB; background: #EFF6FF; }
+    .wizard-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+    .wizard-dot.done { background: #16A34A; color: white; }
+    .wizard-dot.active { background: #1A56DB; color: white; }
+    .wizard-dot.future { background: #E5E7EB; color: #6B7280; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+    .chip.selected { background: #EFF6FF; color: #1D4ED8; border-color: #1D4ED8; }
+    .chip.unselected { background: #F3F4F6; color: #374151; border-color: #E5E7EB; }
+    .chip.unselected:hover { border-color: #9CA3AF; }
+    .seller-header { background: white; border-bottom: 1px solid #E5E7EB; height: 56px; display: flex; align-items: center; padding: 0 32px; gap: 16px; }
+  </style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div style="background:#1A56DB; padding:12px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div style="color:white; font-weight:800; font-size:18px; letter-spacing:-0.5px;">ShopNest <span style="font-weight:400; font-size:13px; opacity:0.75;">· UX Wireframe</span></div>
+  <div style="color:#BFDBFE; font-size:12px;">SCR-011 — Store Setup Wizard · /seller/setup · CSR · Seller Minimal Header</div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div style="font-weight:700; font-size:13px; color:#1E40AF; margin-bottom:8px;">SCR-011 States — Quick Navigation</div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:13px;">
+    <a href="#state-1" style="color:#1A56DB;">1 · Step 1 — Store Info</a> ·
+    <a href="#state-2" style="color:#1A56DB;">2 · Step 2 — Categories</a> ·
+    <a href="#state-3" style="color:#1A56DB;">3 · Step 3 — Review & Confirm</a> ·
+    <a href="#state-4" style="color:#1A56DB;">4 · Upload In Progress</a> ·
+    <a href="#state-5" style="color:#1A56DB;">5 · Image Error (Too Large)</a> ·
+    <a href="#state-6" style="color:#1A56DB;">6 · Wizard Complete</a>
+  </div>
+</div>
+
+<!-- WIZARD PROGRESS HELPER — Reusable layout -->
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 — Step 1: Store Info -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-1" class="state-section" style="padding:0;">
+  <div class="state-banner" style="margin:0 0 0 0;">STATE 1 · Step 1 — Store Information · Trigger: Seller lands on /seller/setup after registration</div>
+
+  <!-- Minimal seller header -->
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Set Up Your Store</div>
+  </div>
+
+  <div style="background:#F9FAFB; padding:40px; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:672px;">
+
+      <!-- Progress wizard -->
+      <div aria-label="Setup progress" role="progressbar" aria-valuenow="1" aria-valuemax="3" style="display:flex; align-items:center; margin-bottom:32px;">
+        <!-- Step 1 -->
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot active">1</div>
+          <div style="font-size:11px; font-weight:600; color:#1A56DB; margin-top:6px;">Store Info</div>
+        </div>
+        <div style="flex:1; height:2px; background:#E5E7EB;"></div>
+        <!-- Step 2 -->
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot future">2</div>
+          <div style="font-size:11px; font-weight:400; color:#9CA3AF; margin-top:6px;">Categories</div>
+        </div>
+        <div style="flex:1; height:2px; background:#E5E7EB;"></div>
+        <!-- Step 3 -->
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot future">3</div>
+          <div style="font-size:11px; font-weight:400; color:#9CA3AF; margin-top:6px;">Review</div>
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div style="background:white; border-radius:16px; box-shadow:0 2px 16px rgba(0,0,0,0.06); padding:32px;">
+        <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 6px 0;">Step 1 of 3: Store Information</h2>
+        <p style="font-size:13px; color:#6B7280; margin:0 0 28px 0;">Tell buyers about your store with a name, logo, and description.</p>
+
+        <div style="display:grid; gap:20px;">
+          <!-- Store Name -->
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Store Name <span style="color:#DC2626;">*</span></label>
+            <input class="form-field" type="text" placeholder="e.g. Priya's Boutique" value="Priya's Boutique" />
+          </div>
+
+          <!-- Logo upload -->
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:8px;">
+              Store Logo
+              <span style="font-weight:400; color:#9CA3AF;">(Optional)</span>
+              <span class="ann">2</span>
+              <span class="ann">3</span>
+            </label>
+            <div class="upload-zone">
+              <div style="font-size:36px; margin-bottom:8px;">📷</div>
+              <div style="font-size:14px; font-weight:600; color:#374151; margin-bottom:4px;">Drag &amp; drop or click to upload</div>
+              <div style="font-size:12px; color:#9CA3AF;">JPG · PNG · Max 2MB</div>
+            </div>
+          </div>
+
+          <!-- Banner upload -->
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:8px;">Store Banner <span style="font-weight:400; color:#9CA3AF;">(Optional)</span></label>
+            <div class="upload-zone" style="padding:20px;">
+              <div style="font-size:28px; margin-bottom:6px;">🖼️</div>
+              <div style="font-size:14px; font-weight:600; color:#374151; margin-bottom:4px;">Drag &amp; drop or click to upload</div>
+              <div style="font-size:12px; color:#9CA3AF;">JPG · PNG · Max 5MB · Recommended 1200×300px</div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Store Description <span style="font-weight:400; color:#9CA3AF;">(Optional)</span></label>
+            <textarea class="form-field" rows="3" placeholder="Tell buyers what makes your store special...">Premium ethnic wear and home décor from Mumbai. Curated with care.</textarea>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex; justify-content:flex-end; padding-top:8px;">
+            <button class="btn-primary" style="padding:12px 28px; font-size:14px;">Next: Choose Categories →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotation block -->
+      <div class="ann-block" style="margin-top:16px;">
+        <strong><span class="ann">1</span></strong> Wizard progress uses <code>aria-label="Setup progress"</code> <code>role="progressbar"</code> <code>aria-valuenow="1"</code> <code>aria-valuemax="3"</code> (WCAG 4.1.2)<br/>
+        <strong><span class="ann">2</span></strong> File upload: <code>input type="file" accept="image/jpeg,image/png"</code>; drag-drop is JS enhancement with graceful degradation<br/>
+        <strong><span class="ann">3</span></strong> Images uploaded directly to S3 via presigned URL from backend; progress tracked via <code>XMLHttpRequest</code> upload event<br/>
+        <strong><span class="ann">4</span></strong> Setup can be saved as draft and resumed — incomplete wizard doesn't block dashboard access
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 — Step 2: Categories -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-2" class="state-section" style="padding:0;">
+  <div class="state-banner">STATE 2 · Step 2 — Store Categories · Trigger: User clicks "Next" from Step 1</div>
+
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Set Up Your Store</div>
+  </div>
+
+  <div style="background:#F9FAFB; padding:40px; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:672px;">
+
+      <!-- Progress wizard: Step 1 done, Step 2 active -->
+      <div role="progressbar" aria-valuenow="2" aria-valuemax="3" style="display:flex; align-items:center; margin-bottom:32px;">
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot done">✓</div>
+          <div style="font-size:11px; font-weight:600; color:#16A34A; margin-top:6px;">Store Info</div>
+        </div>
+        <div style="flex:1; height:2px; background:#16A34A;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot active">2</div>
+          <div style="font-size:11px; font-weight:600; color:#1A56DB; margin-top:6px;">Categories</div>
+        </div>
+        <div style="flex:1; height:2px; background:#E5E7EB;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot future">3</div>
+          <div style="font-size:11px; font-weight:400; color:#9CA3AF; margin-top:6px;">Review</div>
+        </div>
+      </div>
+
+      <div style="background:white; border-radius:16px; box-shadow:0 2px 16px rgba(0,0,0,0.06); padding:32px;">
+        <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 6px 0;">Step 2 of 3: Store Categories</h2>
+        <p style="font-size:13px; color:#6B7280; margin:0 0 24px 0;">Choose categories that describe your products (up to 3).</p>
+
+        <!-- Category chip grid -->
+        <div role="group" aria-label="Store categories" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:28px;">
+          <button role="checkbox" aria-checked="true" class="chip selected">✓ Women's Clothing</button>
+          <button role="checkbox" aria-checked="false" class="chip unselected">Men's Clothing</button>
+          <button role="checkbox" aria-checked="false" class="chip unselected">Electronics</button>
+          <button role="checkbox" aria-checked="true" class="chip selected">✓ Home &amp; Kitchen</button>
+          <button role="checkbox" aria-checked="false" class="chip unselected">Sports &amp; Outdoors</button>
+          <button role="checkbox" aria-checked="false" class="chip unselected">Books</button>
+          <button role="checkbox" aria-checked="false" class="chip unselected">Beauty &amp; Personal Care</button>
+          <button role="checkbox" aria-checked="false" class="chip unselected">Toys &amp; Games</button>
+          <button role="checkbox" aria-checked="false" class="chip unselected">Jewellery</button>
+        </div>
+
+        <div style="font-size:12px; color:#6B7280; margin-bottom:24px;">2 of 3 selected</div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid #F3F4F6;">
+          <button class="btn-secondary" style="padding:10px 24px;">← Back</button>
+          <button class="btn-primary" style="padding:12px 28px;">Next: Review →</button>
+        </div>
+      </div>
+
+      <div class="ann-block" style="margin-top:16px;">
+        <strong><span class="ann">5</span></strong> Category chips use <code>role="checkbox"</code> <code>aria-checked="true/false"</code> inside <code>role="group"</code> (WCAG 4.1.2)<br/>
+        <strong><span class="ann">6</span></strong> Maximum 3 categories enforced client-side — 4th click shows toast "Maximum 3 categories selected" (aria-live="polite")
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 — Step 3: Review & Confirm -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-3" class="state-section" style="padding:0;">
+  <div class="state-banner">STATE 3 · Step 3 — Review & Confirm · Trigger: User clicks "Next: Review →" from Step 2</div>
+
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Set Up Your Store</div>
+  </div>
+
+  <div style="background:#F9FAFB; padding:40px; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:672px;">
+
+      <!-- Progress: Steps 1+2 done, Step 3 active -->
+      <div role="progressbar" aria-valuenow="3" aria-valuemax="3" style="display:flex; align-items:center; margin-bottom:32px;">
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot done">✓</div>
+          <div style="font-size:11px; font-weight:600; color:#16A34A; margin-top:6px;">Store Info</div>
+        </div>
+        <div style="flex:1; height:2px; background:#16A34A;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot done">✓</div>
+          <div style="font-size:11px; font-weight:600; color:#16A34A; margin-top:6px;">Categories</div>
+        </div>
+        <div style="flex:1; height:2px; background:#16A34A;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot active">3</div>
+          <div style="font-size:11px; font-weight:600; color:#1A56DB; margin-top:6px;">Review</div>
+        </div>
+      </div>
+
+      <div style="background:white; border-radius:16px; box-shadow:0 2px 16px rgba(0,0,0,0.06); padding:32px;">
+        <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 6px 0;">Step 3 of 3: Review Your Store</h2>
+        <p style="font-size:13px; color:#6B7280; margin:0 0 24px 0;">Everything look right? You can always update these later in Settings.</p>
+
+        <!-- Summary table -->
+        <div style="border:1px solid #E5E7EB; border-radius:10px; overflow:hidden; margin-bottom:28px;">
+          <table style="width:100%; border-collapse:collapse; font-size:14px;">
+            <tbody>
+              <tr style="border-bottom:1px solid #F3F4F6;">
+                <td style="padding:14px 16px; color:#6B7280; font-weight:600; width:35%; background:#F9FAFB;">Store Name</td>
+                <td style="padding:14px 16px; color:#111827; font-weight:600;">Priya's Boutique</td>
+              </tr>
+              <tr style="border-bottom:1px solid #F3F4F6;">
+                <td style="padding:14px 16px; color:#6B7280; font-weight:600; background:#F9FAFB;">Store Logo</td>
+                <td style="padding:14px 16px;">
+                  <div style="width:32px; height:32px; background:#E5E7EB; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px;">🛍️</div>
+                </td>
+              </tr>
+              <tr style="border-bottom:1px solid #F3F4F6;">
+                <td style="padding:14px 16px; color:#6B7280; font-weight:600; background:#F9FAFB;">Store Banner</td>
+                <td style="padding:14px 16px;">
+                  <div style="width:128px; height:32px; background:#DBEAFE; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#1D4ED8; font-weight:600;">Banner Preview</div>
+                </td>
+              </tr>
+              <tr style="border-bottom:1px solid #F3F4F6;">
+                <td style="padding:14px 16px; color:#6B7280; font-weight:600; background:#F9FAFB;">Categories</td>
+                <td style="padding:14px 16px;">
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <span style="background:#EFF6FF; color:#1D4ED8; border-radius:20px; padding:4px 12px; font-size:12px; font-weight:600;">Women's Clothing</span>
+                    <span style="background:#EFF6FF; color:#1D4ED8; border-radius:20px; padding:4px 12px; font-size:12px; font-weight:600;">Home &amp; Kitchen</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px 16px; color:#6B7280; font-weight:600; background:#F9FAFB; vertical-align:top;">Description</td>
+                <td style="padding:14px 16px; color:#374151; font-size:13px;">Premium ethnic wear and home décor from Mumbai. Curated with care.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid #F3F4F6;">
+          <button class="btn-secondary" style="padding:10px 24px;">← Back</button>
+          <button class="btn-primary" style="padding:12px 32px; font-size:15px;">Launch Store →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 — Upload In Progress -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-4" class="state-section" style="padding:0;">
+  <div class="state-banner">STATE 4 · Upload In Progress · Trigger: User selects a file — S3 presigned URL upload begins</div>
+
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Set Up Your Store</div>
+  </div>
+
+  <div style="background:#F9FAFB; padding:40px; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:672px;">
+
+      <div role="progressbar" aria-valuenow="1" aria-valuemax="3" style="display:flex; align-items:center; margin-bottom:32px;">
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot active">1</div>
+          <div style="font-size:11px; font-weight:600; color:#1A56DB; margin-top:6px;">Store Info</div>
+        </div>
+        <div style="flex:1; height:2px; background:#E5E7EB;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot future">2</div>
+          <div style="font-size:11px; color:#9CA3AF; margin-top:6px;">Categories</div>
+        </div>
+        <div style="flex:1; height:2px; background:#E5E7EB;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot future">3</div>
+          <div style="font-size:11px; color:#9CA3AF; margin-top:6px;">Review</div>
+        </div>
+      </div>
+
+      <div style="background:white; border-radius:16px; box-shadow:0 2px 16px rgba(0,0,0,0.06); padding:32px;">
+        <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 24px 0;">Step 1 of 3: Store Information</h2>
+        <div style="display:grid; gap:20px;">
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Store Name <span style="color:#DC2626;">*</span></label>
+            <input class="form-field" type="text" value="Priya's Boutique" />
+          </div>
+
+          <!-- Upload in-progress zone -->
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:8px;">Store Logo</label>
+            <div style="border:2px solid #1A56DB; border-radius:12px; padding:20px 24px; background:#EFF6FF;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <div style="font-size:20px;">📄</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px; font-weight:600; color:#111827; margin-bottom:2px;">logo.jpg</div>
+                  <div style="font-size:12px; color:#6B7280;">1.2 MB</div>
+                </div>
+                <a href="#" style="font-size:12px; color:#6B7280; text-decoration:underline;">Cancel</a>
+              </div>
+              <!-- Progress bar -->
+              <div style="height:6px; background:#DBEAFE; border-radius:3px; overflow:hidden; margin-bottom:6px;">
+                <div style="height:100%; width:65%; background:#1A56DB; border-radius:3px; transition:width 0.3s;"></div>
+              </div>
+              <div style="font-size:12px; color:#1D4ED8; font-weight:600;">Uploading... 65%</div>
+            </div>
+          </div>
+
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:8px;">Store Banner</label>
+            <div class="upload-zone" style="padding:20px;">
+              <div style="font-size:28px; margin-bottom:6px;">🖼️</div>
+              <div style="font-size:14px; font-weight:600; color:#374151; margin-bottom:4px;">Drag &amp; drop or click to upload</div>
+              <div style="font-size:12px; color:#9CA3AF;">JPG · PNG · Max 5MB</div>
+            </div>
+          </div>
+
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Store Description</label>
+            <textarea class="form-field" rows="3">Premium ethnic wear and home décor from Mumbai. Curated with care.</textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; padding-top:8px;">
+            <button disabled style="padding:12px 28px; font-size:14px; border:none; border-radius:12px; background:#E5E7EB; color:#9CA3AF; font-weight:700; cursor:not-allowed;">Uploading...</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 5 — Image Error (Too Large) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-5" class="state-section" style="padding:0;">
+  <div class="state-banner">STATE 5 · Image Error — File Too Large · Trigger: User selects file > 2MB for logo upload</div>
+
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Set Up Your Store</div>
+  </div>
+
+  <div style="background:#F9FAFB; padding:40px; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:672px;">
+
+      <div role="progressbar" aria-valuenow="1" aria-valuemax="3" style="display:flex; align-items:center; margin-bottom:32px;">
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot active">1</div>
+          <div style="font-size:11px; font-weight:600; color:#1A56DB; margin-top:6px;">Store Info</div>
+        </div>
+        <div style="flex:1; height:2px; background:#E5E7EB;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot future">2</div>
+          <div style="font-size:11px; color:#9CA3AF; margin-top:6px;">Categories</div>
+        </div>
+        <div style="flex:1; height:2px; background:#E5E7EB;"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+          <div class="wizard-dot future">3</div>
+          <div style="font-size:11px; color:#9CA3AF; margin-top:6px;">Review</div>
+        </div>
+      </div>
+
+      <div style="background:white; border-radius:16px; box-shadow:0 2px 16px rgba(0,0,0,0.06); padding:32px;">
+        <h2 style="font-size:20px; font-weight:700; color:#111827; margin:0 0 24px 0;">Step 1 of 3: Store Information</h2>
+        <div style="display:grid; gap:20px;">
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Store Name <span style="color:#DC2626;">*</span></label>
+            <input class="form-field" type="text" value="Priya's Boutique" />
+          </div>
+
+          <!-- Error upload zone -->
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:8px;">Store Logo</label>
+            <div style="border:2px solid #DC2626; border-radius:12px; padding:20px 24px; background:#FEF2F2;" role="alert">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                <div style="font-size:22px;">❌</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px; font-weight:600; color:#111827; margin-bottom:2px;">logo-large.jpg</div>
+                  <div style="font-size:12px; color:#9CA3AF;">5.4 MB — exceeds limit</div>
+                </div>
+              </div>
+              <div style="font-size:13px; color:#DC2626; font-weight:500;">File too large. Logo must be under 2MB. Please compress and try again.</div>
+              <button style="margin-top:10px; font-size:12px; background:white; border:1px solid #FECACA; border-radius:8px; padding:6px 14px; color:#DC2626; font-weight:600; cursor:pointer;">Try Again</button>
+            </div>
+          </div>
+
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:8px;">Store Banner</label>
+            <div class="upload-zone" style="padding:20px;">
+              <div style="font-size:28px; margin-bottom:6px;">🖼️</div>
+              <div style="font-size:14px; font-weight:600; color:#374151; margin-bottom:4px;">Drag &amp; drop or click to upload</div>
+              <div style="font-size:12px; color:#9CA3AF;">JPG · PNG · Max 5MB</div>
+            </div>
+          </div>
+
+          <div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:4px;">Store Description</label>
+            <textarea class="form-field" rows="3">Premium ethnic wear and home décor from Mumbai. Curated with care.</textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; padding-top:8px;">
+            <button class="btn-primary" style="padding:12px 28px; font-size:14px;">Next: Choose Categories →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 6 — Wizard Complete -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-6" class="state-section" style="background:#F9FAFB;">
+  <div class="state-banner">STATE 6 · Wizard Complete · Trigger: User clicks "Launch Store →" — store data saved, redirect to subscribe</div>
+
+  <div class="seller-header" style="border-bottom:1px solid #E5E7EB; margin-bottom:0;">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Set Up Your Store</div>
+  </div>
+
+  <div style="display:flex; justify-content:center; padding:60px 40px;">
+    <div style="background:white; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.08); padding:56px 48px; max-width:480px; width:100%; text-align:center;">
+      <div style="font-size:72px; margin-bottom:16px;">✅</div>
+      <h2 style="font-size:24px; font-weight:700; color:#15803D; margin:0 0 12px 0;">Store Setup Complete!</h2>
+      <p style="color:#4B5563; font-size:15px; margin:0 0 32px 0;">You're almost there — subscribe to start listing products and selling.</p>
+      <button class="btn-primary" style="width:100%; padding:14px; font-size:15px;" onclick="window.location='/seller/subscribe'">
+        Activate Your Subscription →
+      </button>
+      <div style="margin-top:16px; font-size:12px; color:#9CA3AF;">You won't be charged until you confirm the plan.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-weight:700; font-size:16px; margin-bottom:20px; color:white;">SCR-011 — Store Setup Wizard · Specification</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Screen ID</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">SCR-011</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">States</td>
+        <td style="padding:8px 0; color:#F1F5F9;">6</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Route</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">/seller/setup</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">User Stories</td>
+        <td style="padding:8px 0; color:#F1F5F9;">US-002</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Rendering</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">CSR · Seller Minimal Header</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">API Endpoints</td>
+        <td style="padding:8px 0; color:#F1F5F9;">PATCH /api/v1/seller/store/ · POST /api/v1/seller/store/upload-logo/ · POST /api/v1/seller/store/upload-banner/</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1; vertical-align:top;">WCAG</td>
+        <td style="padding:8px 0; color:#F1F5F9;" colspan="3">Progress indicator role="progressbar" aria-valuenow (4.1.2) · File upload keyboard accessible via input type="file" (2.1.1) · Category chips role="checkbox" in role="group" (4.1.2) · Upload error announced via role="alert" (3.3.1) · Max 3 categories toast aria-live="polite" (4.1.3)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:24px; font-size:11px; color:#64748B;">Generated: 2026-05-15 · ShopNest Phase 5 UX Design · SCR-011</div>
+</div>
+
+</body>
+</html>

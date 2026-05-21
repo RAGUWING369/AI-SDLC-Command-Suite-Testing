@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCR-012 — Seller Subscription Signup · ShopNest UX Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { min-width: 1280px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F9FAFB; margin: 0; }
+    .state-banner { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 8px 16px; font-size: 12px; font-weight: 600; color: #92400E; }
+    .state-section { background: white; border-bottom: 2px solid #E5E7EB; padding: 32px 40px; }
+    .ann { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #FBBF24; border-radius: 50%; font-size: 11px; font-weight: 700; color: #1F2937; margin-left: 4px; vertical-align: middle; }
+    .ann-block { background: #FEF9C3; border: 1px solid #FDE047; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #713F12; }
+    .toc { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 16px 24px; margin: 16px 40px; }
+    .spec-footer { background: #1E293B; color: #E2E8F0; padding: 32px 40px; }
+    .btn-primary { background: #F97316; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { background: transparent; color: #1A56DB; border: 2px solid #1A56DB; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .seller-header { background: white; border-bottom: 1px solid #E5E7EB; height: 56px; display: flex; align-items: center; padding: 0 32px; gap: 16px; }
+    .plan-feature { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 14px; color: #374151; }
+    .plan-feature-icon { color: #16A34A; font-weight: 700; flex-shrink: 0; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div style="background:#1A56DB; padding:12px 40px; display:flex; align-items:center; justify-content:space-between;">
+  <div style="color:white; font-weight:800; font-size:18px; letter-spacing:-0.5px;">ShopNest <span style="font-weight:400; font-size:13px; opacity:0.75;">· UX Wireframe</span></div>
+  <div style="color:#BFDBFE; font-size:12px;">SCR-012 — Seller Subscription Signup · /seller/subscribe · CSR · Seller Minimal Header</div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div style="font-weight:700; font-size:13px; color:#1E40AF; margin-bottom:8px;">SCR-012 States — Quick Navigation</div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:13px;">
+    <a href="#state-1" style="color:#1A56DB;">1 · Plan Display</a> ·
+    <a href="#state-2" style="color:#1A56DB;">2 · Razorpay Modal Active</a> ·
+    <a href="#state-3" style="color:#1A56DB;">3 · Subscription Success</a> ·
+    <a href="#state-4" style="color:#1A56DB;">4 · Payment Failed</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 1 — Plan Display -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-1" class="state-section" style="padding:0;">
+  <div class="state-banner">STATE 1 · Plan Display · Trigger: Seller arrives at /seller/subscribe after store setup (or directly)</div>
+
+  <!-- Minimal seller header -->
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest Seller</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Activate Your Store</div>
+  </div>
+
+  <div style="background:#F9FAFB; padding:48px 40px; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:520px;">
+
+      <!-- Page heading -->
+      <div style="text-align:center; margin-bottom:32px;">
+        <h1 style="font-size:28px; font-weight:800; color:#111827; margin:0 0 8px 0; letter-spacing:-0.5px;">Activate Your Store</h1>
+        <p style="font-size:15px; color:#6B7280; margin:0;">Subscribe to start listing products and reaching buyers.</p>
+      </div>
+
+      <!-- Plan card -->
+      <div style="border:2px solid #1A56DB; border-radius:16px; padding:28px; box-shadow:0 4px 24px rgba(26,86,219,0.12); background:white; margin-bottom:16px;">
+
+        <!-- Plan header -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+          <div>
+            <h3 style="font-size:16px; font-weight:700; color:#1E40AF; margin:0 0 2px 0;">ShopNest Seller Plan</h3>
+            <div style="font-size:12px; color:#6B7280;">Everything you need to sell online</div>
+          </div>
+          <div style="background:#EFF6FF; border-radius:8px; padding:6px 12px;">
+            <span style="font-size:11px; font-weight:700; color:#1D4ED8; text-transform:uppercase; letter-spacing:0.5px;">Most Popular</span>
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div style="margin-bottom:24px; padding-bottom:24px; border-bottom:1px solid #E5E7EB;">
+          <div style="display:flex; align-items:baseline; gap:4px;">
+            <span style="font-size:36px; font-weight:800; color:#111827; letter-spacing:-1px;">₹1,999</span>
+            <span style="font-size:16px; color:#6B7280; font-weight:500;">/ month</span>
+          </div>
+          <div style="font-size:12px; color:#6B7280; margin-top:4px;">Billed monthly · Cancel anytime</div>
+        </div>
+
+        <!-- Feature list -->
+        <div style="margin-bottom:24px;">
+          <div class="plan-feature">
+            <span class="plan-feature-icon">✓</span>
+            <span>Unlimited product listings with image uploads</span>
+          </div>
+          <div class="plan-feature">
+            <span class="plan-feature-icon">✓</span>
+            <span>Admin approval for each product listing</span>
+          </div>
+          <div class="plan-feature">
+            <span class="plan-feature-icon">✓</span>
+            <span>Weekly payouts via Razorpay directly to bank account</span>
+          </div>
+          <div class="plan-feature">
+            <span class="plan-feature-icon">✓</span>
+            <span>Email notifications for every new order</span>
+          </div>
+          <div class="plan-feature">
+            <span class="plan-feature-icon">✓</span>
+            <span>Seller dashboard with order and revenue analytics</span>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <button class="btn-primary" style="width:100%; padding:14px; font-size:16px;">
+          Subscribe for ₹1,999/month
+        </button>
+      </div>
+
+      <!-- Trust signals -->
+      <div style="text-align:center; font-size:13px; color:#9CA3AF; display:flex; flex-direction:column; gap:4px; align-items:center;">
+        <div>🔒 Secure payment powered by Razorpay</div>
+        <div>You can cancel anytime from your dashboard.</div>
+      </div>
+
+      <!-- GST note -->
+      <div style="margin-top:16px; background:#FFFBEB; border:1px solid #FDE68A; border-radius:8px; padding:10px 14px; text-align:center; font-size:12px; color:#92400E;">
+        GST invoice issued for each payment · GSTIN: 27SHOPN0000A1Z5
+      </div>
+
+      <!-- Annotation block -->
+      <div class="ann-block" style="margin-top:16px;">
+        <strong><span class="ann">1</span></strong> ₹1,999/month price pending final validation from beta seller pricing interviews (Open Question OQ-003) — display value from env var<br/>
+        <strong><span class="ann">2</span></strong> "Subscribe" → POST /api/v1/payments/subscriptions/create/ → Razorpay subscription_id returned → frontend opens Razorpay Checkout.js<br/>
+        <strong><span class="ann">3</span></strong> Subscription status updated via Razorpay webhook (<code>subscription.activated</code> event); ShopNest never processes payment directly
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 2 — Razorpay Modal Active -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-2" class="state-section" style="padding:0;">
+  <div class="state-banner">STATE 2 · Razorpay Modal Active · Trigger: User clicks "Subscribe" — Razorpay Checkout.js modal opens</div>
+
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest Seller</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Activate Your Store</div>
+  </div>
+
+  <!-- Page content dimmed -->
+  <div style="position:relative; background:#F9FAFB; padding:48px 40px; display:flex; justify-content:center; min-height:600px;">
+
+    <!-- Dimmed background content -->
+    <div style="width:100%; max-width:520px; opacity:0.25; pointer-events:none; user-select:none;">
+      <div style="text-align:center; margin-bottom:32px;">
+        <h1 style="font-size:28px; font-weight:800; color:#111827; margin:0 0 8px 0;">Activate Your Store</h1>
+        <p style="font-size:15px; color:#6B7280; margin:0;">Subscribe to start listing products and reaching buyers.</p>
+      </div>
+      <div style="border:2px solid #1A56DB; border-radius:16px; padding:28px; background:white;">
+        <h3 style="font-size:16px; font-weight:700; color:#1E40AF; margin:0 0 16px 0;">ShopNest Seller Plan</h3>
+        <div style="font-size:36px; font-weight:800; margin-bottom:16px;">₹1,999<span style="font-size:16px; font-weight:400; color:#6B7280;"> / month</span></div>
+        <button style="width:100%; padding:14px; font-size:16px; background:#F97316; color:white; border:none; border-radius:12px; font-weight:700;">Subscribe for ₹1,999/month</button>
+      </div>
+    </div>
+
+    <!-- Razorpay Modal Overlay -->
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:100; width:420px;">
+      <div role="dialog" aria-modal="true" aria-label="Razorpay Payment Gateway" style="background:white; border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.24); overflow:hidden;">
+
+        <!-- Razorpay header (simulated) -->
+        <div style="background:#072654; padding:20px 24px; display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <div style="font-weight:700; font-size:16px; color:white;">Razorpay</div>
+            <div style="font-size:11px; color:#93C5FD; margin-top:2px;">Payment Gateway</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:#93C5FD;">ShopNest Seller Subscription</div>
+            <div style="font-size:18px; font-weight:700; color:white;">₹1,999/mo</div>
+          </div>
+        </div>
+
+        <!-- Razorpay body (simulated — placeholder only) -->
+        <div style="padding:24px;">
+          <div style="font-size:14px; font-weight:600; color:#374151; margin-bottom:16px;">Complete subscription payment</div>
+
+          <!-- Payment options placeholder -->
+          <div style="display:flex; gap:8px; margin-bottom:16px;">
+            <div style="flex:1; height:36px; background:#F3F4F6; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#9CA3AF;">Card</div>
+            <div style="flex:1; height:36px; background:#F3F4F6; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#9CA3AF;">UPI</div>
+            <div style="flex:1; height:36px; background:#F3F4F6; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#9CA3AF;">NetBanking</div>
+          </div>
+
+          <!-- Input placeholders -->
+          <div style="height:40px; background:#F3F4F6; border-radius:8px; margin-bottom:10px;"></div>
+          <div style="display:flex; gap:8px; margin-bottom:16px;">
+            <div style="flex:1; height:40px; background:#F3F4F6; border-radius:8px;"></div>
+            <div style="flex:1; height:40px; background:#F3F4F6; border-radius:8px;"></div>
+          </div>
+
+          <button style="width:100%; background:#072654; color:white; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:700; cursor:pointer;">Pay ₹1,999</button>
+
+          <div style="text-align:center; margin-top:12px; font-size:11px; color:#9CA3AF;">🔒 Secured by Razorpay · 256-bit SSL Encryption</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotation callout outside modal -->
+    <div style="position:absolute; bottom:20px; left:40px; right:40px;">
+      <div class="ann-block">
+        <strong><span class="ann">4</span></strong> ShopNest NEVER designs this dialog — it is fully rendered by Razorpay Checkout.js (NFR-SEC-007, PCI-DSS SAQ A). ShopNest page is dimmed (opacity-30 + pointer-events:none) while Razorpay modal is active. Focus is trapped within the modal (WCAG 2.1.2).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 3 — Subscription Success -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-3" class="state-section" style="background:#F9FAFB;">
+  <div class="state-banner">STATE 3 · Subscription Success · Trigger: Razorpay webhook fires subscription.activated → seller status set ACTIVE → redirect here</div>
+
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest Seller</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Welcome to ShopNest!</div>
+  </div>
+
+  <div style="display:flex; justify-content:center; padding:60px 40px;">
+    <div style="background:white; border-radius:20px; box-shadow:0 4px 32px rgba(0,0,0,0.08); padding:56px 48px; max-width:520px; width:100%; text-align:center;">
+
+      <div style="font-size:80px; margin-bottom:16px;" aria-live="assertive">✅</div>
+      <h1 style="font-size:28px; font-weight:800; color:#15803D; margin:0 0 12px 0; letter-spacing:-0.5px;">You're All Set!</h1>
+      <p style="color:#4B5563; font-size:16px; margin:0 0 8px 0;">Your store is now active and visible to buyers.</p>
+      <p style="color:#9CA3AF; font-size:13px; margin:0 0 36px 0;">Subscription confirmed · ₹1,999/month · Renews monthly</p>
+
+      <!-- Confirmation box -->
+      <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:12px; padding:16px; margin-bottom:32px; text-align:left;">
+        <div style="font-size:13px; color:#166534; font-weight:600; margin-bottom:6px;">Subscription Details</div>
+        <div style="display:grid; gap:4px; font-size:13px;">
+          <div style="display:flex; justify-content:space-between; color:#374151;">
+            <span style="color:#6B7280;">Plan</span>
+            <span style="font-weight:600;">ShopNest Seller Plan</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; color:#374151;">
+            <span style="color:#6B7280;">Amount</span>
+            <span style="font-weight:600;">₹1,999 / month</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; color:#374151;">
+            <span style="color:#6B7280;">Next Billing</span>
+            <span style="font-weight:600;">15 Jun 2026</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; color:#374151;">
+            <span style="color:#6B7280;">Invoice</span>
+            <a href="#" style="font-weight:600; color:#1A56DB; text-decoration:none;">Download PDF →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTAs -->
+      <div style="display:flex; gap:12px;">
+        <button class="btn-primary" style="flex:1; padding:14px; font-size:14px;" onclick="window.location='/seller/dashboard'">
+          Go to Dashboard →
+        </button>
+        <button class="btn-secondary" style="flex:1; padding:14px; font-size:14px;" onclick="window.location='/seller/products'">
+          Add First Product →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATE 4 — Payment Failed -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="state-4" class="state-section" style="background:#F9FAFB;">
+  <div class="state-banner">STATE 4 · Payment Failed · Trigger: Razorpay returns payment failure — no charge made</div>
+
+  <div class="seller-header">
+    <div style="font-weight:800; font-size:18px; color:#1A56DB; letter-spacing:-0.5px;">ShopNest Seller</div>
+    <div style="width:1px; height:20px; background:#E5E7EB;"></div>
+    <div style="font-size:13px; color:#6B7280;">Activate Your Store</div>
+  </div>
+
+  <div style="display:flex; justify-content:center; padding:60px 40px;">
+    <div style="background:white; border-radius:20px; box-shadow:0 4px 32px rgba(0,0,0,0.08); padding:56px 48px; max-width:480px; width:100%; text-align:center;">
+
+      <div style="font-size:72px; margin-bottom:16px; color:#DC2626;" aria-live="assertive">❌</div>
+      <h1 style="font-size:26px; font-weight:800; color:#B91C1C; margin:0 0 12px 0;">Payment Failed</h1>
+      <p style="color:#4B5563; font-size:15px; margin:0 0 8px 0;">No amount was charged. Your store will be activated once payment succeeds.</p>
+      <p style="color:#9CA3AF; font-size:13px; margin:0 0 8px 0;">Possible reasons: Insufficient funds · Card declined · Bank authentication failed</p>
+
+      <!-- Error detail -->
+      <div style="background:#FEF2F2; border:1px solid #FECACA; border-radius:10px; padding:14px; margin:24px 0; text-align:left;">
+        <div style="font-size:12px; font-weight:600; color:#DC2626; margin-bottom:4px;">Error Reference</div>
+        <div style="font-size:12px; color:#374151; font-family:monospace;">pay_PQR123ABC456XYZ · PAYMENT_FAILED</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+        <button class="btn-primary" style="width:100%; padding:14px; font-size:15px;">
+          Try Again
+        </button>
+        <a href="#" style="font-size:13px; color:#6B7280; text-decoration:underline; text-align:center; display:block;">Contact Support</a>
+      </div>
+
+      <div style="font-size:12px; color:#9CA3AF;">Need help? Email <span style="color:#1A56DB;">support@shopnest.in</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SPEC FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="spec-footer">
+  <div style="font-weight:700; font-size:16px; margin-bottom:20px; color:white;">SCR-012 — Seller Subscription Signup · Specification</div>
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="border-bottom:1px solid #334155;">
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+        <th style="text-align:left; padding:8px 16px 8px 0; color:#94A3B8; font-weight:600; width:25%;">Attribute</th>
+        <th style="text-align:left; padding:8px 0; color:#94A3B8; font-weight:600; width:25%;">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Screen ID</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">SCR-012</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">States</td>
+        <td style="padding:8px 0; color:#F1F5F9;">4</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Route</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">/seller/subscribe</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">User Stories</td>
+        <td style="padding:8px 0; color:#F1F5F9;">US-003</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1E293B;">
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">Rendering</td>
+        <td style="padding:8px 16px 8px 0; color:#F1F5F9;">CSR · Seller Minimal Header · Auth-gated</td>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1;">API Endpoint</td>
+        <td style="padding:8px 0; color:#F1F5F9;">POST /api/v1/payments/subscriptions/create/</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 16px 8px 0; color:#CBD5E1; vertical-align:top;">WCAG</td>
+        <td style="padding:8px 0; color:#F1F5F9;" colspan="3">Razorpay modal: role="dialog" aria-modal="true" (4.1.2) · Focus trapped in modal (2.1.2) · Success/failure states aria-live="assertive" (4.1.3) · PCI-DSS SAQ A: ShopNest never renders payment fields · Keyboard-accessible CTA buttons (2.1.1)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:24px; font-size:11px; color:#64748B;">Generated: 2026-05-15 · ShopNest Phase 5 UX Design · SCR-012</div>
+</div>
+
+</body>
+</html>
