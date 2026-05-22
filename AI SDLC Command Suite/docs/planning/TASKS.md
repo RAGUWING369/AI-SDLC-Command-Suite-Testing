@@ -63,7 +63,8 @@
 **Type:** DevOps
 **Assigned Role:** Full-Stack Lead
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Implementation Note:** Monorepo created at `shopnest/` with `frontend/`, `backend/`, `infra/` directories, `.gitignore` (Python/Node/Docker), `CLAUDE.md` (developer reference), `README.md`. Git initialized; `develop` branch created from `main`. Initial commit `52b9db2`. Branch protection rules (main/develop) pending GitHub remote creation.
 
 ---
 
@@ -85,7 +86,8 @@
 **Type:** DevOps
 **Assigned Role:** Full-Stack Lead
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Implementation Note:** docker-compose.yml (6 services), Dockerfile (python:3.12-slim single backend image), .env.example (22 vars), .gitattributes (eol=lf). Commit `8affe86` on `feature/TASK-002-docker-compose`. Health-check and frontend service verifiable after TASK-003/TASK-004.
 
 ---
 
@@ -107,7 +109,8 @@
 **Type:** Backend
 **Assigned Role:** Backend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Implementation Note:** 49 files, 725 insertions. Django 5.0.6 + DRF 3.15.2 skeleton: split settings (base/dev/prod), 7 app stubs, custom User (UUID PK), Celery 4-queue config, RS256 JWT, health check, OpenAPI spec, JSON logging, pytest/black/isort/mypy config. New dep approved: django-cors-headers==4.3.1. Commit `f436643` on `feature/TASK-003-django-init`. Note: django-storages + django-ses needed in requirements.txt before production S3/SES tasks.
 
 ---
 
@@ -130,7 +133,8 @@
 **Type:** Frontend
 **Assigned Role:** Frontend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Implementation Note:** Next.js 14.2.5 + TypeScript 5.4.5 strict mode + Tailwind 3.4.4. Airbnb ESLint config, ShopNest design system tokens in tailwind.config.ts, brand header placeholder, system font stack. npm run build ✓, npm run lint ✓, npm run type-check ✓. Commit `61d317f` on `feature/TASK-004-nextjs-init`. Note: next.config.mjs used (next.config.ts not supported until Next.js 15).
 
 ---
 
@@ -153,7 +157,8 @@
 **Type:** Database
 **Assigned Role:** Backend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Completion Notes:** All 19 ORM models defined across 6 apps. Split migration strategy used to break the products↔sellers circular FK dependency (products/0001: Category only; sellers/0001: SellerProfile+Store+StoreCategory+PayoutDetails; products/0002: Product+ProductImage+RunSQL FTS trigger). PostgreSQL search_vector auto-populated by trigger `products_update_search_vector()` on INSERT/UPDATE of name/description. `django.contrib.postgres` added to INSTALLED_APPS. AuditLog is append-only (save/delete raise ValueError). AnalyticsEvent.user_id and AuditLog.actor_id are bare UUIDs (no FK, DPDPA). Unit tests written for all 6 apps. Branch: `feature/TASK-005-django-models`, commit: 3e8db09.
 
 ---
 
@@ -174,7 +179,8 @@
 **Type:** Backend
 **Assigned Role:** Backend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Completion Notes:** Replaced bare-dict task_queues with typed `kombu.Queue` objects (Exchange + routing_key per queue). Added `debug_task` as `@app.task(bind=True)` on the default queue for smoke-testing. Added `CELERY_BEAT_SCHEDULER = DatabaseScheduler` to base.py. Unit tests verify broker URL (Redis db=1), all 4 queue names with matching exchange/routing_key, all task routes, Beat scheduler, and debug_task registered + runnable via `.apply()`. Branch: `feature/TASK-006-celery-config`, commit: 6a00623.
 
 ---
 
@@ -196,7 +202,8 @@
 **Type:** DevOps
 **Assigned Role:** Full-Stack Lead
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Completion Notes:** `.github/workflows/ci.yml` — two parallel jobs: `backend` (postgres:16-alpine + redis:7-alpine service containers, Black/isort/mypy/pytest with `--cov-fail-under=80`) and `frontend` (Node 20, ESLint/tsc/Jest with 80% coverage threshold). Concurrency group cancels stale in-progress runs. Coverage artifacts retained 30 days. `setup.cfg` updated with `[mypy-*.tests.*] ignore_errors=True` to prevent strict annotations in test helpers. `pytest.ini` --cov-fail-under=0 override removed. Branch: `feature/TASK-007-ci-pipeline`, commit: 5651a23.
 
 ---
 
@@ -217,7 +224,8 @@
 **Type:** Backend
 **Assigned Role:** Backend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Completion Notes:** `shopnest/views.py` — health_check returns `{"status":"ok","timestamp":"<ISO-8601 UTC>","version":"<pkg>"}` (no DB query by design). `shopnest/middleware.py` — `RequestIdMiddleware` injects UUID4 `request_id` per request into thread-local + `X-Request-ID` response header; `UserIdHashFilter` (logging.Filter) appends `request_id` and `user_id_hash` (SHA-256 of user UUID, "anonymous" for guests) to every log record. LOGGING config updated with filter + `static_fields={"service":"shopnest-api"}`. Unit tests cover endpoint, middleware, and filter. Branch: `feature/TASK-008-health-logging`, commit: 42e5565.
 
 ---
 
@@ -238,7 +246,8 @@
 **Type:** DevOps
 **Assigned Role:** Full-Stack Lead
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Completion Notes:** `shopnest/storage.py` — `build_s3_key()`, `build_cdn_url()`, `upload_file()`, `delete_file()`, `StorageError`. `_get_s3_client()` uses `AWS_S3_ENDPOINT_URL` when set (LocalStack) and falls back to IAM task role in ECS. `docker-compose.yml` adds `localstack` service (port 4566, S3 only, health-checked); `backend` depends on `localstack`. `infra/localstack-init/01-create-bucket.sh` creates bucket on startup. `infra/README.md` documents production S3/CloudFront manual setup. `.env.example` updated with `AWS_S3_ENDPOINT_URL` and key convention comments. Unit tests cover key builder, CDN URL, upload/delete (S3 mocked). Branch: `feature/TASK-009-s3-storage`, commit: 7c78a2b.
 
 ---
 
@@ -269,7 +278,8 @@
 **Type:** Backend
 **Assigned Role:** Backend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Implementation Note:** `users/views.py` — LoginView (wraps TokenObtainPairView), TokenRefreshWithDenylistView (checks Redis db=2 denylist before refresh), LogoutView (denylists jti with TTL), JWKSView (RSA public key in JWK format). `users/urls.py` — auth URL patterns + `jwks_urlpatterns` for root mount. `shopnest/urls.py` — users.urls included under /api/v1/; JWKS at /.well-known/. `settings/base.py` — BCryptSHA256PasswordHasher (cost 12), JWT_DENYLIST_REDIS_URL (Redis db=2). `requirements.txt` — bcrypt==4.1.3 added. `shopnest/celery.py` — fixed pre-existing `os.setdefault` → `os.environ.setdefault` typo. 28 tests in `users/tests/test_auth.py` covering all acceptance criteria. Full test suite requires PostgreSQL (Docker Compose / CI). Branch: `feature/TASK-010-rs256-jwt-auth`, commit: f5d818b.
 
 ---
 
@@ -292,7 +302,8 @@
 **Type:** Backend
 **Assigned Role:** Backend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Implementation Note:** `sellers/serializers.py` — SellerRegistrationSerializer with field validators (password strength, 10-digit Indian phone, 6-digit pincode, optional GSTIN regex). `users/serializers.py` — shared `validate_password_strength` + `validate_indian_phone` helpers. `sellers/views.py` — SellerRegistrationView (AllowAny, 201/400/409). `sellers/urls.py` + wired in `shopnest/urls.py`. `@transaction.atomic` ensures no partial writes. 43 tests in `sellers/tests/test_seller_registration.py`. Branch: `feature/TASK-011-seller-registration`, commit: a082b3a.
 
 ---
 
@@ -314,7 +325,8 @@
 **Type:** Backend
 **Assigned Role:** Backend Dev
 **Sprint:** 1
-**Status:** Pending
+**Status:** Done
+**Completion Summary:** Implemented POST /api/v1/buyers/register/ (BuyerRegistrationSerializer + BuyerRegistrationView), IsBuyer/IsSeller/IsAdmin RBAC permission classes, shared password/phone validators, 40+ tests covering happy path, email conflicts, password/phone validation, and RBAC unit + integration tests. All files Black/isort formatted. Committed on branch feature/TASK-012-buyer-registration (1864d81).
 
 ---
 
@@ -328,7 +340,7 @@
 - [ ] Client-side validation shows inline error before API call for: missing fields, password rule violations, invalid phone format
 - [ ] Successful registration shows success message and redirects to `/seller/login`
 - [ ] API error (409 duplicate email) displays inline under the email field
-- [ ] Form is fully functional at 375px viewport width
+- [ ] Form is fully functional at 375px (mobile) and 1440px (desktop) viewport widths per SCR-010 wireframe
 - [ ] `npm run test` covers: field validation, successful submit, error state rendering
 **Files Affected:** `frontend/app/seller/register/page.tsx`, `frontend/components/auth/SellerRegisterForm.tsx`, `frontend/lib/api/sellers.ts`
 **Wireframe Reference:** `docs/visuals/ux/SCR-010-seller-registration.html`
@@ -337,7 +349,8 @@
 **Type:** Frontend
 **Assigned Role:** Frontend Dev
 **Sprint:** 2
-**Status:** Pending
+**Status:** Done
+**Completion Summary:** Implemented seller registration screen at /seller/register per SCR-010 wireframe. All 5 states: default form, loading, validation errors, success (state=PENDING_REVIEW), 409 email conflict with "Sign in instead?" link. Client-side validation mirrors backend (password min-8+digit, 10-digit Indian phone, optional GSTIN). Password strength meter. Layout restructured to (shell)/layout.tsx route group so pre-auth pages bypass the Header. Jest+RTL setup established (jest.config.ts, jest.setup.ts, tsconfig.test.json). 17 tests, lint and type-check both pass. Committed 81344a9 on feature/TASK-013-seller-registration-screen.
 
 ---
 
@@ -352,7 +365,7 @@
 - [ ] Invalid credentials shows inline error "Invalid email or password"
 - [ ] Toggle between login and register modes without page reload
 - [ ] JWT is stored in httpOnly cookie (not localStorage)
-- [ ] Fully functional at 375px viewport width
+- [ ] Fully functional at 375px (mobile) and 1440px (desktop) viewport widths per SCR-007 wireframe
 **Files Affected:** `frontend/app/auth/login/page.tsx`, `frontend/app/auth/register/page.tsx`, `frontend/components/auth/BuyerAuthForm.tsx`, `frontend/lib/auth.ts`
 **Wireframe Reference:** `docs/visuals/ux/SCR-007-buyer-auth.html`
 **Dependencies:** TASK-004, TASK-012
@@ -473,7 +486,7 @@
 - [ ] Out-of-stock products absent from the listing
 - [ ] Breadcrumb shows: Home > Category Name
 - [ ] `title` and `meta description` tags are category-specific
-- [ ] Page functions at 375px mobile viewport
+- [ ] Page functions at 375px mobile and 1440px desktop viewports per SCR-005 wireframe
 **Files Affected:** `frontend/app/categories/[slug]/page.tsx`, `frontend/components/marketplace/ProductGrid.tsx`, `frontend/components/common/Breadcrumb.tsx`
 **Wireframe Reference:** `docs/visuals/ux/SCR-005-category-listing.html`
 **Dependencies:** TASK-004, TASK-017, TASK-018
@@ -496,7 +509,7 @@
 - [ ] "Add to Cart" button disabled and replaced with "Out of Stock" when stock=0
 - [ ] `og:title`, `og:description`, `og:image` present and populated correctly
 - [ ] URL slug is stable — product name edit does not change the URL
-- [ ] All states render correctly at 375px (single-column layout)
+- [ ] All states render correctly at 375px (single-column) and 1440px (two-column) layout per SCR-001 wireframe
 **Files Affected:** `frontend/app/products/[slug]/page.tsx`, `frontend/components/product/ImageCarousel.tsx`, `frontend/components/product/AddToCartButton.tsx`
 **Wireframe Reference:** `docs/visuals/ux/SCR-001-product-detail.html`
 **Dependencies:** TASK-004, TASK-017
@@ -519,7 +532,7 @@
 - [ ] Empty state rendered when no results match
 - [ ] Pagination works correctly for > 24 results
 - [ ] Search box in navigation is pre-filled with current query
-- [ ] Functional at 375px mobile viewport
+- [ ] Functional at 375px mobile and 1440px desktop viewports per SCR-006 wireframe
 **Files Affected:** `frontend/app/search/page.tsx`, `frontend/components/marketplace/SearchResults.tsx`
 **Wireframe Reference:** `docs/visuals/ux/SCR-006-search-results.html`
 **Dependencies:** TASK-004, TASK-017, TASK-018
@@ -617,7 +630,7 @@
 - [ ] Nav cart badge reflects live item count
 - [ ] Empty cart state renders with "Start Shopping" CTA
 - [ ] Checkout button enabled only when cart is non-empty
-- [ ] Functional at 375px viewport (mobile cart drawer or full-page)
+- [ ] Functional at 375px (mobile drawer/full-page) and 1440px (desktop sidebar) viewports per SCR-002 wireframe
 **Files Affected:** `frontend/app/cart/page.tsx`, `frontend/components/cart/CartPanel.tsx`, `frontend/lib/stores/cartStore.ts`, `frontend/components/layout/NavCartBadge.tsx`
 **Wireframe Reference:** `docs/visuals/ux/SCR-002-cart-checkout.html`
 **Dependencies:** TASK-004, TASK-023
@@ -786,7 +799,7 @@
 - [ ] On payment success: redirect to `/checkout/success?order_id={id}` with order confirmation details
 - [ ] On payment failure: inline error with "Try again" option (cart preserved)
 - [ ] Out-of-stock error from API renders with list of affected items
-- [ ] Functional at 375px mobile viewport
+- [ ] Functional at 375px mobile and 1440px desktop viewports per SCR-002 wireframe
 **Files Affected:** `frontend/app/checkout/page.tsx`, `frontend/app/checkout/success/page.tsx`, `frontend/components/checkout/CheckoutForm.tsx`, `frontend/components/checkout/RazorpayWidget.tsx`
 **Wireframe Reference:** `docs/visuals/ux/SCR-002-cart-checkout.html`
 **Dependencies:** TASK-025, TASK-027
@@ -810,7 +823,7 @@
 - [ ] Cancel button visible only in Payment Confirmed status
 - [ ] Cancellation confirmation dialog prevents accidental cancel
 - [ ] Invalid token shows 403 error page
-- [ ] Functional at 375px mobile viewport
+- [ ] Functional at 375px mobile and 1440px desktop viewports per SCR-008 wireframe
 **Files Affected:** `frontend/app/orders/track/[token]/page.tsx`, `frontend/components/orders/OrderTimeline.tsx`, `frontend/components/orders/CancelOrderButton.tsx`
 **Wireframe Reference:** `docs/visuals/ux/SCR-008-order-tracking.html`
 **Dependencies:** TASK-004, TASK-030, TASK-031
@@ -1671,7 +1684,7 @@
 - [ ] Orders display correctly sorted most recent first
 - [ ] Expand/collapse order detail shows all items and tracking link
 - [ ] Empty state renders with "Start Shopping" CTA
-- [ ] Functional at 375px mobile viewport
+- [ ] Functional at 375px mobile and 1440px desktop viewports per SCR-009 wireframe
 **Files Affected:** `frontend/app/orders/page.tsx`, `frontend/components/buyer/OrderHistory.tsx`, `frontend/components/buyer/OrderCard.tsx`
 **Wireframe Reference:** `docs/visuals/ux/SCR-009-buyer-orders.html`
 **Dependencies:** TASK-004, TASK-068, TASK-014

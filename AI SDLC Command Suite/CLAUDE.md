@@ -40,7 +40,7 @@
 **Current Phase:** 7. Implementation
 
 **Repository URL(s):**
-- Primary: [TBD — GitHub repo to be created after /sdlc:ideate completes]
+- Primary: https://github.com/RAGUWING369/AI-SDLC-Command-Suite-Testing.git
 
 **Started:** [2026-04-22]
 
@@ -356,7 +356,8 @@ Key decisions already made:
 Out of scope for MVP: reviews, recommendations, wishlists, affiliate, loyalty points, mobile app, logistics integration, multi-language — these are post-MVP.
 - Multi-vendor is IN SCOPE for MVP: multiple sellers onboard independently, manage their own products and orders, and pay a monthly subscription.
 - SEO is important — product pages and category pages must be server-side rendered for search engine indexing
-- Mobile-first — all UI must work on 375px screens, majority of traffic is mobile
+- **Viewport requirement (2026-05-22):** ALL buyer-facing frontend UI screens must be fully functional and correctly laid out at BOTH 375px (mobile) AND 1440px (desktop) viewports, matching the wireframe specifications in `docs/visuals/ux/`. Seller dashboard screens are tablet-first (768px minimum per NFR-USA-002). Admin screens are desktop-only (1280px). Every frontend task acceptance criterion must include both 375px and 1440px checkboxes for buyer-facing pages.
+- Mobile-first — majority of traffic is mobile; 375px is the primary breakpoint, but 1440px desktop layout is equally required for all buyer-facing pages
 
 --- 
 
