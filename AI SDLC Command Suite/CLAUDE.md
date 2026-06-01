@@ -116,7 +116,7 @@ shopnest/
 │   ├── cart/                  ← Cart (Redis-backed); guest session handling
 │   ├── payments/              ← Razorpay checkout, subscriptions, payouts, webhook; SettlementLedgerEntry, Payout, WebhookIdempotencyLog, Invoice, Subscription
 │   └── analytics/             ← analytics_events table + POST /api/v1/analytics/track
-├── infra/                     ← ECS task definitions, VPC config, ALB rules (IaC)
+├── infra/                     ← ECS task definitions, VPC config, ALB rules 
 ├── docker-compose.yml         ← Local: postgres, redis, django, celery, next.js
 ├── Dockerfile                 ← Single image; CMD varies per ECS service
 ├── .github/
